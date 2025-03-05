@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"json.schemas": [],
+		"json.schemaDownload.enable": false,
+		"yaml.schemas": {}
+	}
+}
