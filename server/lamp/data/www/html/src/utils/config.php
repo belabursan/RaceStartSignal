@@ -46,12 +46,12 @@ $MYC2 = array(
 /**
  * Database credentials
  */
-define('DB_NAME', '5876-myc2db');
+define('DB_NAME', 'xxxxxxxx');
 if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] == "myc2.se" || $_SERVER['SERVER_NAME'] == "www.myc2.se")) {
     /* for myc2.se */
     define('DB_SERVER', 'mysql02');
-    define('DB_USERNAME', '5876-2ebm6');
-    define('DB_PASSWORD', 'Q7gPzPP/Tn');
+    define('DB_USERNAME', 'xxxxxxx');
+    define('DB_PASSWORD', 'xxxxxxx');
 } else {
     /* locally */
     define('DB_SERVER', 'localhost');
