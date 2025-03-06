@@ -1,12 +1,11 @@
-version: "3.3"
-# Docker compose file for the SailRace server
+# Docker compose file for the SailRaceSignal server
 # v1.1.0 Bela Bursan <burszan@gmail.com>
 #
 services:
   webserver:
     build:
       context: ./lamp/php
-    container_name: "SailRace-Web"
+    container_name: "SailRaceSignal-Web"
     restart: "unless-stopped"
     ports:
       - "80:80"
@@ -42,7 +41,7 @@ services:
       context: "./lamp/db"
       args:
         SAILRACE_DATABASE: ${MYSQL_DATABASE}
-    container_name: "SailRace-DB"
+    container_name: "SailRaceSignal-DB"
     restart: "unless-stopped"
     volumes:
       - ./lamp/data/mysql:/var/lib/mysql
@@ -57,7 +56,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   phpmyadmin:
     image: phpmyadmin
-    container_name: "SailRace-Phpmyadmin"
+    container_name: "SailRaceSignal-Phpmyadmin"
     networks:
       sailnetwork:
         ipv4_address: 172.19.0.80
@@ -79,7 +78,7 @@ services:
     depends_on:
       - database
 #  redis:
-#    container_name: "SailRace-Redis"
+#    container_name: "SailRaceSignal-Redis"
 #    image: redis:latest
 #    ports:
 #      - "127.0.0.1:6379:6379"
@@ -87,7 +86,7 @@ services:
 #      sailnetwork:
 #        ipv4_address: 172.19.0.60
   dozzle:
-    container_name: "SailRace-Dozzle"
+    container_name: "SailRaceSignal-Dozzle"
     image: amir20/dozzle:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -99,7 +98,7 @@ services:
   node:
     build:
       context: ./rest/node
-    container_name: "SailRace-Node"
+    container_name: "SailRaceSignal-Node"
     restart: "unless-stopped"
     ports:
       - 7000:${NODE_HTTP_PORT}
@@ -128,7 +127,7 @@ services:
       DEFAULT_DNS_POINT: ${DEFAULT_DNS_POINT}
 networks:
   sailnetwork:
-    name: "SailRaceNetwork"
+    name: "SailRaceSignalNetwork"
     driver: bridge
     ipam:
         driver: default

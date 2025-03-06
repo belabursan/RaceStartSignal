@@ -1,4 +1,4 @@
-FROM mariadb:10.6
+FROM mariadb:lts-noble
 # Maria DB for SailRace
 # 2024-02-05 Bela Bursan <burszan@gmail.com>
 # v1.0.0

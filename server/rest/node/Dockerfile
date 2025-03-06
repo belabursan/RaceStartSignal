@@ -1,6 +1,6 @@
-FROM node:lts-alpine3.18
+FROM node:lts-alpine3.21
 # SailRace Node Server
-# v1.0.0 Bela Bursan >burszan@gmail.com>
+# v1.0.0 Bela Bursan <burszan@gmail.com>
 #
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
