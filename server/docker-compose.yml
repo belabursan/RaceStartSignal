@@ -98,6 +98,8 @@ services:
   node:
     build:
       context: ./rest/node
+      args:
+        SSL_KEY_PASS: ${SSL_KEY_PASS}
     container_name: "SailRaceSignal-Node"
     restart: "unless-stopped"
     ports:
