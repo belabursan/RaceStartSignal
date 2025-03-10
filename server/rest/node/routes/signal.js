@@ -57,3 +57,5 @@ router.route("/")
             return res.status(code).send(message);
         }
     });
+
+module.exports = router;

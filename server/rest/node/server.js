@@ -37,8 +37,8 @@ if (use_https) {
     app.use(helmet());
     port = https_port;
     options = {
-        key: fs.readFileSync("./secret/sailrace-key.pem"),
-        cert: fs.readFileSync("./secret/sailrace-cert.pem"),
+        key: fs.readFileSync("./secret/signal-key.pem"),
+        cert: fs.readFileSync("./secret/signal-cert.pem"),
         dhparam: fs.readFileSync("./secret/dh-strong.pem"),
         passphrase: ssl_key_pass
         //openssl dhparam -out /var/www/example/sslcert/dh-strong.pem 2048
