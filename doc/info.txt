@@ -1,0 +1,33 @@
+https://www.google.com/search?channel=fs&client=ubuntu-sn&q=sailing+race+start+line#fpstate=ive&vld=cid:a64665c6,vid:ttc7BAEziqs,st:0
+
+DB erd creator: https://dbdiagram.io/d
+
+https://editor-next.swagger.io/
+
+#https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml
+#https://editor.swagger.io/
+
+// https://www.google.com/search?channel=fs&client=ubuntu-sn&q=sailing+race+start+line#fpstate=ive&vld=cid:a64665c6,vid:ttc7BAEziqs,st:0
+
+// TODO: https://www.npmjs.com/package/jsonschema
+
+//https://stackoverflow.com/questions/1787939/check-time-difference-in-javascript
+
+
+//https://www.youtube.com/watch?v=2noQO99PNEI
+//https://www.w3schools.com/nodejs/nodejs_email.asp
+// In https://myaccount.google.com/security, do you see 2-step verification set to ON? If yes, then visiting https://myaccount.google.com/apppasswords should allow you to set up application specific passwords. 
+
+
+// https://dvmhn07.medium.com/jwt-authentication-in-node-js-a-practical-guide-c8ab1b432a49
+// https://talent500.co/blog/implementing-user-authentication-and-authorization-using-jwt-json-web-tokens-and-bcrypt/
+
+
+// https://forum.codeselfstudy.com/t/tutorial-how-to-use-mysql-or-mariadb-with-node-js-and-express/2260
+// https://www.cdata.com/kb/tech/mariadb-connect-nodejs.rst
+// https://mariadb.com/docs/server/connect/programming-languages/nodejs/promise/connection-pools/
+
+
+// https://stackoverflow.com/questions/59072034/how-can-i-parse-parameters-to-a-restful-api
+// http://expressjs.com/en/api.html#req.query
+
