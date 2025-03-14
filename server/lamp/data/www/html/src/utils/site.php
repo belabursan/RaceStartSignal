@@ -1,28 +1,5 @@
 <?php
 
-function addCssLink($link, $extern=false) {
-    if ($extern){
-        echo "        <link rel=\"stylesheet\" type='text/css' href=\"".$link."\">\n";
-    } else {
-        echo "        <link rel=\"stylesheet\" type='text/css' href=\"css/".$link.".css\">\n";
-    }
-}
-
-/**
- * Redirects a page
- * @param mixed page Page to redirect 
- * @param mixed current Set to true to redirect to current page or false to find the page in root dir
- * @return never
- */
-function redirectPage($page, $current=false) {
-    $host = $_SERVER['HTTP_HOST'];
-    $uri = "";
-    if($current) {
-        $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    }
-    header("Location: https://$host$uri/$page");
-    exit;
-}
 
 /**
  * Starts the session if not already started
@@ -46,25 +23,10 @@ function s_stop() {
 
 
 /**
- * Resets the info array to inactive
- */
-function resetInfo() {
-    s_start();
-    $_SESSION['info']['message'] = "";
-    $_SESSION['info']['type'] = false;
-    $_SESSION['info']['id'] = -1;
-    s_stop();
-}
-
-
-/**
  * @brief Cleans (unsets) all session parameters used by the page
  */
 function cleanSession() {
     s_start();
-    unset($_SESSION["loggedin"]);
-    unset($_SESSION['user']);
-    unset($_SESSION['timeout']);
     unset($_POST['password']);
     unset($_POST['email']);
     unset($_SESSION);
@@ -76,11 +38,19 @@ function cleanSession() {
  * Logs in a user
  * @param string email the user identifier
  * @param string password Clean password of the user
- * @return bool ret true if succeeded, false otherwise
+ * @return string ret page to redirect to
  */
 function site_login($email, $password) {
-    //return db_login($email, $password);
-    true;
+    //check db_login($email, $password);
+    //echo "Logging in...";
+    // error page
+    $_SESSION['login_error'] = "Wrong email or bad password!";
+    return 'index.php';
+}
+
+function site_register($email){
+    $_SESSION['login_error'] = "Failed to register,try agai later!";
+    return 'index.php';
 }
 
 ?>
