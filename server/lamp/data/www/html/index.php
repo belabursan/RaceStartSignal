@@ -1,31 +1,58 @@
 <?php
-include_once "src/helper/site.php";
-redirectTohttps();
+include_once "src/utils/site.php";
 
-?><!DOCTYPE html>
+/**
+ * @brief Handles the login procedure for a user
+ * Called on the login.php
+ */
+function handleLogin()
+{
+    s_start();
 
-<html>
-    <head>
-        <?php
-            printHeadContent("index", false);
-            addCssLink("src/css/index.css", true);
-        ?>
-    </head>
-    <body>
-        <main class="index_main">
-            <div class="welcome">
-                <div class="index_title"><h1>V&auml;lkommen till b&aring;tlaget <span class="myc2">MYC2</span></h1></div>
-                <br><br>
-                <div class="index_text">
-                    H&auml;r kan du bl.a. hitta vilka veckor som du och andra f&ouml;rfogar &ouml;ver b&aring;ten, byta veckor, hitta information om b&aring;ten och Grekland.
-                </div>
-            </div>
-            <div class="login_container">
-                <form role="form" action="src/login.php" method="post">
-                    <button type="submit" name="login" class="button login_button">Logga In</button>
-                </form>
-            </div>
-        </main>
-        <?php printFooter(); ?>
-    </body>
+    if ( isset($_SESSION['login_error'])) {
+        echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
+        unset($_SESSION['login_error']);
+    } else {
+        if (isset($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password'])) {
+            unset($_POST['login']);
+            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                echo "<script>alert('Invalid email format!');</script>";
+            } else {
+                $host = $_SERVER['HTTP_HOST'];
+                $page = site_login($_POST['email'], $_POST['password']);
+                exit(header("Location: http://$host/$page", true));
+            }
+        }
+    }
+    s_stop();
+}
+
+handleLogin();
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" type='text/css' href="src/css/index.css">
+</head>
+
+<body>
+    <div class="center">
+        <div class="signal_text">Lagunens Race Signal Page</div>
+        <br><br>
+        <div class="login_container">
+            <h2>Login</h2>
+            <form action="" method="POST">
+                <input type="text" pattern="[a-zA-Z0-9@.]+" name="email" placeholder="Email Address" required autofocus /><br />
+                <input type="password" name="password" placeholder="Password" required /><br />
+                <button type="submit" name="login">Login</button>
+            </form>
+            <a href="register.php"><span class="register_text" >Dont't have an account? Register</span></a>
+        </div>
+    </div>
+</body>
+
 </html>
