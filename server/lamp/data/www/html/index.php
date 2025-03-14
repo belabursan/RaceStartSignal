@@ -1,5 +1,5 @@
 <?php
-include_once "src/helper/site.php";
+include_once "src/utils/site.php";
 
     /**
      * @brief Handles the login procedure for a user
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <?php addCssLink("css/index.css", true);?>
+    <?php addCssLink("src/css/index.css", true);?>
 </head>
 <body>
     <div class="container">
