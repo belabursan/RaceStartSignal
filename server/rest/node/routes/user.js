@@ -38,7 +38,7 @@ router
                 return res.status(500).send("Mail service down");
             }
             const id = result.id.toString();
-            console.log("User(" + user.getEmail() + ") registered with id: " + id);
+            console.log("User (" + user.getEmail() + ") registered with id: " + id);
             return res.status(201).set('Content-Type', 'text/html').send(id);
         }
         catch (error) {
