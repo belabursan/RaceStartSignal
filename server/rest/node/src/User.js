@@ -23,12 +23,12 @@ module.exports = class User {
 
     /**
      * Creates a new user based on the data from the user parameter
-     * @param {JSON object} user See UserInfo.json
+     * @param {string} email See UserInfo.json
      */
-    constructor(user) {
-        if (user) {
-            this.#email = user.email;
-            this.#salt = user.salt;
+    constructor(email) {
+        if (email) {
+            this.#email = decodeURIComponent(email).toString();
+            this.#salt = "1234567890ABCDEF"; //randomize later....
         }
     }
 

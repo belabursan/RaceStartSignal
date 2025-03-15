@@ -15,16 +15,6 @@ let router = express.Router();
  * @param {String} token jwt token from the user
  * @returns the user or throws error
  */
-async function authenticate(token) {
-    const auth = Authenticator.verifyToken(token);
-    try {
-        const user = await User.getUserIdById(auth.userId);
-        if (debug) console.log("User " + auth.userId + " authenticated");
-        return user;
-    } catch (error) {
-        throw new Error("Unauthorized. (" + error.message + ")");
-    }
-}
 
 
 router.use(function (req, res, next) {
@@ -36,7 +26,7 @@ router
     .route("/")
     .post(async (req, res) => {   // REGISTER A NEW USER
         try {
-            const user = new User(Validator.validateUser(req.body));
+            const user = Validator.validateUser(new User(req.query.email));
             const result = await user.addUserToDb();
 
             try {
@@ -48,12 +38,12 @@ router
                 return res.status(500).send("Mail service down");
             }
             const id = result.id.toString();
-            console.log("User(" + req.body.email + ") registered as: " + id);
+            console.log("User(" + user.getEmail() + ") registered with id: " + id);
             return res.status(201).set('Content-Type', 'text/html').send(id);
         }
         catch (error) {
             const { code, message } = ErrorHandler.handleError(error);
-            console.log("ERROR when adding user (" + req.body.email + "): " + message);
+            console.log("ERROR when adding user (" + req.query.email + "): " + message);
             return res.status(code).send(message);
         }
     });
