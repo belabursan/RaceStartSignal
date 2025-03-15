@@ -12,7 +12,7 @@ info:
 #  - url: https://petstore3.swagger.io/api/v3
 tags:
   - name: user
-    description: "Operations about user"
+    description: "User operations"
   - name: signal
     description: "Everything about the signal"
 #------------------------------------------------------------------------------------------
@@ -20,55 +20,19 @@ paths:
 #------------------------------------------------------------------------------------------
 #        U S E R
 #------------------------------------------------------------------------------------------
-  /user:
-    get:
-      tags: ["user"]
-      summary: "Get user info from the SailRace server"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInfo'
-        '400':
-          description: "Not found, registered?"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '503':
-          $ref: '#/components/responses/ServerBusy'
-    put:
-      tags: ["user"]
-      summary: "Update a user on the SailRace server"
-      requestBody:
-        description: "User and login info"
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInfo'
-        required: true
-      responses:
-        '200':
-          description: "OK"
-        '400':
-          description: "Bad data to set"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '503':
-          $ref: '#/components/responses/ServerBusy'
+  /user{email}:
     post:
       tags: ["user"]
-      summary: "Register/create a new user on the SailRace server"
-      description: |
-        INSERT INTO user_info (name, email, phone, salt) VALUES (:name, :email, :phone, :salt)
+      summary: "Register/create a new user on the SailRaceSignal server"
       security: []   # No security
-      requestBody:
-        description: "User and login info"
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInfo'
-        required: true
+      parameters:
+        - name: email
+          in: path
+          description: "E-mail of user to register"
+          required: true
+          schema:
+            type: string
+            format: email
       responses:
         '201':
           description: "Created"
@@ -85,24 +49,10 @@ paths:
           description: "Mail service down"
         '503':
           $ref: '#/components/responses/ServerBusy'
-    delete:
-      tags: ["user"]
-      summary: "Deletes an user from the server. Note: user_id is read from token."
-      description: |
-        DELETE FROM user_info WHERE id=`id`
-      responses:
-        '200':
-          description: "OK"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '409':
-          description: "Already deleted"
-        '503':
-          $ref: '#/components/responses/ServerBusy'
   /user/login:
     post:
       tags: ["user"]
-      summary: "Login as registered user to the SailRace server"
+      summary: "Login as registered user to the SailRaceSignal server"
       security: []   # No security
       requestBody:
         description: "Login info, which is email and password"
@@ -123,26 +73,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '503':
           $ref: '#/components/responses/ServerBusy'
-  /user/reset{email}:
-    post:
-      tags: ["user"]
-      summary: "Reset password, new pass sends to email address"
-      security: []   # No security
-      parameters:
-        - name: email
-          in: path
-          description: "E-mail of user to reset password for"
-          required: true
-          schema:
-            type: string
-            format: email
-      responses:
-        '200':
-          description: "Operation successfull"
-        '400':
-          description: "Invalid data, wrong email?"
-        '503':
-          $ref: '#/components/responses/ServerBusy'
 #------------------------------------------------------------------------------------------
 #       S I G N A L
 #------------------------------------------------------------------------------------------
@@ -150,12 +80,6 @@ paths:
     put:
       tags: ["signal"]
       summary: "Add signal info to server"
-      description: |
-        INSERT INTO signal (user_id, type, name, sail_number, srs_shorthand_no_spin,\
-         srs_shorthand, srs_no_spin, srs, skipper_name) \
-        VALUES (:user_id, :type, :name, :sail_number, :srs_shorthand_no_spin,\
-         :srs_shorthand, :srs_no_spin, :srs, :skipper_name)
-# FIX sql...      
       requestBody:
         description: "Signal information"
         content:
@@ -174,16 +98,51 @@ paths:
           $ref: '#/components/responses/ServerBusy'
     get:
       tags: ["signal"]
-      summary: "Get signals info from the server"
-      description: |
-        SELECT * FROM signal
+      summary: "Get all signals info from the server"
       responses:
         '200':
           description: "Operation successfull"
           content:
             application/json:
               schema:
-                allOf:
+                type: "array"
+                items:
+                  - $ref: '#/components/schemas/Signal'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '503':
+          $ref: '#/components/responses/ServerBusy'
+  /signal{id}:
+    delete:
+      tags: ["signal"]
+      summary: "Removes a signal from the database"
+      parameters:
+        - name: id
+          in: path
+          description: "Id of the signal"
+          required: true
+          schema:
+            type: integer
+  /signal{filter}:
+    get:
+      tags: ["signal"]
+      summary: "Get filtered signals from the server"
+      parameters:
+        - name: filter
+          in: path
+          description: "Filter signals to get"
+          required: true
+          schema:
+            type: string
+            format: text
+      responses:
+        '200':
+          description: "Operation successfull"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
                   - $ref: '#/components/schemas/Signal'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
@@ -200,26 +159,6 @@ components:
       scheme: bearer
       bearerFormat: JWT    # optional, arbitrary value for documentation purposes
   schemas:
-    UserInfo:
-      type: object
-      properties:
-        name:
-          type: string
-          description: "John Doe"
-        email:
-          type: string
-          description: "helllo@world.com"
-        phone:
-          type: string
-          description: "0701-234 567"
-          default: ""
-        role:
-          type: string
-          description: "defines the user role, which is user, admin or root"
-          default: "USER"
-        salt:
-          description: "Ac5T6hu8TrriP, Can be seen as one time password"
-          type: string
     LoginInfo:
       type: object
       properties:
@@ -230,37 +169,27 @@ components:
           type: string
           description: "the password"
     Signal:
-# FIX json
       type: object
       properties:
-        skipper_name:
-          type: string
-          description: "John Doe"
-        type:
-          type: string
-          description: "Banner_30"
-        name:
-          type: string
-          description: "Freedom"
-          default: "Not set"
-        sail_number:
-          type: string
-          description: "SWE 49"
-        srs_default:
+        id:
           type: integer
-          description: "0.923"
-        srs_no_flying:
-          type: integer
-          description: "0.901"
+          description: "empty when addind or db-id when receiving"
           default: 0
-        srs_shorthand:
-          type: integer
-          description: "0.912"
-          default: 0
-        srs_short_no_flying:
-          type: integer
-          description: "0.890"
-          default: 0
+        date_time:
+          type: string
+          description: "2025-03-15 19:00"
+        one_minute:
+          type: boolean
+          description: "true or false"
+          default: true
+        four_minute:
+          type: boolean
+          description: "true or false"
+          default: true
+        five_minute:
+          type: boolean
+          description: "true or false"
+          default: true
   responses:
     UnauthorizedError:
       description: "Access token is missing or invalid"

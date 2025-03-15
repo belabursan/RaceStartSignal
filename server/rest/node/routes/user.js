@@ -32,31 +32,8 @@ router.use(function (req, res, next) {
     next();
 });
 
-
 router
     .route("/")
-    .get(async (req, res) => {        // GET A USER
-        try {
-            const user = await authenticate(req.header('Authorization'));
-            return res.status(200).json(user.toUserInfoJson());
-        } catch (error) {
-            const { code, message } = ErrorHandler.handleError(error);
-            console.log("Error when getting user: " + message);
-            return res.status(code).send(message);
-        }
-    })
-    .put(async (req, res) => {        // UPDATE A USER
-        try {
-            const user = await authenticate(req.header('Authorization'));
-            await user.update(Validator.validateUser(req.body, false));
-            return res.sendStatus(200);
-        }
-        catch (error) {
-            const { code, message } = ErrorHandler.handleError(error);
-            console.log("ERROR when updating user (" + req.body.email + "): " + message);
-            return res.status(code).send(message);
-        }
-    })
     .post(async (req, res) => {   // REGISTER A NEW USER
         try {
             const user = new User(Validator.validateUser(req.body));
@@ -79,18 +56,7 @@ router
             console.log("ERROR when adding user (" + req.body.email + "): " + message);
             return res.status(code).send(message);
         }
-    })
-    .delete(async (req, res) => {         // DELETE USER
-        try {
-            const user = await authenticate(req.header('Authorization'));
-            user.deleteUser();
-            return res.sendStatus(200);
-        } catch (error) {
-            const { code, message } = ErrorHandler.handleError(error);
-            return res.status(code).send(message);
-        }
     });
-
 
 router
     .route("/login")
@@ -104,27 +70,6 @@ router
 
             console.log("User " + email + " has logged in");
             return res.status(200).send(token.toString());
-        }
-        catch (error) {
-            console.log(error.message);
-            return res.status(409).send(error.message);
-        }
-    });
-
-router
-    .route("/reset")
-    .post(async (req, res) => {     // RESET USER
-        try {
-            const email = req.query.email;
-            const pass = await User.resetPassword(email);
-            try {
-                await Mail.sendEmailToUser(email, pass);
-                return res.sendStatus(200);
-            } catch (err) {
-                console.log(err.message);
-                console.log("Failed to send password " + pass + " to " + email);
-                return res.status(500).send("Mail service down");
-            }
         }
         catch (error) {
             console.log(error.message);
