@@ -9,14 +9,6 @@ const Mail = require("../src/Mail.js");
 const debug = process.env.DEBUG === "true";
 let router = express.Router();
 
-
-/**
- * Authenticates a user by jwt
- * @param {String} token jwt token from the user
- * @returns the user or throws error
- */
-
-
 router.use(function (req, res, next) {
     console.log(req.url, "user@", Date.now());
     next();
@@ -58,7 +50,7 @@ router
             const user_id = user.getId();
             const token = Authenticator.sign(user_id);
 
-            console.log("User " + email + " has logged in");
+            if(debug) console.log("User " + email + " has logged in");
             return res.status(200).send(token.toString());
         }
         catch (error) {

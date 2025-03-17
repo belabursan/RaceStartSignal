@@ -2,14 +2,24 @@
 include_once "src/utils/site.php";
 
 function handle_register() {
-    if (isset($_POST['register']) && !empty($_POST['reg_email'])) {
-        unset($_POST['register']);
-        if (!filter_var($_POST['reg_email'], FILTER_VALIDATE_EMAIL)) {
-            echo "<script>alert('Invalid email format!');</script>";
-        } else {
-            $host = $_SERVER['HTTP_HOST'];
-            $page = site_register($_POST['reg_email']);
-            exit(header("Location: http://$host/$page", true));
+    if ( isset($_SESSION['register_error'])) {
+        echo "<script>alert('". $_SESSION['register_error'] . "');</script>";
+        unset($_SESSION['register_error']);
+    } else {
+        if (isset($_POST['register']) && !empty($_POST['reg_email'])) {
+            unset($_POST['register']);
+            if (!filter_var($_POST['reg_email'], FILTER_VALIDATE_EMAIL)) {
+                echo "<script>alert('Invalid email format!');</script>";
+            } else {
+                $host = $_SERVER['HTTP_HOST'];
+                $page = site_register($_POST['reg_email']);
+                if ( isset($_SESSION['register_error'])) {
+                    echo "<script>alert('". $_SESSION['register_error'] . "');</script>";
+                    unset($_SESSION['register_error']);
+                } else{
+                    exit(header("Location: http://$host/$page", true));
+                }
+            }
         }
     }
 }

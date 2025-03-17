@@ -40,7 +40,7 @@ function cleanSession() {
  * @param string password Clean password of the user
  * @return string ret page to redirect to
  */
-function site_login($email, $password) {
+function site_login($email, $password):string  {
     //check db_login($email, $password);
     //echo "Logging in...";
     // error page
@@ -48,9 +48,33 @@ function site_login($email, $password) {
     return 'index.php';
 }
 
-function site_register($email){
-    $_SESSION['login_error'] = "Failed to register,try agai later!";
-    return 'index.php';
+function site_register($email) : string {
+    $data = array('email' => $email);
+    $url = "https://172.19.0.70:7443/user?".http_build_query($data);
+    $ret = httpPost($url);
+    if ($ret === 201) {
+        return 'index.php';
+    }
+    $_SESSION['register_error'] = "Could not register, code: ".$ret;
+    return 'register.php';
+}
+
+/**
+ * Performs a POST 
+ * @param url the url to post
+ * @return the http status code
+ */
+function httpPost($url): int {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, false); 
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return $http_code;
 }
 
 ?>
