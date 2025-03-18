@@ -20,7 +20,12 @@ function handleLogin()
             } else {
                 $host = $_SERVER['HTTP_HOST'];
                 $page = site_login($_POST['email'], $_POST['password']);
-                exit(header("Location: http://$host/$page", true));
+                if ( isset($_SESSION['login_error'])) {
+                    echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
+                    unset($_SESSION['login_error']);
+                } else {
+                    exit(header("Location: http://$host/$page", true));
+                }
             }
         }
     }

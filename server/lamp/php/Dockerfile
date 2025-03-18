@@ -1,14 +1,16 @@
 FROM php:8.3-apache-bookworm
-# PHP and Apache for SailRace
+# PHP and Apache for SailRaceSignal
 # 20204-02-05 Bela Bursan <burszan@gmail.com>
 #
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG SSL_KEY_PASS
+ARG SIGNAL_DOMAIN
 
 # Update
 RUN apt-get -y update --fix-missing && \
     apt-get upgrade -y && \
-    apt-get --no-install-recommends install -y apt-utils && \
+    apt-get --no-install-recommends install -y apt-utils openssl nano net-tools && \
     rm -rf /var/lib/apt/lists/*
 
 # Install useful tools and install important libaries
@@ -47,6 +49,7 @@ RUN pecl install xdebug-3.3.1 && \
 #    cd .. && rm -rf imagick && \
 #    docker-php-ext-enable imagick
 ## IMAGICK DISABLE STOP
+
 # Other PHP8 Extensions
 RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install pdo_sqlite && \
@@ -60,25 +63,33 @@ RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install calendar && \
     docker-php-ext-install exif
 
-# Install Freetype 
-RUN apt-get -y update && \
-    apt-get --no-install-recommends install -y libfreetype6-dev \
-libjpeg62-turbo-dev \
-libpng-dev && \
-    rm -rf /var/lib/apt/lists/* && \
-    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd
-
 # Insure an SSL directory exists
-RUN mkdir -p /etc/apache2/ssl
+RUN mkdir -p /etc/ssl/certs
+RUN mkdir -p /etc/ssl/private
+RUN openssl dhparam -out /etc/ssl/certs/dh-strong.pem 2048
+RUN openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
+ -out /etc/ssl/certs/ssl-cert-snakeoil.pem -days 3650 \
+ -subj "/C=US/ST=State/L=City/O=company/OU=Com/CN=172.19.0.70" -passout pass:${SSL_KEY_PASS}
 
-RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+
+ RUN echo 'SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH\n\
+    SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1\n\
+    SSLHonorCipherOrder On\n\
+    Header always set X-Frame-Options DENY\n\
+    Header always set X-Content-Type-Options nosniff\n\
+    SSLCompression off\n\
+    SSLUseStapling on\n\
+    SSLStaplingCache "shmcb:logs/stapling-cache(150000)"\n\
+    SSLSessionTickets Off\n' > /etc/apache2/conf-available/ssl-params.conf
+
+RUN echo "ServerName ${SIGNAL_DOMAIN}" >> /etc/apache2/apache2.conf
 
 # Enable SSL support
-RUN a2enmod ssl && a2enmod rewrite
+RUN a2enmod ssl && a2enmod rewrite && a2enmod rewrite headers &&\
+ a2enconf ssl-params && a2ensite default-ssl
 
-# Enable apache modules
-RUN a2enmod rewrite headers
 
 # Cleanup
 RUN rm -rf /usr/src/*
+
+#https://www.arubacloud.com/tutorial/how-to-enable-https-protocol-with-apache-2-on-ubuntu-20-04.aspx
