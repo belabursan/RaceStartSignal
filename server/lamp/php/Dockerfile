@@ -70,7 +70,7 @@ RUN docker-php-ext-install pdo_mysql && \
 ## Ensure an SSL directory exists
 RUN mkdir -p /etc/ssl/certs && mkdir -p /etc/ssl/private
 RUN openssl dhparam -out /etc/ssl/certs/dh-strong.pem 2048
-RUN openssl req -x509 -newkey rsa:4096 -sha256 -keyout /etc/ssl/private/signal-ssl-cert.key \
+RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/ssl/private/signal-ssl-cert.key \
  -out /etc/ssl/certs/signal-ssl-cert.pem -days 3650 \
  -subj "/C=SE/ST=./L=Malmoe/O=Lagunen/OU=Kappseglingsklubb/CN=${SIGNAL_DOMAIN}}" -passout pass:${SSL_KEY_PASS}
 
