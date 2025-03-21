@@ -62,6 +62,8 @@ services:
 #    put this in /etc/phpmyadmin/config.inc.php file:  $cfg['Lang'] = 'en';
     build:
       context: "./phpmyadmin"
+      args:
+        SIGNAL_DOMAIN: ${SIGNAL_DOMAIN}
     restart: "unless-stopped"
     container_name: "SailRaceSignal-Phpmyadmin"
     networks:

@@ -1,7 +1,7 @@
 FROM php:8.3-apache-bookworm
 # PHP and Apache for SailRaceSignal
 # 20204-02-05 Bela Bursan <burszan@gmail.com>
-# V1.0.0
+# V1.0.1
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG SSL_KEY_PASS
@@ -67,25 +67,27 @@ RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install calendar && \
     docker-php-ext-install exif
 
+# Start service
+RUN service apache2 start
+
 ## Ensure an SSL directory exists
 RUN mkdir -p /etc/ssl/certs && mkdir -p /etc/ssl/private
+
+# SSL stuff
+RUN echo "ServerName ${SIGNAL_DOMAIN}" >> /etc/apache2/apache2.conf
 RUN openssl dhparam -out /etc/ssl/certs/dh-strong.pem 2048
 RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/ssl/private/signal-ssl-cert.key \
  -out /etc/ssl/certs/signal-ssl-cert.pem -days 3650 \
  -subj "/C=SE/ST=./L=Malmoe/O=Lagunen/OU=Kappseglingsklubb/CN=${SIGNAL_DOMAIN}}" -passout pass:${SSL_KEY_PASS}
 
-RUN a2enmod rewrite && a2enmod ssl && a2enmod socache_shmcb
-
 ## Add ssl cert
 RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/etc\/ssl\/certs\/signal-ssl-cert.pem' /etc/apache2/sites-available/default-ssl.conf
 RUN sed -i '/SSLCertificateKeyFile.*snakeoil\.key/cSSLCertificateKeyFile /etc/ssl/private/signal-ssl-cert.key\' /etc/apache2/sites-available/default-ssl.conf
 
-RUN echo "ServerName ${SIGNAL_DOMAIN}" >> /etc/apache2/apache2.conf
+# modules
+RUN a2enmod rewrite && a2enmod rewrite headers && a2enmod ssl && a2enmod socache_shmcb
+#site
 RUN a2ensite default-ssl
-
-## Enable SSL support
-#RUN a2enmod ssl && a2enmod socache_shmcb && a2enmod rewrite && a2enmod rewrite headers
-#RUN a2ensite default-ssl
 
 ## Cleanup
 RUN rm -rf /usr/src/*
