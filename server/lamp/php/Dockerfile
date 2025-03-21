@@ -74,15 +74,18 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -keyout /etc/ssl/private/signal-s
  -out /etc/ssl/certs/signal-ssl-cert.pem -days 3650 \
  -subj "/C=SE/ST=./L=Malmoe/O=Lagunen/OU=Kappseglingsklubb/CN=${SIGNAL_DOMAIN}}" -passout pass:${SSL_KEY_PASS}
 
+RUN a2enmod rewrite && a2enmod ssl && a2enmod socache_shmcb
+
 ## Add ssl cert
-RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/etc\/ssl\/certs\/signal-ssl-cert.crt' /etc/apache2/sites-available/default-ssl.conf
+RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/etc\/ssl\/certs\/signal-ssl-cert.pem' /etc/apache2/sites-available/default-ssl.conf
 RUN sed -i '/SSLCertificateKeyFile.*snakeoil\.key/cSSLCertificateKeyFile /etc/ssl/private/signal-ssl-cert.key\' /etc/apache2/sites-available/default-ssl.conf
 
 RUN echo "ServerName ${SIGNAL_DOMAIN}" >> /etc/apache2/apache2.conf
+RUN a2ensite default-ssl
 
 ## Enable SSL support
-RUN a2enmod ssl && a2enmod socache_shmcb && a2enmod rewrite && a2enmod rewrite headers
-RUN a2ensite default-ssl
+#RUN a2enmod ssl && a2enmod socache_shmcb && a2enmod rewrite && a2enmod rewrite headers
+#RUN a2ensite default-ssl
 
 ## Cleanup
 RUN rm -rf /usr/src/*
