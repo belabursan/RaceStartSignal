@@ -10,6 +10,7 @@ services:
         SIGNAL_DOMAIN: ${SIGNAL_DOMAIN}
     container_name: "SailRaceSignal-Web"
     restart: "unless-stopped"
+    hostname: ${SIGNAL_DOMAIN}
     ports:
       - "80:80"
       - "443:443"
@@ -34,6 +35,8 @@ services:
     networks:
       sailnetwork:
         ipv4_address: 172.19.0.40
+        aliases:
+          - webserver
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
