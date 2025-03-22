@@ -24,7 +24,7 @@ function handleLogin()
                     echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
                     unset($_SESSION['login_error']);
                 } else {
-                    exit(header("Location: http://$host/$page", true));
+                    exit(header("Location: https://$host/$page", true));
                 }
             }
         }

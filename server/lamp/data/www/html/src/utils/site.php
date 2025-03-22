@@ -41,40 +41,96 @@ function cleanSession() {
  * @return string ret page to redirect to
  */
 function site_login($email, $password):string  {
-    //check db_login($email, $password);
-    //echo "Logging in...";
-    // error page
-    $_SESSION['login_error'] = "Wrong email or bad password!";
+    $login_info = Array (
+        'email' => $email,
+        'password' => $password
+    );
+    $url = "https://172.19.0.70:7443/user/login";
+    $ret = httpsPostWithBody($url, $login_info);
+
+    if($ret["response"] !== false) {
+        $http = $ret["info"]["http_code"];
+        if ($http === 200) {
+            $_SESSION['login_token'] = $ret["response"];
+            return 'signal.php';
+        } else  if ($http === 401) {
+            $_SESSION['login_error'] = "Could not login, unauthorized!";
+        } else {
+            $_SESSION['login_error'] = "Could not login, code: ".$http;
+        }
+    } else {
+        $_SESSION['login_error'] = "Could not register, curl failed!";
+    }
     return 'index.php';
 }
+
 
 function site_register($email) : string {
     $data = array('email' => $email);
     $url = "https://172.19.0.70:7443/user?".http_build_query($data);
-    $ret = httpPost($url);
-    if ($ret === 201) {
-        return 'index.php';
+    $ret = httpsPost($url);
+    
+    if($ret["response"] !== false) {
+        $http = $ret["info"]["http_code"];
+        if ($http === 201) {
+            return 'index.php';
+        } else  if ($http === 409) {
+            $_SESSION['register_error'] = "Could not register, user already registered";
+        } else {
+            $_SESSION['register_error'] = "Could not register, code: ".$http;
+        }
+    } else {
+        $_SESSION['register_error'] = "Could not register, curl failed!";
     }
-    $_SESSION['register_error'] = "Could not register, code: ".$ret;
     return 'register.php';
 }
 
 /**
  * Performs a POST 
- * @param url the url to post
- * @return the http status code
+ * @param url the url to post, can contain parameters
+ * @return the response from the server as array or null if curl failed
+ * @see: https://www.php.net/manual/en/function.curl-getinfo.php
  */
-function httpPost($url): int {
+function httpsPost($url): Array {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, false); 
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $response = curl_exec($ch);
+    $info = null;
+    if($response !== false) {
+        $info = curl_getinfo($ch);
+    }
     curl_close($ch);
-    return $http_code;
+    return Array('response' => $response, 'info' => $info);
+}
+
+
+/**
+ * 
+ */
+function httpsPostWithBody($url, $postBody) {
+    $ch = curl_init();
+    curl_setopt_array($ch, array(
+        CURLOPT_URL => $url,
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_HTTPHEADER => array(
+            /*'Authorization: '.$authToken,*/
+            'Content-Type: application/json'
+        ),
+        CURLOPT_POSTFIELDS => json_encode($postBody)
+    ));
+    $response = curl_exec($ch);
+    $info = null;
+    if($response !== false) {
+        $info = curl_getinfo($ch);
+    }
+    curl_close($ch);
+    return Array('response' => $response, 'info' => $info);
 }
 
 ?>

@@ -17,7 +17,7 @@ function handle_register() {
                     echo "<script>alert('". $_SESSION['register_error'] . "');</script>";
                     unset($_SESSION['register_error']);
                 } else{
-                    exit(header("Location: http://$host/$page", true));
+                    exit(header("Location: https://$host/$page", true));
                 }
             }
         }

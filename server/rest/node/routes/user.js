@@ -55,7 +55,7 @@ router
         }
         catch (error) {
             console.log(error.message);
-            return res.status(409).send(error.message);
+            return res.status(401).send(error.message);
         }
     });
 
