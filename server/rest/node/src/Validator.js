@@ -55,11 +55,11 @@ function isNumber(number) {
  */
 function validateUser(user) {
     if (isNotEmptyObject(user, "Invalid user")) {
-        if (isValidEmail(user.email)) {
+        if (isValidEmail(user.getEmail())) {
             return user;
         }
     }
-    return null;
+    throw new Error("Invalid user!");
 }
 
 

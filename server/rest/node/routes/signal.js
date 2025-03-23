@@ -34,8 +34,8 @@ router.route("/")
     })
     .get(async (req, res) => {              // GET SIGNALS(s)
         try {
-            if (req.query.group_uuid) {       // get specified signal
-                const signal = await Signal.getSignalsByGroupId(req.query.group_uuid);
+            if (req.query.filter) {       // get specified signal
+                const signal = await Signal.getSignalsByGroupId(req.query.filter);
                 return res.status(200).send(signal);
             } else {                        // get all signals
                 const signals = await Signal.getSignalss();
@@ -49,7 +49,7 @@ router.route("/")
     })
     .delete(async (req, res) => {               // DELETE SIGNAL by GROUP ID
         try {
-            await Signal.deleteSignal(req.query.group_uuid);
+            await Signal.deleteSignal(req.query.id);
             return res.sendStatus(200);
         } catch (error) {
             const { code, message } = ErrorHandler.handleError(error);

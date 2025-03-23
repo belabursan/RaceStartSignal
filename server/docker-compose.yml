@@ -5,15 +5,17 @@ services:
   webserver:
     build:
       context: ./lamp/php
+      args:
+        SSL_KEY_PASS: ${SSL_KEY_PASS}
+        SIGNAL_DOMAIN: ${SIGNAL_DOMAIN}
     container_name: "SailRaceSignal-Web"
     restart: "unless-stopped"
+    hostname: ${SIGNAL_DOMAIN}
     ports:
-      - "80:80"
       - "443:443"
     volumes:
       - ./lamp/data/www/html:/var/www/html
       - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini
-      - ./lamp/php/config/ssl:/etc/apache2/ssl/
       - ./lamp/php/config/vhosts:/etc/apache2/sites-enabled
       - ./lamp/data/log/apache2:/var/log/apache2
       - /var/log/xdebug:/var/log/xdebug
@@ -32,6 +34,8 @@ services:
     networks:
       sailnetwork:
         ipv4_address: 172.19.0.40
+        aliases:
+          - webserver
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -55,7 +59,12 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   phpmyadmin:
-    image: phpmyadmin
+#    put this in /etc/phpmyadmin/config.inc.php file:  $cfg['Lang'] = 'en';
+    build:
+      context: "./phpmyadmin"
+      args:
+        SIGNAL_DOMAIN: ${SIGNAL_DOMAIN}
+    restart: "unless-stopped"
     container_name: "SailRaceSignal-Phpmyadmin"
     networks:
       sailnetwork:
@@ -73,7 +82,6 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - /sessions
       - ./lamp/php/config/php.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
     depends_on:
       - database
@@ -102,9 +110,9 @@ services:
         SSL_KEY_PASS: ${SSL_KEY_PASS}
     container_name: "SailRaceSignal-Node"
     restart: "unless-stopped"
-    ports:
-      - 7000:${NODE_HTTP_PORT}
-      - 7443:${NODE_HTTPS_PORT}
+#    ports:
+#      - 7000:${NODE_HTTP_PORT}
+#      - 7443:${NODE_HTTPS_PORT}
     networks:
       sailnetwork:
         ipv4_address: 172.19.0.70
