@@ -69,7 +69,7 @@ paths:
               schema:
                 description: "8721dab27ec8df21fa4ec31d997f2ac6, JWT Token, including the user id as primary key in the db"
                 type: string
-        '401':
+        '409':
           $ref: '#/components/responses/UnauthorizedError'
         '503':
           $ref: '#/components/responses/ServerBusy'
