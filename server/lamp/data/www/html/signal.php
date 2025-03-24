@@ -1,51 +1,34 @@
+<?php
+include_once "src/utils/site.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
+<!-- https://www.shareicon.net/big-mug-line-up-arrow-symbol-angle-symbols-arrows-up-arrows-arrow-683097 -->
+ <!-- https://stackoverflow.com/questions/3490216/html-css-adding-an-icon-to-a-button -->
+ <!-- https://www.w3schools.com/howto/howto_js_toggle_hide_show.asp -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type='text/css' href="src/css/signal.css">
     <title>Item Manager</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-section {
-            width: 50%;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-section input, .form-section button {
-            display: block;
-            margin: 10px auto;
-        }
-        .list-section {
-            width: 80%;
-        }
-        .list-section table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .list-section th, .list-section td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        .list-section th {
-            background-color: #f2f2f2;
-        }
-        .subrow td {
-            padding-left: 40px; /* Add padding to the left of subitems */
-        }
-        .subrow {
-            display: none; /* Ensure subitems are not visible when unexpanded */
-        }
-    </style>
 </head>
 <body>
     <div class="form-section">
         <h2>Add Signal</h2>
+        <form action="signal.php" method="POST">
+            <label for="datetime">Date-Time:</label>
+            <input type="datetime-local" id="datetime" name="datetime">
+            <label>
+                <input type="checkbox" id="one-minute" name="one-minute" checked> One minute
+            </label>
+            <label>
+                <input type="checkbox" id="four-minutes" name="four-minutes" checked> Four minutes
+            </label>
+            <label>
+                <input type="checkbox" id="five-minutes" name="five-minutes" checked> Five minutes
+            </label>
+            <button id="add-button" type="submit" name="add">Add</button>
+        </form>
         <label for="datetime">Date-Time:</label>
         <input type="datetime-local" id="datetime" name="datetime">
         <label>
