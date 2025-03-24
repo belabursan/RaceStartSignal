@@ -53,6 +53,7 @@ include_once "src/utils/site.php";
             </thead>
             <tbody id="item-list">
                 <!-- Items will be added here dynamically -->
+                <?php getList(); ?>
             </tbody>
         </table>
     </div>

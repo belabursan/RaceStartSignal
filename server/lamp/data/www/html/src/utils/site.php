@@ -133,4 +133,9 @@ function httpsPostWithBody($url, $postBody) {
     return Array('response' => $response, 'info' => $info);
 }
 
+function getList() {
+    $list = "";
+    return $list;
+}
+
 ?>
