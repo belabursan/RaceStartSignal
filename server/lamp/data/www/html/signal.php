@@ -1,5 +1,10 @@
 <?php
+session_start();
 include_once "src/utils/site.php";
+if(isLoggedIn() === false) {
+    $host = $_SERVER['HTTP_HOST'];
+    exit(header("Location: https://$host/index.php", true));
+}
 
 
 if (isset($_POST['add_signal'])) {

@@ -13,10 +13,15 @@ function getUrl($url):string{
  * @return bool true if user is logged in, false otherwise
  */
 function isLoggedIn(): bool {
-    if(isset($_SESSION["login"]) && $_SESSION["login"] === true) {
-        return true;
+    try {
+        s_start();
+        if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+            return true;
+        }
+        return false;
+    }finally {
+        s_stop();
     }
-    return false;
 }
 
 
@@ -61,18 +66,18 @@ function cleanSession() {
  * @return string ret page to redirect to
  */
 function site_login($email, $password):string  {
-
     $login_info = [
         'email' => $email,
         'password' => $password
     ];
 
-    $ret = httpsPostLogin(getUrl("/user/login"), $login_info);
+    $ret = httpsPostLogin(getUrl("user/login"), $login_info);
 
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 200) {
             $_SESSION['auth_token'] = $ret["response"];
+            $_SESSION['loggedin'] = true;
             return 'signal.php';
         } else  if ($http === 401) {
             $_SESSION['login_error'] = "Could not login, unauthorized!";
@@ -80,7 +85,7 @@ function site_login($email, $password):string  {
             $_SESSION['login_error'] = "Could not login, code: ".$http;
         }
     } else {
-        $_SESSION['login_error'] = "Could not register, curl failed!";
+        $_SESSION['login_error'] = "Could not login, curl failed!";
     }
     return 'index.php';
 }
@@ -109,7 +114,7 @@ function httpsPostLogin($url, $postBody) {
 
 
 function site_register($email) : string {
-    $url = getUrl("/user?".http_build_query(['email' => $email]));
+    $url = getUrl("user?".http_build_query(['email' => $email]));
     $ret = httpsPostRegister($url);
     
     if($ret["response"] !== false) {
@@ -159,11 +164,11 @@ function addSignal($signal, $one_min, $four_min, $five_min):bool {
         'four_minute' => $four_min,
         'five_minute' => $five_min
     );
-    $url = getUrl("/signal");
+    $url = getUrl("signal");
     $ch = curl_init();
     curl_setopt_array($ch, array(
         CURLOPT_URL => $url,
-        CURLOPT_CUSTOMREQUEST, "PUT",
+        CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_HTTPHEADER => array(
