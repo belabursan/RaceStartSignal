@@ -1,6 +1,25 @@
 <?php
 
 
+
+function getUrl($url):string{
+    $base_address= "https://172.19.0.70:7443";
+    return "$base_address/$url";
+}
+
+
+/**
+ * @brief Checks whether the user is logged in or not
+ * @return bool true if user is logged in, false otherwise
+ */
+function isLoggedIn(): bool {
+    if(isset($_SESSION["login"]) && $_SESSION["login"] === true) {
+        return true;
+    }
+    return false;
+}
+
+
 /**
  * Starts the session if not already started
  */
@@ -29,6 +48,7 @@ function cleanSession() {
     s_start();
     unset($_POST['password']);
     unset($_POST['email']);
+    unset($_SESSION['login']);
     unset($_SESSION);
     s_stop();
     session_destroy();
@@ -41,17 +61,18 @@ function cleanSession() {
  * @return string ret page to redirect to
  */
 function site_login($email, $password):string  {
-    $login_info = Array (
+
+    $login_info = [
         'email' => $email,
         'password' => $password
-    );
-    $url = "https://172.19.0.70:7443/user/login";
-    $ret = httpsPostWithBody($url, $login_info);
+    ];
+
+    $ret = httpsPostLogin(getUrl("/user/login"), $login_info);
 
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 200) {
-            $_SESSION['login_token'] = $ret["response"];
+            $_SESSION['auth_token'] = $ret["response"];
             return 'signal.php';
         } else  if ($http === 401) {
             $_SESSION['login_error'] = "Could not login, unauthorized!";
@@ -64,20 +85,41 @@ function site_login($email, $password):string  {
     return 'index.php';
 }
 
+/**
+ * 
+ */
+function httpsPostLogin($url, $postBody) {
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_POSTFIELDS => json_encode($postBody)
+    ]);
+    $response = curl_exec($ch);
+    $info = null;
+    if($response !== false) {
+        $info = curl_getinfo($ch);
+    }
+    curl_close($ch);
+    return ['response' => $response, 'info' => $info];
+}
+
 
 function site_register($email) : string {
-    $data = array('email' => $email);
-    $url = "https://172.19.0.70:7443/user?".http_build_query($data);
-    $ret = httpsPost($url);
+    $url = getUrl("/user?".http_build_query(['email' => $email]));
+    $ret = httpsPostRegister($url);
     
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 201) {
             return 'index.php';
-        } else  if ($http === 409) {
+        } else if ($http === 409) {
             $_SESSION['register_error'] = "Could not register, user already registered";
         } else {
-            $_SESSION['register_error'] = "Could not register, code: ".$http;
+            $_SESSION['register_error'] = "Could not register, code: $http";
         }
     } else {
         $_SESSION['register_error'] = "Could not register, curl failed!";
@@ -87,11 +129,11 @@ function site_register($email) : string {
 
 /**
  * Performs a POST 
- * @param url the url to post, can contain parameters
- * @return the response from the server as array or null if curl failed
+ * @param string url the url to post, can contain parameters
+ * @return string the response from the server as array or null if curl failed
  * @see: https://www.php.net/manual/en/function.curl-getinfo.php
  */
-function httpsPost($url): Array {
+function httpsPostRegister($url): Array {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -104,25 +146,31 @@ function httpsPost($url): Array {
         $info = curl_getinfo($ch);
     }
     curl_close($ch);
-    return Array('response' => $response, 'info' => $info);
+    return ['response' => $response, 'info' => $info];
 }
 
 
-/**
- * 
- */
-function httpsPostWithBody($url, $postBody) {
+function addSignal($signal, $one_min, $four_min, $five_min):bool {
+    $signal = Array (
+        'id' => 0,
+        'group_id' => 0,
+        'date_time' => $signal,
+        'one_minute' => $one_min,
+        'four_minute' => $four_min,
+        'five_minute' => $five_min
+    );
+    $url = getUrl("/signal");
     $ch = curl_init();
     curl_setopt_array($ch, array(
         CURLOPT_URL => $url,
-        CURLOPT_POST => true,
+        CURLOPT_CUSTOMREQUEST, "PUT",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_HTTPHEADER => array(
-            /*'Authorization: '.$authToken,*/
+            'Authorization: '.$_SESSION['auth_token'],
             'Content-Type: application/json'
         ),
-        CURLOPT_POSTFIELDS => json_encode($postBody)
+        CURLOPT_POSTFIELDS => json_encode($signal)
     ));
     $response = curl_exec($ch);
     $info = null;
@@ -130,8 +178,10 @@ function httpsPostWithBody($url, $postBody) {
         $info = curl_getinfo($ch);
     }
     curl_close($ch);
-    return Array('response' => $response, 'info' => $info);
+
+    return true;     
 }
+
 
 function getList() {
     $list = "";

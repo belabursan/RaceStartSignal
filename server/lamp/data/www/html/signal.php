@@ -1,5 +1,15 @@
 <?php
 include_once "src/utils/site.php";
+
+
+if (isset($_POST['add_signal'])) {
+    $datetime = $_POST['datetime'];
+    $one_minute = isset($_POST['one-minute']) ? 'true' : 'false';
+    $four_minutes = isset($_POST['four-minutes']) ? 'true' : 'false';
+    $five_minutes = isset($_POST['five-minutes']) ? 'true' : 'false';
+    addSignal($datetime, $one_minute, $four_minutes, $five_minutes);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,20 +37,8 @@ include_once "src/utils/site.php";
             <label>
                 <input type="checkbox" id="five-minutes" name="five-minutes" checked> Five minutes
             </label>
-            <button id="add-button" type="submit" name="add">Add</button>
+            <button id="add-button" type="submit" name="add_signal">Add</button>
         </form>
-        <label for="datetime">Date-Time:</label>
-        <input type="datetime-local" id="datetime" name="datetime">
-        <label>
-            <input type="checkbox" id="one-minute" name="one-minute" checked> One minute
-        </label>
-        <label>
-            <input type="checkbox" id="four-minutes" name="four-minutes" checked> Four minutes
-        </label>
-        <label>
-            <input type="checkbox" id="five-minutes" name="five-minutes" checked> Five minutes
-        </label>
-        <button id="add-button">Add</button>
     </div>
     <div class="list-section">
         <h2>Item List</h2>

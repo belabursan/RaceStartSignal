@@ -175,6 +175,10 @@ components:
           type: integer
           description: "empty when addind or db-id when receiving"
           default: 0
+        group_id:
+          type: integer
+          description: "empty when addind or group-id when receiving"
+          default: 0
         date_time:
           type: string
           description: "2025-03-15 19:00"
