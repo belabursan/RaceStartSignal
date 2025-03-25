@@ -25,7 +25,7 @@ if (isset($_POST['add_signal'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type='text/css' href="src/css/signal.css">
-    <title>Item Manager</title>
+    <title>Signal Manager</title>
 </head>
 <body>
     <div class="form-section">
@@ -33,6 +33,7 @@ if (isset($_POST['add_signal'])) {
         <form action="signal.php" method="POST">
             <label for="datetime">Date-Time:</label>
             <input type="datetime-local" id="datetime" name="datetime">
+            <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local -->
             <label>
                 <input type="checkbox" id="one-minute" name="one-minute" checked> One minute
             </label>

@@ -15,7 +15,7 @@ function getUrl($url):string{
 function isLoggedIn(): bool {
     try {
         s_start();
-        if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+        if(isset($_SESSION["isloggedintosignal"]) && $_SESSION["isloggedintosignal"] === true) {
             return true;
         }
         return false;
@@ -76,8 +76,8 @@ function site_login($email, $password):string  {
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 200) {
-            $_SESSION['auth_token'] = $ret["response"];
-            $_SESSION['loggedin'] = true;
+            $_SESSION['signal_auth_token'] = $ret["response"];
+            $_SESSION['isloggedintosignal'] = true;
             return 'signal.php';
         } else  if ($http === 401) {
             $_SESSION['login_error'] = "Could not login, unauthorized!";
@@ -172,7 +172,7 @@ function addSignal($signal, $one_min, $four_min, $five_min):bool {
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_HTTPHEADER => array(
-            'Authorization: '.$_SESSION['auth_token'],
+            'Authorization: '.$_SESSION['signal_auth_token'],
             'Content-Type: application/json'
         ),
         CURLOPT_POSTFIELDS => json_encode($signal)
