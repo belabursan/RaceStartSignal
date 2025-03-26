@@ -1,4 +1,5 @@
 const DB = require('./db/mariadb.js');
+const Time = require("./Time.js");
 const { SIGNAL_TYPE } = require('./Enums.js');
 
 let pool = DB.getConn();
@@ -23,7 +24,7 @@ module.exports = class Signal {
         this.#group_id = 0;
         this.#signal_type = SIGNAL_TYPE.None;
         if (signal) {
-            this.#date_time = signal.date_time;
+            this.#date_time = Time.format(signal.date_time);
             this.#one_min_signal = signal.one_minute;
             this.#four_min_signal = signal.four_minute;
             this.#five_min_signal = signal.five_minute;
@@ -59,12 +60,13 @@ module.exports = class Signal {
         return this.#signal_type;
     }
 
+
     /**
      * Adds a signal to the database
      */
     async addSignal() {
-        const query = "INSERT INTO signal (date_time, signal_type) VALUES(?, ?);";
-        const id = await pool.query(query, [this.#date_time, SIGNAL_TYPE.StartSignal], (err, res) => {
+        const query = "INSERT INTO signal (date_time, group_id, signal_type) VALUES(?, ?, ?);";
+        const id = await pool.query(query, [this.#date_time, 0, SIGNAL_TYPE.StartSignal], (err, res) => {
             if (err) {
                 console.log(err);
                 throw new Error("Error when adding signal to db");

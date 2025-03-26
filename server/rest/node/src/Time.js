@@ -82,4 +82,8 @@ module.exports = class Time {
         return (dateToCheck <= currentdate);
     }
 
+    static format(date) {
+        return date;
+    }
+
 }

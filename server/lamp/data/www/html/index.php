@@ -24,6 +24,8 @@ function handleLogin()
             } else {
                 $host = $_SERVER['HTTP_HOST'];
                 $page = site_login($_POST['email'], $_POST['password']);
+                unset($_POST['password']);
+                unset($_POST['email']);
                 if ( isset($_SESSION['login_error'])) {
                     echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
                     unset($_SESSION['login_error']);

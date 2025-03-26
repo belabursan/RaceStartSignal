@@ -8,7 +8,8 @@ if(isLoggedIn() === false) {
 
 
 if (isset($_POST['add_signal'])) {
-    $datetime = isset($_POST['datetime']) ? $_POST['datetime'] : "1000-01-01T00:00";
+    $d = date_create($_POST['datetime']);
+    $datetime = date_format($d, 'Y-m-d H:i:s');
     $one_minute = isset($_POST['one-minute']) ? 'true' : 'false';
     $four_minutes = isset($_POST['four-minutes']) ? 'true' : 'false';
     $five_minutes = isset($_POST['five-minutes']) ? 'true' : 'false';
