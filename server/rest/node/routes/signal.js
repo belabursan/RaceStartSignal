@@ -23,9 +23,7 @@ router.use(async function (req, res, next) {
 router.route("/")
     .post(async (req, res) => {             // POST SIGNAL
         try {
-            const body = req.body;
-            console.log("Adding signal: " + JSON.stringify(body));
-            const signal = new Signal(Validator.validateSignal(body));
+            const signal = new Signal(Validator.validateSignal(req.body));
             const id = await signal.addSignal();
             console.log("Signal added with id: " + id);
             return res.sendStatus(200);

@@ -1,5 +1,4 @@
 const DB = require('./db/mariadb.js');
-const Time = require("./Time.js");
 const { SIGNAL_TYPE } = require('./Enums.js');
 
 let pool = DB.getConn();
@@ -20,11 +19,12 @@ module.exports = class Signal {
      * @param {JSON object} signal See Signal in openapi.yaml
      */
     constructor(signal) {
+        console.log("Adding signal: " + JSON.stringify(signal));
         this.#id = 0;
         this.#group_id = 0;
         this.#signal_type = SIGNAL_TYPE.None;
         if (signal) {
-            this.#date_time = Time.format(signal.date_time);
+            this.#date_time = signal.date_time;
             this.#one_min_signal = signal.one_minute;
             this.#four_min_signal = signal.four_minute;
             this.#five_min_signal = signal.five_minute;
@@ -65,14 +65,9 @@ module.exports = class Signal {
      * Adds a signal to the database
      */
     async addSignal() {
-        const query = "INSERT INTO signal (date_time, group_id, signal_type) VALUES(?, ?, ?);";
-        const id = await pool.query(query, [this.#date_time, 0, SIGNAL_TYPE.StartSignal], (err, res) => {
-            if (err) {
-                console.log(err);
-                throw new Error("Error when adding signal to db");
-            }
-            return res.insertId;
-        });
+        const query = "INSERT INTO signals (date_time) VALUES(?);";
+        const result = await pool.query(query, [this.#date_time]);
+        const id = result.insertId;
         console.log("Added signal with id: " + id);
         return id;
     }
@@ -84,7 +79,7 @@ module.exports = class Signal {
      * @returns list of signals
      */
     async getSignalsByGroupId(group_uuid) {
-        const query = "SELECT * FROM signal WHERE group_id=?;";
+        const query = "SELECT * FROM signals WHERE group_id=?;";
         const result = await pool.query(query, [group_uuid], (err, res) => {
             if (err) {
                 console.log(err);

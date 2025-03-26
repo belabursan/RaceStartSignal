@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS `user_info` (
 
 
 -- Table holds the signals --
-CREATE TABLE IF NOT EXISTS `signal` (
+CREATE TABLE IF NOT EXISTS `signals` (
     `id`            INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `date_time`     DATETIME UNIQUE NOT NULL,
-    `group_id`      INTEGER DEFAULT 0,
+    `group_id`      INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `signal_type`   INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
