@@ -1,11 +1,7 @@
 <?php
+include_once "node_intf.php";
 
 
-
-function getUrl($url):string{
-    $base_address= "https://172.19.0.70:7443";
-    return "$base_address/$url";
-}
 
 
 /**
@@ -15,7 +11,9 @@ function getUrl($url):string{
 function isLoggedIn(): bool {
     try {
         s_start();
-        if(isset($_SESSION["isloggedintosignal"]) && $_SESSION["isloggedintosignal"] === true) {
+        if(isset($_SESSION["isloggedintosignal"]) 
+            && $_SESSION["isloggedintosignal"] === true 
+            && isset($_SESSION["signal_auth_token"])) {
             return true;
         }
         return false;
@@ -60,29 +58,25 @@ function cleanSession() {
 }
 
 /**
- * Logs in a user
+ * Logs in a user. If it fails an error message is stored in the session.
  * @param string email the user identifier
  * @param string password Clean password of the user
- * @return string ret page to redirect to
+ * @return string return page to redirect to
  */
 function site_login($email, $password):string  {
-    $login_info = [
-        'email' => $email,
-        'password' => $password
-    ];
-
-    $ret = httpsPostLogin(getUrl("user/login"), $login_info);
+    $ret = node_login($email, $password);
 
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 200) {
+            // login succeeded, store auth token and return signal page
             $_SESSION['signal_auth_token'] = $ret["response"];
             $_SESSION['isloggedintosignal'] = true;
             return 'signal.php';
         } else  if ($http === 401) {
             $_SESSION['login_error'] = "Could not login, unauthorized!";
         } else {
-            $_SESSION['login_error'] = "Could not login, code: ".$http;
+            $_SESSION['login_error'] = "Could not login, code: $http";
         }
     } else {
         $_SESSION['login_error'] = "Could not login, curl failed!";
@@ -90,32 +84,9 @@ function site_login($email, $password):string  {
     return 'index.php';
 }
 
-/**
- * 
- */
-function httpsPostLogin($url, $postBody) {
-    $ch = curl_init();
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
-        CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS => json_encode($postBody)
-    ]);
-    $response = curl_exec($ch);
-    $info = null;
-    if($response !== false) {
-        $info = curl_getinfo($ch);
-    }
-    curl_close($ch);
-    return ['response' => $response, 'info' => $info];
-}
-
 
 function site_register($email) : string {
-    $url = getUrl("user?".http_build_query(['email' => $email]));
-    $ret = httpsPostRegister($url);
+    $ret = node_register($email);
     
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
@@ -132,59 +103,20 @@ function site_register($email) : string {
     return 'register.php';
 }
 
-/**
- * Performs a POST 
- * @param string url the url to post, can contain parameters
- * @return string the response from the server as array or null if curl failed
- * @see: https://www.php.net/manual/en/function.curl-getinfo.php
- */
-function httpsPostRegister($url): Array {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HEADER, false); 
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
-    $info = null;
-    if($response !== false) {
-        $info = curl_getinfo($ch);
+
+function addSignal($date_time, $one_min, $four_min, $five_min):bool {
+    $ret = node_add_signal($date_time, $one_min, $four_min, $five_min);
+    if($ret["response"] !== false) {
+        $http = $ret["info"]["http_code"];
+        if ($http === 201) {
+            return true;
+        } else {
+            $_SESSION['signal_error'] = "Could not add signal, code: $http";
+        }
+    } else {
+        $_SESSION['signal_error'] = "Could not add signal, curl failed!";
     }
-    curl_close($ch);
-    return ['response' => $response, 'info' => $info];
-}
-
-
-function addSignal($signal, $one_min, $four_min, $five_min):bool {
-    $signal = Array (
-        'id' => 0,
-        'group_id' => 0,
-        'date_time' => $signal,
-        'one_minute' => $one_min,
-        'four_minute' => $four_min,
-        'five_minute' => $five_min
-    );
-    $url = getUrl("signal");
-    $ch = curl_init();
-    curl_setopt_array($ch, array(
-        CURLOPT_URL => $url,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: '.$_SESSION['signal_auth_token'],
-            'Content-Type: application/json'
-        ),
-        CURLOPT_POSTFIELDS => json_encode($signal)
-    ));
-    $response = curl_exec($ch);
-    $info = null;
-    if($response !== false) {
-        $info = curl_getinfo($ch);
-    }
-    curl_close($ch);
-
-    return true;     
+    return false;     
 }
 
 

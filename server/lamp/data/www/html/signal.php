@@ -28,6 +28,10 @@ if (isset($_POST['add_signal'])) {
     <title>Signal Manager</title>
 </head>
 <body>
+    <div class="header">
+        <h1>Signal Manager</h1>
+        <a href="logout.php">Logout</a> <!-- https://www.w3schools.com/howto/howto_css_logout_button.asp -->
+    </div>
     <div class="form-section">
         <h2>Add Signal</h2>
         <form action="signal.php" method="POST">

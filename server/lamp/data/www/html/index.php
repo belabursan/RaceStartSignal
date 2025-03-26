@@ -1,6 +1,11 @@
 <?php
 include_once "src/utils/site.php";
 
+if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
+    $host = $_SERVER['HTTP_HOST'];
+    exit(header("Location: https://$host/signal.php", true));
+}
+
 /**
  * @brief Handles the login procedure for a user
  * Called on the login.php
@@ -8,7 +13,6 @@ include_once "src/utils/site.php";
 function handleLogin()
 {
     s_start();
-
     if ( isset($_SESSION['login_error'])) {
         echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
         unset($_SESSION['login_error']);
