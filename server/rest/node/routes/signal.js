@@ -23,8 +23,11 @@ router.use(async function (req, res, next) {
 router.route("/")
     .post(async (req, res) => {             // POST SIGNAL
         try {
-            const signal = Validator.validateSignal(req.body);
-            await Signal.addSignal(signal);
+            const body = req.body;
+            console.log("Adding signal: " + JSON.stringify(body));
+            const signal = new Signal(Validator.validateSignal(body));
+            const id = await signal.addSignal();
+            console.log("Signal added with id: " + id);
             return res.sendStatus(200);
         } catch (error) {
             const { code, message } = ErrorHandler.handleError(error);

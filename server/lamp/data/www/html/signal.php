@@ -8,7 +8,9 @@ if(isLoggedIn() === false) {
 
 
 if (isset($_POST['add_signal'])) {
-    $datetime = $_POST['datetime'];
+    var_dump($_POST);
+    $d = isset($_POST['datetime']) ? $_POST['datetime'] : "1800-01-01T19:00";
+    $datetime =  $d !== "" ? $d : "1900-01-01T19:00";
     $one_minute = isset($_POST['one-minute']) ? 'true' : 'false';
     $four_minutes = isset($_POST['four-minutes']) ? 'true' : 'false';
     $five_minutes = isset($_POST['five-minutes']) ? 'true' : 'false';
@@ -36,16 +38,16 @@ if (isset($_POST['add_signal'])) {
         <h2>Add Signal</h2>
         <form action="signal.php" method="POST">
             <label for="datetime">Date-Time:</label>
-            <input type="datetime-local" id="datetime" name="datetime">
+            <input type="date-local" id="datetime" name="datetime" />
             <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local -->
             <label>
-                <input type="checkbox" id="one-minute" name="one-minute" checked> One minute
+                <input type="checkbox" id="one-minute" name="one-minute" checked /> One minute
             </label>
             <label>
-                <input type="checkbox" id="four-minutes" name="four-minutes" checked> Four minutes
+                <input type="checkbox" id="four-minutes" name="four-minutes" checked /> Four minutes
             </label>
             <label>
-                <input type="checkbox" id="five-minutes" name="five-minutes" checked> Five minutes
+                <input type="checkbox" id="five-minutes" name="five-minutes" checked /> Five minutes
             </label>
             <button id="add-button" type="submit" name="add_signal">Add</button>
         </form>

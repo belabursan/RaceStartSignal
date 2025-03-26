@@ -1,23 +1,34 @@
 const DB = require('./db/mariadb.js');
+const { SIGNAL_TYPE } = require('./Enums.js');
 
 let pool = DB.getConn();
 const debug = process.env.DEBUG === "true";
 
 module.exports = class Signal {
+    #id;
+    #group_id;
     #date_time;
-    #group_uuid;
+    #one_min_signal;
+    #four_min_signal;
+    #five_min_signal;
     #signal_type;
 
 
     /**
-     * Creates a new boat based on the data from the boat parameter
-     * @param {JSON object} boat See BoatInfo.json
+     * Creates a new signal based on the data from the signal parameter
+     * @param {JSON object} signal See Signal in openapi.yaml
      */
     constructor(signal) {
+        this.#id = 0;
+        this.#group_id = 0;
+        this.#signal_type = SIGNAL_TYPE.None;
         if (signal) {
             this.#date_time = signal.date_time;
-            this.#group_uuid = signal.group_uuid;
-            this.#signal_type = signal.signal_type;
+            this.#one_min_signal = signal.one_minute;
+            this.#four_min_signal = signal.four_minute;
+            this.#five_min_signal = signal.five_minute;
+        } else {
+            console.log("Signal is empty");
         }
     }
 
@@ -35,7 +46,7 @@ module.exports = class Signal {
      * @returns the group id
      */
     getGroupId(){
-        return this.#group_uuid;
+        return this.#group_id;
     }
 
 
@@ -49,12 +60,21 @@ module.exports = class Signal {
     }
 
     /**
-     * 
-     * @param {*} signal req.body
+     * Adds a signal to the database
      */
-    async addSignal(signal) {
-
+    async addSignal() {
+        const query = "INSERT INTO signal (date_time, signal_type) VALUES(?, ?);";
+        const id = await pool.query(query, [this.#date_time, SIGNAL_TYPE.StartSignal], (err, res) => {
+            if (err) {
+                console.log(err);
+                throw new Error("Error when adding signal to db");
+            }
+            return res.insertId;
+        });
+        console.log("Added signal with id: " + id);
+        return id;
     }
+
 
     /**
      * Returns all signals corresponding to a group id
@@ -63,7 +83,13 @@ module.exports = class Signal {
      */
     async getSignalsByGroupId(group_uuid) {
         const query = "SELECT * FROM signal WHERE group_id=?;";
-        const result = await pool.query(query, [group_uuid]);
+        const result = await pool.query(query, [group_uuid], (err, res) => {
+            if (err) {
+                console.log(err);
+                throw new Error("Error when getting signals");
+            }
+            return res;
+        });
 
         if (!result || result.length < 1) {
             throw new Error("Signal (" + group_uuid + ") not found.");

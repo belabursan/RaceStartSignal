@@ -44,3 +44,14 @@ body {
     font-size: 16px; /* Set a font size */
     cursor: pointer; /* Mouse pointer on hover */
   }
+
+  input:invalid + span::after {
+    content: "✖";
+    padding-left: 5px;
+  }
+  
+  input:valid + span::after {
+    content: "✓";
+    padding-left: 5px;
+  }
+  
