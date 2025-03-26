@@ -8,13 +8,12 @@ if(isLoggedIn() === false) {
 
 
 if (isset($_POST['add_signal'])) {
-    var_dump($_POST);
-    $d = isset($_POST['datetime']) ? $_POST['datetime'] : "1800-01-01T19:00";
-    $datetime =  $d !== "" ? $d : "1900-01-01T19:00";
+    $datetime = isset($_POST['datetime']) ? $_POST['datetime'] : "1000-01-01T00:00";
     $one_minute = isset($_POST['one-minute']) ? 'true' : 'false';
     $four_minutes = isset($_POST['four-minutes']) ? 'true' : 'false';
     $five_minutes = isset($_POST['five-minutes']) ? 'true' : 'false';
     addSignal($datetime, $one_minute, $four_minutes, $five_minutes);
+    unset($_POST['add_signal']);
 }
 
 ?>
@@ -36,13 +35,23 @@ if (isset($_POST['add_signal'])) {
     </div>
     <div class="form-section">
         <h2>Add Signal</h2>
-        <form action="signal.php" method="POST">
-            <label for="datetime">Date-Time:</label>
-            <input type="date-local" id="datetime" name="datetime" />
+        <form method="POST">
+            <div class="chbox">
+                <label for="datetime">Date-Time:</label>
+                <input id="datetime"
+                    type="datetime-local"
+                    name="datetime"
+                    min="2025-01-01T00:00"
+                    max="2099-12-31T23:59"
+                    required
+                />
+            </div>
             <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local -->
-            <label>
-                <input type="checkbox" id="one-minute" name="one-minute" checked /> One minute
-            </label>
+            <div class="chbox">
+                <label>
+                    <input type="checkbox" id="one-minute" name="one-minute" checked /> One minute
+                </label>
+            </div>
             <label>
                 <input type="checkbox" id="four-minutes" name="four-minutes" checked /> Four minutes
             </label>
@@ -67,7 +76,7 @@ if (isset($_POST['add_signal'])) {
             </tbody>
         </table>
     </div>
-
+<!--
     <script>
         document.getElementById('add-button').addEventListener('click', function() {
             const datetime = document.getElementById('datetime').value;
@@ -139,5 +148,6 @@ if (isset($_POST['add_signal'])) {
             document.getElementById('five-minutes').checked = true;
         });
     </script>
+    -->
 </body>
 </html>
