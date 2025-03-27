@@ -14,18 +14,24 @@ module.exports = class Time {
      * @returns an array of the time and the time 1, 4 and 5 minutes before
      */
     static getFiveSeriesTime(web_time) {
-        var out = [];
-        const t = web_time.split(/[- :]/);
-        var loc_time = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+        try {
+            var out = [];
+            const t = web_time.split(/[- :]/);
+            var loc_time = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
 
-        out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // start time
-        loc_time.setMinutes(loc_time.getMinutes() - 1);
-        out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 1 min before
-        loc_time.setMinutes(loc_time.getMinutes() - 3);
-        out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 4 min before
-        loc_time.setMinutes(loc_time.getMinutes() - 1);
-        out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 5 min before
-        return out;
+            out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // start time
+            loc_time.setMinutes(loc_time.getMinutes() - 1);
+            out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 1 min before
+            loc_time.setMinutes(loc_time.getMinutes() - 3);
+            out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 4 min before
+            loc_time.setMinutes(loc_time.getMinutes() - 1);
+            out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 5 min before
+            return out;
+        } catch (error) {
+            console.log("Error when getting five series time: " + error.message);
+            throw new Error("ERROR400 - Incorrect time value");
+        }
+        
     }
 
     /**
