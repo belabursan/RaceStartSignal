@@ -142,3 +142,4 @@ server/lamp/php/config/vhosts/*
 !server/lamp/data/www/html/index.php
 id_rsa
 id_rsa.pub
+tmp.txt

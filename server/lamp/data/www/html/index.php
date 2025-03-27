@@ -51,18 +51,16 @@ handleLogin();
 </head>
 
 <body>
-    <div class="center">
-        <div class="signal_text">Lagunens Race Signal Page</div>
-        <br><br>
-        <div class="login_container">
-            <h2>Login</h2>
-            <form action="" method="POST">
-                <input type="text" pattern="[a-zA-Z0-9@.]+" name="email" placeholder="Email Address" required autofocus /><br />
-                <input type="password" name="password" placeholder="Password" required /><br />
-                <button type="submit" name="login">Login</button>
-            </form>
-            <a href="register.php"><span class="register_text" >Dont't have an account? Register</span></a>
-        </div>
+    <div class="headerx">
+        <h1>Lagunens Race Signal Page</h1>
+        <span class="register_text" >Dont't have an account? <a href="register.php">Register</a></span>
+    </div>
+    <div class="login_container">
+        <form action="" method="POST">
+            <input type="text" pattern="[a-zA-Z0-9@.]+" name="email" placeholder="Email Address" required autofocus /><br />
+            <input type="password" name="password" placeholder="Password" required /><br />
+            <button type="submit" name="login">Login</button>
+        </form>
     </div>
 </body>
 

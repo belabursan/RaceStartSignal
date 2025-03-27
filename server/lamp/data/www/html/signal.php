@@ -1,15 +1,15 @@
 <?php
 session_start();
 include_once "src/utils/site.php";
+
 if(isLoggedIn() === false) {
     $host = $_SERVER['HTTP_HOST'];
     exit(header("Location: https://$host/index.php", true));
 }
 
 if (isset($_POST['add_signal'])) {
-    $d = date_create($_POST['datetime']);
-    $datetime = date_format($d, 'Y-m-d H:i:s');
-    $five_min_serie = isset($_POST['fiveminserie']) ? true : false;
+    $datetime = "".$_POST['date']." ".$_POST['time'].":00";
+    $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
     addSignal($datetime, $five_min_serie);
     unset($_POST['add_signal']);
     if(isset($_SESSION['signal_error'])) {
@@ -21,9 +21,6 @@ if (isset($_POST['add_signal'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<!-- https://www.shareicon.net/big-mug-line-up-arrow-symbol-angle-symbols-arrows-up-arrows-arrow-683097 -->
- <!-- https://stackoverflow.com/questions/3490216/html-css-adding-an-icon-to-a-button -->
- <!-- https://www.w3schools.com/howto/howto_js_toggle_hide_show.asp -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,27 +30,35 @@ if (isset($_POST['add_signal'])) {
 <body>
     <div class="header">
         <h1>Signal Manager</h1>
-        <a href="logout.php">Logout</a> <!-- https://www.w3schools.com/howto/howto_css_logout_button.asp -->
+        <a href="logout.php">Logout</a>
     </div>
     <div class="form-section">
         <h2>Add Signal</h2>
         <form method="POST">
-            <div class="chbox">
-                <label for="datetime">Date-Time:</label>
-                <input id="datetime"
-                    type="datetime-local"
-                    name="datetime"
-                    min="2025-01-01T00:00"
-                    max="2099-12-31T23:59"
-                    value="2025-10-18T19:00"
-                    required
-                />
+            <label for="date">Date:</label>
+            <input id="date"
+                type="date-local"
+                name="date"
+                min="2025-03-20"
+                max="2095-05-20"
+                value="2025-10-18"
+                required
+            />
+            <label for="time">Time:</label>
+            <input id="time"
+                type="time-local"
+                name="time"
+                min="08:00"
+                max="20:00"
+                value="19:00"
+                required
+            />
+            <div class="tooltip">
+                <label for="fiveminserie">Simple:</label>
+                <input type="checkbox" id="fiveminserie" name="fiveminserie" />
+                <span class="tooltiptext">Check if you only want to set one signal. No One/Four and Five minutes signals will be set.</span>
             </div>
-            <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local -->
-            <label>
-                <input type="checkbox" id="fiveminserie" name="fiveminserie" checked /> Five minutes
-            </label>
-            <button id="add-button" type="submit" name="add_signal">Add</button>
+            <br><button id="add-button" type="submit" name="add_signal">Add</button>
         </form>
     </div>
     <div class="list-section">
@@ -62,87 +67,34 @@ if (isset($_POST['add_signal'])) {
             <thead>
                 <tr>
                     <th>Date-Time</th>
+                    <th>Type</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="item-list">
                 <!-- Items will be added here dynamically -->
-                <?php getList(); ?>
+                 <tr>
+                    <td>2025-05-01 19:00</td>
+                    <td>Start Signal</td>
+                    <td><button>Delete</button></td>
+                </tr>
+                <tr class="subrow">
+                    <td>22025-05-01 18:59</td>
+                    <td>One Minute Signal</td>
+                    <td></td>
+                </tr>
+                <tr class="subrow">
+                    <td>22025-05-01 16:56</td>
+                    <td>Four Minute Signal</td>
+                    <td></td>
+                </tr>
+                <tr class="subrow">
+                    <td>22025-05-01 18:55</td>
+                    <td>Five Minute Signal</td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     </div>
-<!--
-    <script>
-        document.getElementById('add-button').addEventListener('click', function() {
-            const datetime = document.getElementById('datetime').value;
-            if (!datetime) {
-                alert('Please select a date-time.');
-                return;
-            }
-
-            const checkboxes = [
-                { id: 'one-minute', label: 'One minute' },
-                { id: 'four-minutes', label: 'Four minutes' },
-                { id: 'five-minutes', label: 'Five minutes' }
-            ];
-
-            const selectedCheckboxes = checkboxes.filter(checkbox => document.getElementById(checkbox.id).checked);
-
-            const itemList = document.getElementById('item-list');
-            const row = document.createElement('tr');
-
-            const dateTimeCell = document.createElement('td');
-            const expandButton = document.createElement('button');
-            expandButton.textContent = 'Expand';
-            expandButton.addEventListener('click', function() {
-                const isExpanded = subrows.some(subrow => subrow.style.display === 'table-row');
-                subrows.forEach(subrow => subrow.style.display = isExpanded ? 'none' : 'table-row');
-                expandButton.textContent = isExpanded ? 'Expand' : 'Un-expand';
-            });
-            dateTimeCell.appendChild(expandButton);
-            dateTimeCell.appendChild(document.createTextNode(' ' + datetime));
-            row.appendChild(dateTimeCell);
-
-            const actionsCell = document.createElement('td');
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.addEventListener('click', function() {
-                itemList.removeChild(row);
-                subrows.forEach(subrow => itemList.removeChild(subrow));
-            });
-            actionsCell.appendChild(deleteButton);
-            row.appendChild(actionsCell);
-
-            itemList.appendChild(row);
-
-            const subrows = selectedCheckboxes.map(checkbox => {
-                const subrow = document.createElement('tr');
-                subrow.classList.add('subrow');
-
-                const subrowCell = document.createElement('td');
-                subrowCell.textContent = checkbox.label;
-                subrow.appendChild(subrowCell);
-
-                const subrowActionsCell = document.createElement('td');
-                const subrowDeleteButton = document.createElement('button');
-                subrowDeleteButton.textContent = 'Delete';
-                subrowDeleteButton.addEventListener('click', function() {
-                    itemList.removeChild(subrow);
-                });
-                subrowActionsCell.appendChild(subrowDeleteButton);
-                subrow.appendChild(subrowActionsCell);
-
-                itemList.appendChild(subrow);
-                return subrow;
-            });
-
-            // Clear the form
-            document.getElementById('datetime').value = '';
-            document.getElementById('one-minute').checked = true;
-            document.getElementById('four-minutes').checked = true;
-            document.getElementById('five-minutes').checked = true;
-        });
-    </script>
-    -->
 </body>
 </html>
