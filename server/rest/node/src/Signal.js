@@ -1,4 +1,5 @@
 const DB = require('./db/mariadb.js');
+const Time = require('./Time.js');
 const { SIGNAL_TYPE } = require('./Enums.js');
 
 let pool = DB.getConn();
@@ -11,38 +12,39 @@ module.exports = class Signal {
      * @returns all signals as a list
      */
     static async getSignals() {
-        return new Promise((resolve, reject) => {
+
             const query = "SELECT * FROM signals";
-            pool.query(query, (err, res) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                }
-                resolve(res);
-            });
-        });
+            const result = pool.query(query);
+            //TODO fix return
     }
 
     /**
      * Inserts a new signal into the database
      * @param {JSON} signal data from web
-     * @returns boolean True if succeeded, false otherwise
      */
     static async addSignal(signal) {
-        const result = await Signal.#insert(signal.date_time, 0, SIGNAL_TYPE.StartSignal);
-        if (result.affectedRows == 1 && result.warningStatus == 0) {
-            const id = result.insertId;
-            await Signal.#setGroup(id);
-
-            console.log("Added signal with id: " + id);
-            if (signal.five_min_serie) {
-                await Signal.#insert(signal.date_time, id, SIGNAL_TYPE.OneMinSignal);
-                await Signal.#insert(signal.date_time, id, SIGNAL_TYPE.FourMinSignal);
-                await Signal.#insert(signal.date_time, id, SIGNAL_TYPE.FiveMinSignal);
-            }
-            return true;
+        const times = Time.getFiveSeriesTime(signal.date_time);
+        console.log("Adding signal at: " + Time.StartSignal);
+        const id = await Signal.#insert(times[Time.StartSignal], 0, SIGNAL_TYPE.StartSignal);
+        if (id == -1) {
+            throw new Error("Error when adding signal");
         }
-        return false;
+        await Signal.#setGroup(id);
+        if (signal.five_min_serie) {
+            var i = await Signal.#insert(times[Time.OneMinSignal], id, SIGNAL_TYPE.OneMinSignal);
+            if (i == -1) {
+                throw new Error("Error when adding one min signal");
+            }
+            i = await Signal.#insert(times[Time.FourMinSignal], id, SIGNAL_TYPE.FourMinSignal);
+            if (i == -1) {
+                throw new Error("Error when adding four min signal");
+            }
+            i = await Signal.#insert(times[Time.FiveMinSignal], id, SIGNAL_TYPE.FiveMinSignal);
+            if (i == -1) {
+                throw new Error("Error when adding five min signal");
+            }
+        }
+        return id;
     }
 
 
@@ -65,28 +67,20 @@ module.exports = class Signal {
 
     /**
      * Inserts a new signal into the database
-     * @param {date_time} date_time Date and time of the signal
+     * @param {string} datetime Date and time of the signal
      * @param {*} group_id Group id of the signal
      * @param {*} signal_type Type of the signal
-     * @returns boolean True if succeeded, false otherwise
+     * @returns row id of the inserted signal
      */
-    static async #insert(date_time, group_id, signal_type) {
-        let time = date_time;
-        time.setMinutes(time.getMinutes() - signal_type);
-        return new Promise((resolve, reject) => {
-            const query = "INSERT INTO signals (date_time, group_id, signal_type) VALUES(?, ?, ?);";
-            let time = date_time;
-            if (signal_type != 0) {
-                time.setMinutes(time.getMinutes() - signal_type);
-            }
-            pool.query(query, [time, group_id, signal_type], (err, result) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                }
-                resolve(result);
-            });
-        });
+    static async #insert(datetime, group_id, signal_type) {
+        console.log("Inserting signal: " + datetime);
+        const query = "INSERT INTO signals (date_time, group_id, signal_type) VALUES(?, ?, ?);";
+        const result = await pool.query(query, [datetime, group_id, signal_type]);
+        if(result.affectedRows == 1 && result.warningStatus == 0) {
+            return result.insertId;
+        }
+        console.log("Failed to insert signal " + datetime);
+        return -1;
     }
 
 

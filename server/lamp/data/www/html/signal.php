@@ -42,6 +42,7 @@ if (isset($_POST['add_signal'])) {
                     name="datetime"
                     min="2025-01-01T00:00"
                     max="2099-12-31T23:59"
+                    value="2025-10-15T19:00"
                     required
                 />
             </div>

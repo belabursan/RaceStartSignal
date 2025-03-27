@@ -25,8 +25,8 @@ router.route("/")
         try {
             const signal = req.body;
             Validator.validateSignal(signal)
-            const id = await Signal.addSignal(signal);
-            console.log("Signal added with id: " + id);
+            const group_id = await Signal.addSignal(signal);
+            console.log("Signal added with group id: " + group_id);
             return res.sendStatus(200);
         } catch (error) {
             const { code, message } = ErrorHandler.handleError(error);
