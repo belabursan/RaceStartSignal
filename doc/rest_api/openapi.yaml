@@ -44,7 +44,7 @@ paths:
         '400':
           $ref: '#/components/responses/InvalidData'
         '409':
-          $ref: '#/components/responses/AlreadyRegistered'
+          $ref: '#/components/responses/AlreadyExists'
         '500':
           $ref: '#/components/responses/MailServerDown'
         '503':
@@ -94,6 +94,8 @@ paths:
           $ref: '#/components/responses/InvalidData'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          $ref: '#/components/responses/AlreadyExists'
         '503':
           $ref: '#/components/responses/ServerBusy'
     get:
@@ -226,7 +228,7 @@ components:
                 type: string
                 format: text
                 description: "Error message"
-    AlreadyRegistered:
+    AlreadyExists:
       description: "409: User already registered"
       content:
         text/plain:
