@@ -6,13 +6,16 @@ if(isLoggedIn() === false) {
     exit(header("Location: https://$host/index.php", true));
 }
 
-
 if (isset($_POST['add_signal'])) {
     $d = date_create($_POST['datetime']);
     $datetime = date_format($d, 'Y-m-d H:i:s');
     $five_min_serie = isset($_POST['fiveminserie']) ? true : false;
     addSignal($datetime, $five_min_serie);
     unset($_POST['add_signal']);
+    if(isset($_SESSION['signal_error'])) {
+        echo "<script>alert('". $_SESSION['signal_error'] . "');</script>";
+        unset($_SESSION['signal_error']);
+    }
 }
 
 ?>

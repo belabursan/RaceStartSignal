@@ -106,12 +106,14 @@ function site_register($email) : string {
 
 function addSignal($date_time, $five_min_serie):bool {
     $ret = node_add_signal($date_time, $five_min_serie);
+    //var_dump($ret);
+    $reason= $ret['response'];
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
-        if ($http === 201) {
+        if ($http === 200) {
             return true;
         } else {
-            $_SESSION['signal_error'] = "Could not add signal, code: $http";
+            $_SESSION['signal_error'] = "Could not add signal($reason), code: $http";
         }
     } else {
         $_SESSION['signal_error'] = "Could not add signal, curl failed!";
