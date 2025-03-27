@@ -10,7 +10,7 @@ if(isLoggedIn() === false) {
 if (isset($_POST['add_signal'])) {
     $d = date_create($_POST['datetime']);
     $datetime = date_format($d, 'Y-m-d H:i:s');
-    $five_min_serie = isset($_POST['five-min-serie']) ? 'true' : 'false';
+    $five_min_serie = isset($_POST['fiveminserie']) ? true : false;
     addSignal($datetime, $five_min_serie);
     unset($_POST['add_signal']);
 }
@@ -42,13 +42,13 @@ if (isset($_POST['add_signal'])) {
                     name="datetime"
                     min="2025-01-01T00:00"
                     max="2099-12-31T23:59"
-                    value="2025-10-15T19:00"
+                    value="2025-10-18T19:00"
                     required
                 />
             </div>
             <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local -->
             <label>
-                <input type="checkbox" id="five-min-serie" name="five-min-serie" checked /> Five minutes
+                <input type="checkbox" id="fiveminserie" name="fiveminserie" checked /> Five minutes
             </label>
             <button id="add-button" type="submit" name="add_signal">Add</button>
         </form>

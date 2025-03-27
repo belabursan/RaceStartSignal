@@ -31,7 +31,6 @@ module.exports = class Time {
             console.log("Error when getting five series time: " + error.message);
             throw new Error("ERROR400 - Incorrect time value");
         }
-        
     }
 
     /**

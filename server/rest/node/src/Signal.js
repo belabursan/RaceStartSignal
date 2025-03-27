@@ -24,13 +24,14 @@ module.exports = class Signal {
      */
     static async addSignal(signal) {
         const times = Time.getFiveSeriesTime(signal.date_time);
-        console.log("Adding signal at: " + Time.StartSignal);
+        console.log("Adding signal at: " + times[Time.StartSignal] + " ("+signal.five_min_serie+")");
         const id = await Signal.#insert(times[Time.StartSignal], 0, SIGNAL_TYPE.StartSignal);
         if (id == -1) {
             throw new Error("Error when adding signal");
         }
         await Signal.#setGroup(id);
-        if (signal.five_min_serie) {
+        if (signal.five_min_serie === true) {
+            if(debug) console.log("Adding five min signals");
             var i = await Signal.#insert(times[Time.OneMinSignal], id, SIGNAL_TYPE.OneMinSignal);
             if (i == -1) {
                 throw new Error("Error when adding one min signal");
@@ -94,6 +95,7 @@ module.exports = class Signal {
         const query = "UPDATE signals SET group_id=? WHERE id=?;";
         const data = [id, id];
         const result = await pool.query(query, data);
+        if(debug) console.log("Set group id: " + id);
         return result;
     }
 }
