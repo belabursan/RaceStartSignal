@@ -21,10 +21,11 @@ router.use(async function (req, res, next) {
 
 
 router.route("/")
-    .post(async (req, res) => {             // POST SIGNAL
+    .post(async (req, res) => {             // Adds a SIGNAL
         try {
-            const signal = new Signal(Validator.validateSignal(req.body));
-            const id = await signal.addSignal();
+            const signal = req.body;
+            Validator.validateSignal(signal)
+            const id = await Signal.addSignal(signal);
             console.log("Signal added with id: " + id);
             return res.sendStatus(200);
         } catch (error) {
@@ -39,7 +40,7 @@ router.route("/")
                 const signal = await Signal.getSignalsByGroupId(req.query.filter);
                 return res.status(200).send(signal);
             } else {                        // get all signals
-                const signals = await Signal.getSignalss();
+                const signals = await Signal.getSignals();
                 return res.status(200).send(signals);
             }
         } catch (error) {

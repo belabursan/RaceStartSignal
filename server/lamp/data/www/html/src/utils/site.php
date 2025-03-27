@@ -104,8 +104,8 @@ function site_register($email) : string {
 }
 
 
-function addSignal($date_time, $one_min, $four_min, $five_min):bool {
-    $ret = node_add_signal($date_time, $one_min, $four_min, $five_min);
+function addSignal($date_time, $five_min_serie):bool {
+    $ret = node_add_signal($date_time, $five_min_serie);
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 201) {

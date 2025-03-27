@@ -10,10 +10,8 @@ if(isLoggedIn() === false) {
 if (isset($_POST['add_signal'])) {
     $d = date_create($_POST['datetime']);
     $datetime = date_format($d, 'Y-m-d H:i:s');
-    $one_minute = isset($_POST['one-minute']) ? 'true' : 'false';
-    $four_minutes = isset($_POST['four-minutes']) ? 'true' : 'false';
-    $five_minutes = isset($_POST['five-minutes']) ? 'true' : 'false';
-    addSignal($datetime, $one_minute, $four_minutes, $five_minutes);
+    $five_min_serie = isset($_POST['five-min-serie']) ? 'true' : 'false';
+    addSignal($datetime, $five_min_serie);
     unset($_POST['add_signal']);
 }
 
@@ -48,16 +46,8 @@ if (isset($_POST['add_signal'])) {
                 />
             </div>
             <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local -->
-            <div class="chbox">
-                <label>
-                    <input type="checkbox" id="one-minute" name="one-minute" checked /> One minute
-                </label>
-            </div>
             <label>
-                <input type="checkbox" id="four-minutes" name="four-minutes" checked /> Four minutes
-            </label>
-            <label>
-                <input type="checkbox" id="five-minutes" name="five-minutes" checked /> Five minutes
+                <input type="checkbox" id="five-min-serie" name="five-min-serie" checked /> Five minutes
             </label>
             <button id="add-button" type="submit" name="add_signal">Add</button>
         </form>

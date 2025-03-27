@@ -67,14 +67,10 @@ function node_register($email): Array {
 }
 
 
-function node_add_signal($date_time, $one_min, $four_min, $five_min): mixed {
+function node_add_signal($date_time, $five_min_serie): mixed {
     $signal = Array (
-        'id' => 0,
-        'group_id' => 0,
         'date_time' => $date_time,
-        'one_minute' => $one_min,
-        'four_minute' => $four_min,
-        'five_minute' => $five_min
+        'five_min_serie' => $five_min_serie
     );
     $url = getUrl("/signal");
     $ch = curl_init();
@@ -88,6 +84,26 @@ function node_add_signal($date_time, $one_min, $four_min, $five_min): mixed {
             'Content-Type: application/json'
         ),
         CURLOPT_POSTFIELDS => json_encode($signal)
+    ));
+    $response = curl_exec($ch);
+    $info = null;
+    if($response !== false) {
+        $info = curl_getinfo($ch);
+    }
+    curl_close($ch);
+    return ['response' => $response, 'info' => $info];
+}
+
+function node_get_signals(): mixed {
+    $url = getUrl("/signal");
+    $ch = curl_init();
+    curl_setopt_array($ch, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: '.$_SESSION['signal_auth_token']
+        )
     ));
     $response = curl_exec($ch);
     $info = null;

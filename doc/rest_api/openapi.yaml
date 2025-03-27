@@ -6,8 +6,8 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: "2.8.0"
-# TODO: set later....
+  version: "1.0.0"
+# TODO: set later...
 #  servers:
 #  - url: https://petstore3.swagger.io/api/v3
 tags:
@@ -42,11 +42,11 @@ paths:
                 description: "User Id, e.g.: 12"
                 type: integer
         '400':
-          description: "Invalid data, missing something?"
+          $ref: '#/components/responses/InvalidData'
         '409':
-          description: "Already registered"
+          $ref: '#/components/responses/AlreadyRegistered'
         '500':
-          description: "Mail service down"
+          $ref: '#/components/responses/MailServerDown'
         '503':
           $ref: '#/components/responses/ServerBusy'
   /user/login:
@@ -69,7 +69,7 @@ paths:
               schema:
                 description: "8721dab27ec8df21fa4ec31d997f2ac6, JWT Token, including the user id as primary key in the db"
                 type: string
-        '409':
+        '401':
           $ref: '#/components/responses/UnauthorizedError'
         '503':
           $ref: '#/components/responses/ServerBusy'
@@ -91,7 +91,7 @@ paths:
         '200':
           description: "Operation successfull"
         '400':
-          description: "Invalid data, missing something?"
+          $ref: '#/components/responses/InvalidData'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '503':
@@ -107,7 +107,8 @@ paths:
               schema:
                 type: "array"
                 items:
-                  - $ref: '#/components/schemas/Signal'
+                  allOf:
+                  - $ref: '#/components/schemas/SignalTime'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '503':
@@ -123,6 +124,13 @@ paths:
           required: true
           schema:
             type: integer
+      responses:
+        '200':
+          description: "OK"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '503':
+          $ref: '#/components/responses/ServerBusy'
   /signal{filter}:
     get:
       tags: ["signal"]
@@ -143,7 +151,8 @@ paths:
               schema:
                 type: "array"
                 items:
-                  - $ref: '#/components/schemas/Signal'
+                  allOf:
+                  - $ref: '#/components/schemas/SignalTime'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '503':
@@ -161,15 +170,29 @@ components:
   schemas:
     LoginInfo:
       type: object
+      description: "Login information sent to server"
       properties:
         email:
           type: string
           description: "helllo@world.com"
+          example: "hello@world.com"
         password:
           type: string
           description: "the password"
     Signal:
       type: object
+      description: "Signal time sent to server"
+      properties:
+        date_time:
+          type: string
+          description: "2025-03-15 19:00"
+        five_min_serie:
+          type: boolean
+          description: "true or false"
+          default: true
+    SignalTime:
+      type: object
+      description: "Signals received from database"
       properties:
         id:
           type: integer
@@ -181,24 +204,52 @@ components:
           default: 0
         date_time:
           type: string
-          description: "2025-03-15 19:00"
-        one_minute:
-          type: boolean
-          description: "true or false"
-          default: true
-        four_minute:
-          type: boolean
-          description: "true or false"
-          default: true
-        five_minute:
-          type: boolean
-          description: "true or false"
-          default: true
+          description: "The format must be yyyy-MM-dd hh:mm, e.g: 2025-03-15 19:00"
+        signal_type:
+          type: integer
+          description: "Type of signal, (E.g.: one-minute signal, five min...)"
+          default: 0
   responses:
+    InvalidData:
+      description: "400: Invalid data, missing something?"
+      content:
+        text/plain:
+          schema:
+                type: string
+                format: text
+                description: "Error message"
     UnauthorizedError:
-      description: "Access token is missing or invalid"
+      description: "401: Access token is missing or invalid"
+      content:
+        text/plain:
+          schema:
+                type: string
+                format: text
+                description: "Error message"
+    AlreadyRegistered:
+      description: "409: User already registered"
+      content:
+        text/plain:
+          schema:
+                type: string
+                format: text
+                description: "Error message"
+    MailServerDown:
+      description: "Mail service down"
+      content:
+        text/plain:
+          schema:
+                type: string
+                format: text
+                description: "Error message"
     ServerBusy:
-      description: "Server busy, please try again later"
+      description: "503: Server busy, please try again later"
+      content:
+        text/plain:
+          schema:
+                type: string
+                format: text
+                description: "Error message"
 security:
   - bearerAuth: []         # use the same name as above
 
