@@ -128,19 +128,18 @@ function addSignal($date_time, $five_min_serie):bool {
  */
 function site_get_signal_list(): array {
     $list = node_get_signals();
-    var_dump($list);
-    /*$group_list = [];
+    $groups = [];
 
-    foreach ($list as $key => $value) {
-        $group_id = $value['group_id'];
-        if (!isset($group_list[$group_id])) {
-            $group_list[$group_id] = [];
+    foreach($list as $key => $value) {
+        if($groups[$value["group_id"]] == null) {
+            $groups[$value["group_id"]] = [];
         }
-        $group_list[$group_id][] = $value;
+        $sig = ["signal_type" => $value["signal_type"],
+                "date_time" => $value["date_time"]];
+        array_push($groups[$value["group_id"]], $sig);
     }
-    return $group_list;
-    */
-    return $list;
+    var_dump($groups);
+    return $groups;
 }
 
 ?>

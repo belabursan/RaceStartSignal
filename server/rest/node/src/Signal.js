@@ -13,28 +13,7 @@ module.exports = class Signal {
      */
     static async getSignals() {
         console.log("Getting all signals");
-        return await Signal.#getSignalsByGroupId();
-        /*
-        const query = "SELECT * FROM signals";
-        const result = pool.query(query);
-        return result;
-        */
-    }
-
-    static async #getSignalsByGroupId() {
-        var output = [];
-        console.log("Getting signals by group id");
-        const group_ids = await pool.query("SELECT group_id, COUNT(group_id) c FROM signals GROUP BY group_id HAVING c = 1");
-        console.log(group_ids);
-        group_ids.forEach(group_id => {
-            var group = new Map();
-            group.set("group_id", group_id);
-            const signals = pool.query("SELECT date_time, signal_type FROM signals WHERE group_id=?", [group_id]);
-            group.set("signals", signals);
-            output.push(group);
-        });
-        JSON.stringify(output);
-        return output;
+        return await pool.query("SELECT group_id, signal_type, date_time FROM signals;");
     }
 
     /**
@@ -73,15 +52,8 @@ module.exports = class Signal {
      * @param {*} group_id 
      */
     async deleteSignalByGroupId(group_id) {
-        const query = "DELETE FROM signals WHERE group_id=?;";
-        const result = await pool.query(query, [group_id], (err, res) => {
-            if (err) {
-                console.log(err);
-                throw new Error("Error when deleting signal");
-            }
-            return res;
-        });
-        return result
+        console.log("Deleting signals with group id: " + group_id);
+        return await pool.query("DELETE FROM signals WHERE group_id=?;", [group_id]);
     }
 
 

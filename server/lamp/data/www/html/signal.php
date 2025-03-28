@@ -76,21 +76,18 @@ if (isset($_POST['add_signal'])) {
                 <?php
                     try {
                         $list = site_get_signal_list();
-                        foreach ($list as $item) {
-                            echo "<tr>\n";
-                            echo "  <td>".$item['date_time']."</td>\n";
-                            echo "  <td>".$item['signal_type']."</td>\n";
-                            echo "  <td><button name=\"".$item['group_id']."\" >Delete</button></td>\n";
-                            echo "</tr>\n";
-                            /*if (isset($item['subitems'])) {
-                                foreach ($item['subitems'] as $subitem) {
-                                    echo "<tr class='subrow'>";
-                                    echo "<td>".$subitem['date_time']."</td>";
-                                    echo "<td>".$subitem['type']."</td>";
-                                    echo "<td></td>";
-                                    echo "</tr>";
+                        foreach ($list as $group_id => $signals) {
+                            foreach ($signals as $signal) {
+                                echo "<tr>\n";
+                                echo "  <td>".$signal['date_time']."</td>\n";
+                                echo "  <td>".$signal['signal_type']."</td>\n";
+                                if ($signal['signal_type'] === 0) {
+                                    echo "  <td><button name=\"$group_id\" >Delete</button></td>\n";
+                                } else {
+                                    echo "  <td></td>\n";       
                                 }
-                            } */
+                                echo "</tr>\n";
+                            }
                         }
                     } catch (Exception $e) {
                         $_SESSION['signal_error'] = $e->getMessage();
