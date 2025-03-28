@@ -122,8 +122,24 @@ function addSignal($date_time, $five_min_serie):bool {
 }
 
 
-function getList() {
-    $list = "";
+/**
+ * Returns all list of signals
+ * @return array - list of signals or empty list if db is empty
+ */
+function site_get_signal_list(): array {
+    $list = node_get_signals();
+    var_dump($list);
+    /*$group_list = [];
+
+    foreach ($list as $key => $value) {
+        $group_id = $value['group_id'];
+        if (!isset($group_list[$group_id])) {
+            $group_list[$group_id] = [];
+        }
+        $group_list[$group_id][] = $value;
+    }
+    return $group_list;
+    */
     return $list;
 }
 

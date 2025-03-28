@@ -12,10 +12,29 @@ module.exports = class Signal {
      * @returns all signals as a list
      */
     static async getSignals() {
+        console.log("Getting all signals");
+        return await Signal.#getSignalsByGroupId();
+        /*
+        const query = "SELECT * FROM signals";
+        const result = pool.query(query);
+        return result;
+        */
+    }
 
-            const query = "SELECT * FROM signals";
-            const result = pool.query(query);
-            //TODO fix return
+    static async #getSignalsByGroupId() {
+        var output = [];
+        console.log("Getting signals by group id");
+        const group_ids = await pool.query("SELECT group_id, COUNT(group_id) c FROM signals GROUP BY group_id HAVING c = 1");
+        console.log(group_ids);
+        group_ids.forEach(group_id => {
+            var group = new Map();
+            group.set("group_id", group_id);
+            const signals = pool.query("SELECT date_time, signal_type FROM signals WHERE group_id=?", [group_id]);
+            group.set("signals", signals);
+            output.push(group);
+        });
+        JSON.stringify(output);
+        return output;
     }
 
     /**

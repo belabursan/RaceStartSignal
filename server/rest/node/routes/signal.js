@@ -36,6 +36,7 @@ router.route("/")
     })
     .get(async (req, res) => {              // GET SIGNALS(s)
         try {
+            console.log("Getting signal");
             if (req.query.filter) {       // get specified signal
                 const signal = await Signal.getSignalsByGroupId(req.query.filter);
                 return res.status(200).send(signal);

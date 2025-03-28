@@ -94,24 +94,43 @@ function node_add_signal($date_time, $five_min_serie): mixed {
     return ['response' => $response, 'info' => $info];
 }
 
-function node_get_signals(): mixed {
+/**
+ * Returns a list of signals from the database
+ * @throws \Exception in case of curl failure or http code different from 200
+ * @return array -List of all signals or empty list if db is empty
+ */
+function node_get_signals(): array
+{
+    $list = [];
     $url = getUrl("/signal");
     $ch = curl_init();
-    curl_setopt_array($ch, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: '.$_SESSION['signal_auth_token']
-        )
-    ));
-    $response = curl_exec($ch);
-    $info = null;
-    if($response !== false) {
-        $info = curl_getinfo($ch);
+
+    try {
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: ' . $_SESSION['signal_auth_token']
+            )
+        ));
+        $response = curl_exec($ch);
+        if ($response !== false) {
+            $info = curl_getinfo($ch);
+            if ($info['http_code'] === 200) {
+                $list = json_decode($response, true);
+            } else {
+                throw new Exception("Could not get signal list, code: ", $info['http_code'], null);
+            }
+        } else {
+            throw new Exception("Could not get signal list, curl failed!", -1, null);
+        }
+    } finally {
+        curl_close($ch);
     }
-    curl_close($ch);
-    return ['response' => $response, 'info' => $info];
+    return $list === null ? [] : $list;
 }
+
 
 ?>

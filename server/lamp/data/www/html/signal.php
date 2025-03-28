@@ -73,28 +73,54 @@ if (isset($_POST['add_signal'])) {
             </thead>
             <tbody id="item-list">
                 <!-- Items will be added here dynamically -->
-                 <tr>
-                    <td>2025-05-01 19:00</td>
-                    <td>Start Signal</td>
-                    <td><button>Delete</button></td>
-                </tr>
-                <tr class="subrow">
-                    <td>22025-05-01 18:59</td>
-                    <td>One Minute Signal</td>
-                    <td></td>
-                </tr>
-                <tr class="subrow">
-                    <td>22025-05-01 16:56</td>
-                    <td>Four Minute Signal</td>
-                    <td></td>
-                </tr>
-                <tr class="subrow">
-                    <td>22025-05-01 18:55</td>
-                    <td>Five Minute Signal</td>
-                    <td></td>
-                </tr>
+                <?php
+                    try {
+                        $list = site_get_signal_list();
+                        foreach ($list as $item) {
+                            echo "<tr>\n";
+                            echo "  <td>".$item['date_time']."</td>\n";
+                            echo "  <td>".$item['signal_type']."</td>\n";
+                            echo "  <td><button name=\"".$item['group_id']."\" >Delete</button></td>\n";
+                            echo "</tr>\n";
+                            /*if (isset($item['subitems'])) {
+                                foreach ($item['subitems'] as $subitem) {
+                                    echo "<tr class='subrow'>";
+                                    echo "<td>".$subitem['date_time']."</td>";
+                                    echo "<td>".$subitem['type']."</td>";
+                                    echo "<td></td>";
+                                    echo "</tr>";
+                                }
+                            } */
+                        }
+                    } catch (Exception $e) {
+                        $_SESSION['signal_error'] = $e->getMessage();
+                        $_SESSION['signal_error_code'] = $e->getCode();
+                    }
+                ?>
             </tbody>
         </table>
     </div>
 </body>
 </html>
+<!--
+<tr>
+    <td>2025-05-01 19:00</td>
+    <td>Start Signal</td>
+    <td><button>Delete</button></td>
+</tr>
+<tr class="subrow">
+    <td>22025-05-01 18:59</td>
+    <td>One Minute Signal</td>
+    <td></td>
+</tr>
+<tr class="subrow">
+    <td>22025-05-01 16:56</td>
+    <td>Four Minute Signal</td>
+    <td></td>
+</tr>
+<tr class="subrow">
+    <td>22025-05-01 18:55</td>
+    <td>Five Minute Signal</td>
+    <td></td>
+</tr>
+-->
