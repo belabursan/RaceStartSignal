@@ -131,14 +131,14 @@ function site_get_signal_list(): array {
     $groups = [];
 
     foreach($list as $key => $value) {
-        if($groups[$value["group_id"]] == null) {
-            $groups[$value["group_id"]] = [];
+        $gid = $value["group_id"];
+        if (!isset($groups[$gid])) {
+            $groups[$gid] = [];
         }
         $sig = ["signal_type" => $value["signal_type"],
                 "date_time" => $value["date_time"]];
-        array_push($groups[$value["group_id"]], $sig);
+        array_push($groups[$gid], $sig);
     }
-    var_dump($groups);
     return $groups;
 }
 
