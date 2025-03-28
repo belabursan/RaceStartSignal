@@ -43,6 +43,12 @@ function s_stop() {
     }
 }
 
+function logout(){
+    unset($_POST['password']);
+    unset($_POST['email']);
+    unset($_SESSION['login']);
+}
+
 
 /**
  * @brief Cleans (unsets) all session parameters used by the page

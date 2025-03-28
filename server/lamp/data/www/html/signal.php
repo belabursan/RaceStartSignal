@@ -66,32 +66,49 @@ if (isset($_POST['add_signal'])) {
         <table>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Date-Time</th>
                     <th>Type</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="item-list">
-                <!-- Items will be added here dynamically -->
                 <?php
                     try {
-                        $list = site_get_signal_list();
+                        $list = site_get_signal_list();                        
                         foreach ($list as $group_id => $signals) {
                             foreach ($signals as $signal) {
                                 echo "<tr>\n";
-                                echo "  <td>".$signal['date_time']."</td>\n";
-                                echo "  <td>".$signal['signal_type']."</td>\n";
                                 if ($signal['signal_type'] === 0) {
+                                    echo "  <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
+                                    echo "  <td>".$signal['date_time']."</td>\n";
+                                    echo "  <td>Start Signal</td>\n";
                                     echo "  <td><button name=\"$group_id\" >Delete</button></td>\n";
                                 } else {
+                                    $stype = "One Minute Signal";
+                                    if ($signal['signal_type'] === 4) {
+                                        $stype = "Four Minute Signal";
+                                    } else if ($signal['signal_type'] === 5) {
+                                        $stype = "Five Minute Signal";
+                                    }
+                                    echo "  <td></td>\n";
+                                    echo "  <td class=\"subrow\">".$signal['date_time']."</td>\n";
+                                    echo "  <td class=\"subrow\">$stype</td>\n";
                                     echo "  <td></td>\n";       
                                 }
                                 echo "</tr>\n";
                             }
                         }
                     } catch (Exception $e) {
-                        $_SESSION['signal_error'] = $e->getMessage();
-                        $_SESSION['signal_error_code'] = $e->getCode();
+                        $code= $e->getCode();
+                        if($code === 401) { //unauthorized
+                            logout();
+                            //$host = $_SERVER['HTTP_HOST'];
+                            //exit(header("Location: https://$host/index.php", true));
+                        } else {
+                            $message= $e->getMessage();
+                            echo "<script>alert('ERROR $code: $message');</script>";
+                        }
                     }
                 ?>
             </tbody>
@@ -99,25 +116,3 @@ if (isset($_POST['add_signal'])) {
     </div>
 </body>
 </html>
-<!--
-<tr>
-    <td>2025-05-01 19:00</td>
-    <td>Start Signal</td>
-    <td><button>Delete</button></td>
-</tr>
-<tr class="subrow">
-    <td>22025-05-01 18:59</td>
-    <td>One Minute Signal</td>
-    <td></td>
-</tr>
-<tr class="subrow">
-    <td>22025-05-01 16:56</td>
-    <td>Four Minute Signal</td>
-    <td></td>
-</tr>
-<tr class="subrow">
-    <td>22025-05-01 18:55</td>
-    <td>Five Minute Signal</td>
-    <td></td>
-</tr>
--->

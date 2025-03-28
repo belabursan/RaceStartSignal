@@ -121,7 +121,7 @@ function node_get_signals(): array
             if ($info['http_code'] === 200) {
                 $list = json_decode($response, true);
             } else {
-                throw new Exception("Could not get signal list, code: ", $info['http_code'], null);
+                throw new Exception("Could not get signal list", $info['http_code'], null);
             }
         } else {
             throw new Exception("Could not get signal list, curl failed!", -1, null);
