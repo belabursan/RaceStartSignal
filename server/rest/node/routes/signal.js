@@ -52,7 +52,7 @@ router.route("/")
     })
     .delete(async (req, res) => {               // DELETE SIGNAL by GROUP ID
         try {
-            await Signal.deleteSignal(req.query.id);
+            await Signal.deleteSignalByGroupId(req.query.id);
             return res.sendStatus(200);
         } catch (error) {
             const { code, message } = ErrorHandler.handleError(error);

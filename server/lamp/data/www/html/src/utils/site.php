@@ -148,4 +148,14 @@ function site_get_signal_list(): array {
     return $groups;
 }
 
+
+function deleteSignal($group_id):bool {
+    $ret = node_delete_signal($group_id);
+    if($ret === false) {
+        $_SESSION['signal_error'] = "Could not delete signal, curl failed!";
+        return false;
+    }
+    return true;     
+}
+
 ?>

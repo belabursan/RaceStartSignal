@@ -51,7 +51,7 @@ module.exports = class Signal {
      * Deletes all the signals with the specified group id
      * @param {*} group_id 
      */
-    async deleteSignalByGroupId(group_id) {
+    static async deleteSignalByGroupId(group_id) {
         console.log("Deleting signals with group id: " + group_id);
         return await pool.query("DELETE FROM signals WHERE group_id=?;", [group_id]);
     }

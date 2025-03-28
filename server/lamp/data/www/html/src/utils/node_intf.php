@@ -132,5 +132,25 @@ function node_get_signals(): array
     return $list === null ? [] : $list;
 }
 
-
+function node_delete_signal($group_id): bool {
+    $url = getUrl("/signal?".http_build_query(['id' => $group_id]));
+    $ch = curl_init();
+    curl_setopt_array($ch, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_CUSTOMREQUEST => "DELETE",
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: ' . $_SESSION['signal_auth_token']
+        )
+    ));
+    $response = curl_exec($ch);
+    $info = null;
+    if($response !== false) {
+        $info = curl_getinfo($ch);
+        return $info['http_code'] === 200;
+    }
+    curl_close($ch);
+    return false;
+}
 ?>

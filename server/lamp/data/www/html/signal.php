@@ -18,6 +18,16 @@ if (isset($_POST['add_signal'])) {
     }
 }
 
+if(isset($_POST['delete_pressed'])) {
+    $group_id = intval($_POST['delete_pressed']);
+    deleteSignal($group_id);
+    unset($_POST['delete_pressed']);
+    if(isset($_SESSION['signal_error'])) {
+        echo "<script>alert('". $_SESSION['signal_error'] . "');</script>";
+        unset($_SESSION['signal_error']);
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,56 +73,61 @@ if (isset($_POST['add_signal'])) {
     </div>
     <div class="list-section">
         <h2>Item List</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Date-Time</th>
-                    <th>Type</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="item-list">
-                <?php
-                    try {
-                        $list = site_get_signal_list();                        
-                        foreach ($list as $group_id => $signals) {
-                            foreach ($signals as $signal) {
-                                echo "<tr>\n";
-                                if ($signal['signal_type'] === 0) {
-                                    echo "  <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
-                                    echo "  <td>".$signal['date_time']."</td>\n";
-                                    echo "  <td>Start Signal</td>\n";
-                                    echo "  <td><button name=\"$group_id\" >Delete</button></td>\n";
-                                } else {
-                                    $stype = "One Minute Signal";
-                                    if ($signal['signal_type'] === 4) {
-                                        $stype = "Four Minute Signal";
-                                    } else if ($signal['signal_type'] === 5) {
-                                        $stype = "Five Minute Signal";
+        <form method="POST">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Date-Time</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="item-list">
+                    <?php
+                        try {
+                            $list = site_get_signal_list();                        
+                            foreach ($list as $group_id => $signals) {
+                                foreach ($signals as $signal) {
+                                    echo "<tr>\n";
+                                    //echo "<form method=\"POST\">\n";
+                                    if ($signal['signal_type'] === 0) {
+                                        echo "  <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
+                                        echo "  <td>".$signal['date_time']."</td>\n";
+                                        echo "  <td>Start Signal</td>\n";
+                                        echo "  <td><button class=\"list_button\" id=\"$group_id\" type=\"submit\" name=\"delete_pressed\" value=\"$group_id\">Delete</button></td>\n";
+                                    } else {
+                                        $stype = "One Minute Signal";
+                                        if ($signal['signal_type'] === 4) {
+                                            $stype = "Four Minute Signal";
+                                        } else if ($signal['signal_type'] === 5) {
+                                            $stype = "Five Minute Signal";
+                                        }
+                                        echo "  <td></td>\n";
+                                        echo "  <td class=\"subrow\">".$signal['date_time']."</td>\n";
+                                        echo "  <td class=\"subrow\">$stype</td>\n";
+                                        echo "  <td></td>\n";       
                                     }
-                                    echo "  <td></td>\n";
-                                    echo "  <td class=\"subrow\">".$signal['date_time']."</td>\n";
-                                    echo "  <td class=\"subrow\">$stype</td>\n";
-                                    echo "  <td></td>\n";       
+                                    //echo "</form>\n";
+                                    echo "</tr>\n";
                                 }
-                                echo "</tr>\n";
+                            }
+                        } catch (Exception $e) {
+                            $code= $e->getCode();
+                            if($code === 401) { //unauthorized
+                                logout();
+                                //$host = $_SERVER['HTTP_HOST'];
+                                //exit(header("Location: https://$host/index.php", true));
+                            } else {
+                                $message= $e->getMessage();
+                                echo "<script>alert('ERROR $code: $message');</script>";
                             }
                         }
-                    } catch (Exception $e) {
-                        $code= $e->getCode();
-                        if($code === 401) { //unauthorized
-                            logout();
-                            //$host = $_SERVER['HTTP_HOST'];
-                            //exit(header("Location: https://$host/index.php", true));
-                        } else {
-                            $message= $e->getMessage();
-                            echo "<script>alert('ERROR $code: $message');</script>";
-                        }
-                    }
-                ?>
-            </tbody>
-        </table>
+                    ?>
+                </tbody>
+            </table>
+        </form>
     </div>
 </body>
 </html>
