@@ -38,8 +38,8 @@ router.route("/")
         try {
             console.log("Getting signal");
             if (req.query.filter) {       // get specified signal
-                const signal = await Signal.getSignalsByGroupId(req.query.filter);
-                return res.status(200).send(signal);
+                console.error("Not yet implemented");
+                return res.status(500).send("Not yet implemented");
             } else {                        // get all signals
                 const signals = await Signal.getSignals();
                 return res.status(200).send(signals);

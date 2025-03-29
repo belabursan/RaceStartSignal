@@ -91,7 +91,7 @@ if(isset($_POST['delete_pressed'])) {
                             foreach ($list as $group_id => $signals) {
                                 foreach ($signals as $signal) {
                                     echo "<tr>\n";
-                                    //echo "<form method=\"POST\">\n";
+                                    // https://stackoverflow.com/questions/8683528/embed-image-in-a-button-element
                                     if ($signal['signal_type'] === 0) {
                                         echo "  <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
                                         echo "  <td>".$signal['date_time']."</td>\n";
@@ -109,7 +109,6 @@ if(isset($_POST['delete_pressed'])) {
                                         echo "  <td class=\"subrow\">$stype</td>\n";
                                         echo "  <td></td>\n";       
                                     }
-                                    //echo "</form>\n";
                                     echo "</tr>\n";
                                 }
                             }
@@ -117,8 +116,7 @@ if(isset($_POST['delete_pressed'])) {
                             $code= $e->getCode();
                             if($code === 401) { //unauthorized
                                 logout();
-                                //$host = $_SERVER['HTTP_HOST'];
-                                //exit(header("Location: https://$host/index.php", true));
+                                // todo fix redirect
                             } else {
                                 $message= $e->getMessage();
                                 echo "<script>alert('ERROR $code: $message');</script>";

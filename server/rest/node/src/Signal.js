@@ -13,7 +13,8 @@ module.exports = class Signal {
      */
     static async getSignals() {
         console.log("Getting all signals");
-        return await pool.query("SELECT group_id, signal_type, date_time FROM signals;");
+        return await pool.query("SELECT group_id, signal_type, DATE_FORMAT(date_time,'%Y-%m-%d %h:%m') AS date_time FROM signals ORDER BY date_time ASC;");
+        
     }
 
     /**

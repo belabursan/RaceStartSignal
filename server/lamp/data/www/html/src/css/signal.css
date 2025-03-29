@@ -113,9 +113,11 @@ body {
 }
 .subrow td {
     padding-left: 40px; /* Add padding to the left of subitems */
+    visibility: hidden; /* Ensure subitems are not visible when unexpanded */
 }
 .list-section .subrow {
     border: none;
+    
     /* display: none; Ensure subitems are not visible when unexpanded */
 }
 .list_button {
