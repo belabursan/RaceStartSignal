@@ -13,8 +13,9 @@ module.exports = class Signal {
      */
     static async getSignals() {
         console.log("Getting all signals");
-        return await pool.query("SELECT group_id, signal_type, DATE_FORMAT(date_time,'%Y-%m-%d %h:%m') AS date_time FROM signals ORDER BY date_time ASC;");
-        
+        const result = await pool.query("SELECT id, group_id, signal_type, DATE_FORMAT(date_time,'%Y-%m-%d %T') AS date_time FROM signals ORDER BY date_time ASC;");
+        //console.log(result);
+        return result;
     }
 
     /**

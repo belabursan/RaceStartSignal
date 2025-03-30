@@ -87,7 +87,7 @@ if(isset($_POST['delete_pressed'])) {
                 <tbody id="item-list">
                     <?php
                         try {
-                            $list = site_get_signal_list();                        
+                            $list = site_get_signal_list();
                             foreach ($list as $group_id => $signals) {
                                 foreach ($signals as $signal) {
                                     echo "<tr>\n";
