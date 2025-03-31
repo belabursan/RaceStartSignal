@@ -97,7 +97,7 @@ if(isLoggedIn() === false) {
                                 // Set Start signal first
                                 $sorted = sortSignalGroup($signalGroup);
                                 echo "<!--       Start Signal       -->\n";
-                                echo "<tr id=\"$group_id\">\n";
+                                echo "<tr id=\"$group_id\" class=\"startsignal\">\n";
                                 if(count($sorted) >1) {
                                     echo "    <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
                                 } else {
@@ -118,11 +118,11 @@ if(isLoggedIn() === false) {
                                             $type = "Five Minute Signal";
                                         }
 
-                                        echo "<tr class=\"subrow-visible\">\n";
-                                        echo "    <td class=\"subrow-td\"></td>\n";
-                                        echo "    <td class=\"subrow-td\">$date</td>\n";
-                                        echo "    <td class=\"subrow-td\">$type</td>\n";
-                                        echo "    <td class=\"subrow-td\"></td>\n";
+                                        echo "<tr class=\"subrow-v\">\n";
+                                        echo "    <td></td>\n";
+                                        echo "    <td class=\"subrow-v\">$date</td>\n";
+                                        echo "    <td class=\"subrow-v\">$type</td>\n";
+                                        echo "    <td></td>\n";
                                         echo "</tr>\n";
                                     }
                                 }

@@ -62,7 +62,7 @@ body {
 .add_form_section button {
     width: 100%;
     padding: 10px;
-    background: #007bff;
+    background: #adf3e4;
     color: white;
     border: none;
     border-radius: 5px;
@@ -71,7 +71,7 @@ body {
 }
 
 .add_form_section button:hover {
-    background: #0056b3;
+    background: #4dbdae;
 }
 
 .tooltip {
@@ -98,36 +98,9 @@ body {
 
 /**************** LIST (signal list) ****************/
 .list-section {
-    width: 80%;
-}
-.list-section table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.list-section th {
-    border: 1px solid #ddd;
+    width: 60%;
     padding: 8px;
-}
-
-.list-section td {
-    border-bottom: 1px solid #3c5a48;
-    padding: 8px;
-}
-.subrow-td {
-    border-bottom: none;
-}
-.list-section .subrow {
-    border: none;
-    visibility: hidden;
-    display: none;
-}
-
-.list-section .subrow-td {
-    padding: 8px 8px 8px 80px;
-}
-
-.list-section .subrow-visible {
-    visibility: visible;
+    min-width: 300px;
 }
 
 .list-section th {
@@ -150,6 +123,28 @@ body {
   }
 
   .list_button:hover {
-    background: #0056b3;
+    background: #f5a294;
     color:white
+}
+
+.list-section table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    padding: 8px;
+}
+.list-section .startsignal{
+    border-top: 1px solid #f2f2f2;
+}
+
+.list-section .subrow {
+    padding-left: 40px;
+    border: none;
+    visibility: hidden;
+    display: none;
+}
+
+.list-section .subrow-v {
+    visibility: visible;
+    padding-left: 40px;
 }
