@@ -39,11 +39,11 @@ if(isLoggedIn() === false) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type='text/css' href="src/css/signal.css">
-    <title>Signal Manager</title>
+    <title>Race Signal Manager</title>
 </head>
 <body>
     <div class="header">
-        <h1>Signal Manager</h1>
+        <h1>Race Signal Manager</h1>
         <a href="logout.php">Logout</a>
     </div>
     <div class="add_form_section">
@@ -94,25 +94,26 @@ if(isLoggedIn() === false) {
                             $list = site_get_signal_list();
                             foreach ($list as $group_id => $signals) {
                                 foreach ($signals as $signal) {
+                                    //var_dump($signal);
                                     // https://stackoverflow.com/questions/8683528/embed-image-in-a-button-element
                                     if ($signal['signal_type'] === 0) {
-                                        echo "<tr>\n";
+                                        echo "<tr id=\"$group_id\">\n";
                                         echo "  <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
                                         echo "  <td>".$signal['date_time']."</td>\n";
                                         echo "  <td>Start Signal</td>\n";
-                                        echo "  <td><button class=\"list_button\" id=\"$group_id\" type=\"submit\" name=\"delete_pressed\" value=\"$group_id\">Delete</button></td>\n";
+                                        echo "  <td><button class=\"list_button\" type=\"submit\" name=\"delete_pressed\" value=\"$group_id\">Delete</button></td>\n";
                                     } else {
-                                        echo "<tr class=\"subrow\">\n";
+                                        echo "<tr class=\"subrow-visible\">\n";
                                         $stype = "One Minute Signal";
                                         if ($signal['signal_type'] === 4) {
                                             $stype = "Four Minute Signal";
                                         } else if ($signal['signal_type'] === 5) {
                                             $stype = "Five Minute Signal";
                                         }
-                                        echo "  <td class=\"subrow\"></td>\n";
-                                        echo "  <td class=\"subrow\">".$signal['date_time']."</td>\n";
-                                        echo "  <td class=\"subrow\">$stype</td>\n";
-                                        echo "  <td class=\"subrow\"></td>\n";    
+                                        echo "  <td class=\"subrow-td\"></td>\n";
+                                        echo "  <td class=\"subrow-td\">".$signal['date_time']."</td>\n";
+                                        echo "  <td class=\"subrow-td\">$stype</td>\n";
+                                        echo "  <td class=\"subrow-td\"></td>\n";    
                                     }
                                     echo "</tr>\n";
                                 }

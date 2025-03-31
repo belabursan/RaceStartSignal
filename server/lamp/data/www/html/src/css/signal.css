@@ -106,14 +106,24 @@ body {
 }
 .list-section th, .list-section td {
     border: 1px solid #ddd;
+    border-left: white;
+    border-right: white;
     padding: 8px;
 }
 .list-section .subrow {
     border: none;
-    visibility: hidden; /* Ensure subitems are not visible when unexpanded */
+    visibility: hidden;
     display: none;
-    /* display: none; Ensure subitems are not visible when unexpanded */
 }
+
+.list-section .subrow-td {
+    padding: 8px 8px 8px 80px;
+}
+
+.list-section .subrow-visible {
+    visibility: visible;
+}
+
 .list-section th {
     background-color: #f2f2f2;
 }
