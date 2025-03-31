@@ -67,6 +67,13 @@ if(isLoggedIn() === false) {
                 
             }
         }
+
+        function hoverIn(element){
+            element.style.backgroundColor = "#e0e0e0";
+        }
+        function hoverOut(element){
+            element.style.backgroundColor = "white";
+        }
     </script>
 </head>
 <body>
@@ -132,7 +139,7 @@ if(isLoggedIn() === false) {
                                 echo "<!--       Start Signal       -->\n";
                                 echo "<tr class=\"startsignal\">\n";
                                 if(count($sorted) >1) {
-                                    echo "    <td class=\"img-col\" ><img id=\"$group_id\" onclick=\"toggle(this);\" src=\"src/images/expand.png\" width=\"20\" height=\"20\"/></td>\n";
+                                    echo "    <td class=\"img-col\" ><img id=\"$group_id\" onmouseover=\"hoverIn(this);\" onmouseleave=\"hoverOut(this);\" onclick=\"toggle(this);\" src=\"src/images/expand.png\" width=\"20\" height=\"20\"/></td>\n";
                                 } else {
                                     echo "    <td></td>\n";
                                 }
