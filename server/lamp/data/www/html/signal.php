@@ -41,6 +41,33 @@ if(isLoggedIn() === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type='text/css' href="src/css/signal.css">
     <title>Race Signal Manager</title>
+    <script>
+        function toggle(element){
+            var i = element.id;
+            var one = document.getElementById("subrow_"+i+"-1");
+            var four = document.getElementById("subrow_"+i+"-4");
+            var five = document.getElementById("subrow_"+i+"-5");
+            
+            if(element.src.search("arrow_down") > -1) {
+                one.classList.remove('subrow');
+                one.classList.add('subrow-visible');
+                four.classList.remove('subrow');
+                four.classList.add('subrow-visible');
+                five.classList.remove('subrow');
+                five.classList.add('subrow-visible');
+                element.src = "src/images/arrow_up.png";
+            } else {
+                one.classList.remove('subrow-visible');
+                one.classList.add('subrow');
+                four.classList.remove('subrow-visible');
+                four.classList.add('subrow');
+                five.classList.remove('subrow-visible');
+                five.classList.add('subrow');
+                element.src = "src/images/arrow_down.png";
+                
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="header">
@@ -56,7 +83,7 @@ if(isLoggedIn() === false) {
                 name="date"
                 min="2025-03-20"
                 max="2095-05-20"
-                value="2025-10-18"
+                value="2025-01-18"
                 required
             />
             <label for="time">Time:</label>
@@ -97,9 +124,9 @@ if(isLoggedIn() === false) {
                                 // Set Start signal first
                                 $sorted = sortSignalGroup($signalGroup);
                                 echo "<!--       Start Signal       -->\n";
-                                echo "<tr id=\"$group_id\" class=\"startsignal\">\n";
+                                echo "<tr class=\"startsignal\">\n";
                                 if(count($sorted) >1) {
-                                    echo "    <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
+                                    echo "    <td><img id=\"$group_id\" onclick=\"toggle(this);\" src=\"src/images/arrow_down.png\" width=\"20\" height=\"15\"/></td>\n";
                                 } else {
                                     echo "    <td></td>\n";
                                 }
@@ -118,10 +145,10 @@ if(isLoggedIn() === false) {
                                             $type = "Five Minute Signal";
                                         }
 
-                                        echo "<tr class=\"subrow-v\">\n";
+                                        echo "<tr id=\"subrow_$group_id-$index\" class=\"subrow\">\n";
                                         echo "    <td></td>\n";
-                                        echo "    <td class=\"subrow-v\">$date</td>\n";
-                                        echo "    <td class=\"subrow-v\">$type</td>\n";
+                                        echo "    <td class=\"sub-td\">$date</td>\n";
+                                        echo "    <td class=\"sub-td\">$type</td>\n";
                                         echo "    <td></td>\n";
                                         echo "</tr>\n";
                                     }
