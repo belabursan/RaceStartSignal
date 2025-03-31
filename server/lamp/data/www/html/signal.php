@@ -4,7 +4,8 @@ include_once "src/utils/site.php";
 
 if(isLoggedIn() === false) {
     $host = $_SERVER['HTTP_HOST'];
-    exit(header("Location: https://$host/index.php", true));
+    //exit(header("Location: https://$host/index.php", true));
+    exit(header("Location: logout.php", true));
 }
 
 if (isset($_POST['add_signal'])) {
@@ -27,6 +28,9 @@ if(isset($_POST['delete_pressed'])) {
         unset($_SESSION['signal_error']);
     }
 }
+if(isLoggedIn() === false) {
+    exit(header("Location: logout.php", true));
+}
 
 ?>
 <!DOCTYPE html>
@@ -42,7 +46,7 @@ if(isset($_POST['delete_pressed'])) {
         <h1>Signal Manager</h1>
         <a href="logout.php">Logout</a>
     </div>
-    <div class="form-section">
+    <div class="add_form_section">
         <h2>Add Signal</h2>
         <form method="POST">
             <label for="date">Date:</label>
@@ -84,30 +88,31 @@ if(isset($_POST['delete_pressed'])) {
                     </tr>
                 </thead>
 
-                <tbody id="item-list">
+                <tbody>
                     <?php
                         try {
                             $list = site_get_signal_list();
                             foreach ($list as $group_id => $signals) {
                                 foreach ($signals as $signal) {
-                                    echo "<tr>\n";
                                     // https://stackoverflow.com/questions/8683528/embed-image-in-a-button-element
                                     if ($signal['signal_type'] === 0) {
+                                        echo "<tr>\n";
                                         echo "  <td><img src=\"src/images/arrow_down.png\" alt=\"Down\" width=\"20\" height=\"15\"/></td>\n";
                                         echo "  <td>".$signal['date_time']."</td>\n";
                                         echo "  <td>Start Signal</td>\n";
                                         echo "  <td><button class=\"list_button\" id=\"$group_id\" type=\"submit\" name=\"delete_pressed\" value=\"$group_id\">Delete</button></td>\n";
                                     } else {
+                                        echo "<tr class=\"subrow\">\n";
                                         $stype = "One Minute Signal";
                                         if ($signal['signal_type'] === 4) {
                                             $stype = "Four Minute Signal";
                                         } else if ($signal['signal_type'] === 5) {
                                             $stype = "Five Minute Signal";
                                         }
-                                        echo "  <td></td>\n";
+                                        echo "  <td class=\"subrow\"></td>\n";
                                         echo "  <td class=\"subrow\">".$signal['date_time']."</td>\n";
                                         echo "  <td class=\"subrow\">$stype</td>\n";
-                                        echo "  <td></td>\n";       
+                                        echo "  <td class=\"subrow\"></td>\n";    
                                     }
                                     echo "</tr>\n";
                                 }

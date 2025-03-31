@@ -46,7 +46,11 @@ function s_stop() {
 function logout(){
     unset($_POST['password']);
     unset($_POST['email']);
-    unset($_SESSION['login']);
+    unset($_SESSION['isloggedintosignal']);
+    unset($_SESSION['signal_error']);
+    unset($_SESSION['login_error']);
+    unset($_SESSION['register_error']);
+    unset($_SESSION['signal_auth_token']);
 }
 
 
@@ -55,10 +59,7 @@ function logout(){
  */
 function cleanSession() {
     s_start();
-    unset($_POST['password']);
-    unset($_POST['email']);
-    unset($_SESSION['login']);
-    unset($_SESSION);
+    logout();
     s_stop();
     session_destroy();
 }
@@ -119,6 +120,9 @@ function addSignal($date_time, $five_min_serie):bool {
         if ($http === 200) {
             return true;
         } else {
+            if ($http === 401) {
+                logout();
+            }
             $_SESSION['signal_error'] = "Could not add signal($reason), code: $http";
         }
     } else {
