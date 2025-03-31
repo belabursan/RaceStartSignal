@@ -48,14 +48,14 @@ if(isLoggedIn() === false) {
             var four = document.getElementById("subrow_"+i+"-4");
             var five = document.getElementById("subrow_"+i+"-5");
             
-            if(element.src.search("arrow_down") > -1) {
+            if(element.src.search("expand") > -1) {
                 one.classList.remove('subrow');
                 one.classList.add('subrow-visible');
                 four.classList.remove('subrow');
                 four.classList.add('subrow-visible');
                 five.classList.remove('subrow');
                 five.classList.add('subrow-visible');
-                element.src = "src/images/arrow_up.png";
+                element.src = "src/images/shrink.png";
             } else {
                 one.classList.remove('subrow-visible');
                 one.classList.add('subrow');
@@ -63,7 +63,7 @@ if(isLoggedIn() === false) {
                 four.classList.add('subrow');
                 five.classList.remove('subrow-visible');
                 five.classList.add('subrow');
-                element.src = "src/images/arrow_down.png";
+                element.src = "src/images/expand.png";
                 
             }
         }
@@ -104,9 +104,15 @@ if(isLoggedIn() === false) {
         </form>
     </div>
     <div class="list-section">
-        <h2>Item List</h2>
+        <h2>Signal List</h2>
         <form method="POST">
             <table>
+                <colgroup>
+                    <col span="1" style="width: 6%;">
+                    <col span="1" style="width: 37%;">
+                    <col span="1" style="width: 37%;">
+                    <col span="1" style="width: 20%;">
+                </colgroup>
                 <thead>
                     <tr>
                         <th></th>
@@ -126,7 +132,7 @@ if(isLoggedIn() === false) {
                                 echo "<!--       Start Signal       -->\n";
                                 echo "<tr class=\"startsignal\">\n";
                                 if(count($sorted) >1) {
-                                    echo "    <td><img id=\"$group_id\" onclick=\"toggle(this);\" src=\"src/images/arrow_down.png\" width=\"20\" height=\"15\"/></td>\n";
+                                    echo "    <td class=\"img-col\" ><img id=\"$group_id\" onclick=\"toggle(this);\" src=\"src/images/expand.png\" width=\"20\" height=\"20\"/></td>\n";
                                 } else {
                                     echo "    <td></td>\n";
                                 }
