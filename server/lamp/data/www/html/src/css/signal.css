@@ -33,7 +33,7 @@ body {
 }
 
 /**************** FORM (add signal) ****************/
-.form-section {
+.add_form_section {
     width: 25%;
     min-width: 140px;
     text-align: left; /* Align content to the left */
@@ -44,25 +44,25 @@ body {
     border-bottom: 1px solid #ddd;
 }
 
-.form-section label, .form-section input, .form-section button {
+.add_form_section label, .add_form_section input, .add_form_section button {
     display: inline-block; /* Ensure label and input are on the same line */
     vertical-align: middle; /* Align label and input vertically */
     margin: 5px 0; /* Add consistent spacing */
 }
 
-.form-section label {
+.add_form_section label {
     width: 35%; /* Set a fixed width for labels to align inputs */
 }
 
-.form-section input {
+.add_form_section input {
     width: 30%; /* Adjust input width to fit next to the label */
     min-width: 80px; /* Ensure enough space for input */
 }
 
-.form-section button {
+.add_form_section button {
     width: 100%;
     padding: 10px;
-    background: #007bff;
+    background: #adf3e4;
     color: white;
     border: none;
     border-radius: 5px;
@@ -70,8 +70,8 @@ body {
     margin-top: 10px; /* Add space between input and button */
 }
 
-.form-section button:hover {
-    background: #0056b3;
+.add_form_section button:hover {
+    background: #4dbdae;
 }
 
 .tooltip {
@@ -98,37 +98,62 @@ body {
 
 /**************** LIST (signal list) ****************/
 .list-section {
-    width: 80%;
-}
-.list-section table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.list-section th, .list-section td {
-    border: 1px solid #ddd;
+    width: 60%;
     padding: 8px;
+    min-width: 300px;
 }
-.list-section th {
+
+.list-section th {   
     background-color: #f2f2f2;
 }
-.subrow td {
-    padding-left: 40px; /* Add padding to the left of subitems */
-    visibility: hidden; /* Ensure subitems are not visible when unexpanded */
-}
-.list-section .subrow {
-    border: none;
-    
-    /* display: none; Ensure subitems are not visible when unexpanded */
-}
+
 .list_button {
+    width: 80%;
     border: none;
-    color: white;
-    padding: 15px 32px;
+    border-radius: 5px;
+    padding: 10px 0px 10px 10px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 4px;
     cursor: pointer;
-    background-color: #008CBA;
+    background-color: #f2f2f2;
+    color:#000
   }
+
+  .list_button:hover {
+    background: #f5a294;
+    color:white
+}
+
+.list-section table {
+    table-layout: fixed;
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    padding: 8px;
+}
+.list-section .startsignal{
+    border-top: 1px solid #f2f2f2;
+}
+.img-col {
+    padding-left: 8px;
+}
+
+.list-section .sub-td {
+    padding-left: 40px;
+}
+
+.list-section .subrow {
+    padding-left: 40px;
+    border: none;
+    visibility: hidden;
+    display: none;
+}
+
+.list-section .subrow-visible {
+    padding-left: 40px;
+    border: none;
+    visibility: visible;
+}

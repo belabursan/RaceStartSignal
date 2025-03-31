@@ -23,7 +23,7 @@ function Enum(baseEnum) {
 const SIGNAL_TYPE = Enum({
     //StartSignal(short), OneMinSignal(long), FourMinSignal(short) or FiveMinSignal(short)
     StartSignal: 0,
-    OneMinSignal: 2,
+    OneMinSignal: 1,
     FourMinSignal: 4,
     FiveMinSignal: 5,
     None: -1
