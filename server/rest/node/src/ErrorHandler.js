@@ -12,7 +12,7 @@ function handleError(error) {
     const error_400 = ["ERROR400", "String is empty.", "Data truncated for column 'status'", "Incorrect time value", "SQLState: 01000) Data truncated for column 'role'", "'startline_name' cannot be null", "Boat not found.", ") not found.", "Invalid email", "Invalid name", "Invalid user"];
     const error_401 = ["ERROR401",  "jwt expired", "Unauthorized. (", "Access denied, you need to login", "not matching id", "JsonWebTokenError: invalid signature"];
     const error_405 = ["ERROR405"];
-    const error_409 = ["ERROR409", "Duplicate entry", "Already joined"];
+    const error_409 = ["ERROR409", "Duplicate entry", "Already joined", "Already exists"];
 
     if (error_400.find(word => errorMessage.includes(word)) !== undefined) {
         code = 400;

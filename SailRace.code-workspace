@@ -7,6 +7,26 @@
 	"settings": {
 		"json.schemas": [],
 		"json.schemaDownload.enable": false,
-		"yaml.schemas": {}
+		"yaml.schemas": {},
+		"workbench.colorCustomizations": {
+			"activityBar.activeBackground": "#b8131f",
+			"activityBar.background": "#b8131f",
+			"activityBar.foreground": "#e7e7e7",
+			"activityBar.inactiveForeground": "#e7e7e799",
+			"activityBarBadge.background": "#1dad12",
+			"activityBarBadge.foreground": "#e7e7e7",
+			"commandCenter.border": "#e7e7e799",
+			"sash.hoverBorder": "#b8131f",
+			"statusBar.background": "#8a0e17",
+			"statusBar.foreground": "#e7e7e7",
+			"statusBarItem.hoverBackground": "#b8131f",
+			"statusBarItem.remoteBackground": "#8a0e17",
+			"statusBarItem.remoteForeground": "#e7e7e7",
+			"titleBar.activeBackground": "#8a0e17",
+			"titleBar.activeForeground": "#e7e7e7",
+			"titleBar.inactiveBackground": "#8a0e1799",
+			"titleBar.inactiveForeground": "#e7e7e799"
+		},
+		"peacock.color": "#8a0e17"
 	}
 }

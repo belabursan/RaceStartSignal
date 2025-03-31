@@ -1,4 +1,26 @@
 <?php
+include_once "node_intf.php";
+
+
+
+
+/**
+ * @brief Checks whether the user is logged in or not
+ * @return bool true if user is logged in, false otherwise
+ */
+function isLoggedIn(): bool {
+    try {
+        s_start();
+        if(isset($_SESSION["isloggedintosignal"]) 
+            && $_SESSION["isloggedintosignal"] === true 
+            && isset($_SESSION["signal_auth_token"])) {
+            return true;
+        }
+        return false;
+    }finally {
+        s_stop();
+    }
+}
 
 
 /**
@@ -21,6 +43,12 @@ function s_stop() {
     }
 }
 
+function logout(){
+    unset($_POST['password']);
+    unset($_POST['email']);
+    unset($_SESSION['login']);
+}
+
 
 /**
  * @brief Cleans (unsets) all session parameters used by the page
@@ -29,55 +57,51 @@ function cleanSession() {
     s_start();
     unset($_POST['password']);
     unset($_POST['email']);
+    unset($_SESSION['login']);
     unset($_SESSION);
     s_stop();
     session_destroy();
 }
 
 /**
- * Logs in a user
+ * Logs in a user. If it fails an error message is stored in the session.
  * @param string email the user identifier
  * @param string password Clean password of the user
- * @return string ret page to redirect to
+ * @return string return page to redirect to
  */
 function site_login($email, $password):string  {
-    $login_info = Array (
-        'email' => $email,
-        'password' => $password
-    );
-    $url = "https://172.19.0.70:7443/user/login";
-    $ret = httpsPostWithBody($url, $login_info);
+    $ret = node_login($email, $password);
 
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 200) {
-            $_SESSION['login_token'] = $ret["response"];
+            // login succeeded, store auth token and return signal page
+            $_SESSION['signal_auth_token'] = $ret["response"];
+            $_SESSION['isloggedintosignal'] = true;
             return 'signal.php';
         } else  if ($http === 401) {
             $_SESSION['login_error'] = "Could not login, unauthorized!";
         } else {
-            $_SESSION['login_error'] = "Could not login, code: ".$http;
+            $_SESSION['login_error'] = "Could not login, code: $http";
         }
     } else {
-        $_SESSION['login_error'] = "Could not register, curl failed!";
+        $_SESSION['login_error'] = "Could not login, curl failed!";
     }
     return 'index.php';
 }
 
 
 function site_register($email) : string {
-    $data = array('email' => $email);
-    $url = "https://172.19.0.70:7443/user?".http_build_query($data);
-    $ret = httpsPost($url);
+    $ret = node_register($email);
     
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 201) {
             return 'index.php';
-        } else  if ($http === 409) {
+        } else if ($http === 409) {
             $_SESSION['register_error'] = "Could not register, user already registered";
         } else {
-            $_SESSION['register_error'] = "Could not register, code: ".$http;
+            $_SESSION['register_error'] = "Could not register, code: $http";
         }
     } else {
         $_SESSION['register_error'] = "Could not register, curl failed!";
@@ -85,52 +109,53 @@ function site_register($email) : string {
     return 'register.php';
 }
 
-/**
- * Performs a POST 
- * @param url the url to post, can contain parameters
- * @return the response from the server as array or null if curl failed
- * @see: https://www.php.net/manual/en/function.curl-getinfo.php
- */
-function httpsPost($url): Array {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HEADER, false); 
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
-    $info = null;
-    if($response !== false) {
-        $info = curl_getinfo($ch);
+
+function addSignal($date_time, $five_min_serie):bool {
+    $ret = node_add_signal($date_time, $five_min_serie);
+    //var_dump($ret);
+    $reason= $ret['response'];
+    if($ret["response"] !== false) {
+        $http = $ret["info"]["http_code"];
+        if ($http === 200) {
+            return true;
+        } else {
+            $_SESSION['signal_error'] = "Could not add signal($reason), code: $http";
+        }
+    } else {
+        $_SESSION['signal_error'] = "Could not add signal, curl failed!";
     }
-    curl_close($ch);
-    return Array('response' => $response, 'info' => $info);
+    return false;     
 }
 
 
 /**
- * 
+ * Returns all list of signals
+ * @return array - list of signals or empty list if db is empty
  */
-function httpsPostWithBody($url, $postBody) {
-    $ch = curl_init();
-    curl_setopt_array($ch, array(
-        CURLOPT_URL => $url,
-        CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_HTTPHEADER => array(
-            /*'Authorization: '.$authToken,*/
-            'Content-Type: application/json'
-        ),
-        CURLOPT_POSTFIELDS => json_encode($postBody)
-    ));
-    $response = curl_exec($ch);
-    $info = null;
-    if($response !== false) {
-        $info = curl_getinfo($ch);
+function site_get_signal_list(): array {
+    $list = node_get_signals();
+    $groups = [];
+
+    foreach($list as $key => $value) {
+        $gid = $value["group_id"];
+        if (!isset($groups[$gid])) {
+            $groups[$gid] = [];
+        }
+        $sig = ["signal_type" => $value["signal_type"],
+                "date_time" => $value["date_time"]];
+        array_push($groups[$gid], $sig);
     }
-    curl_close($ch);
-    return Array('response' => $response, 'info' => $info);
+    return $groups;
+}
+
+
+function deleteSignal($group_id):bool {
+    $ret = node_delete_signal($group_id);
+    if($ret === false) {
+        $_SESSION['signal_error'] = "Could not delete signal, curl failed!";
+        return false;
+    }
+    return true;     
 }
 
 ?>

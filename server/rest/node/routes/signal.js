@@ -21,10 +21,12 @@ router.use(async function (req, res, next) {
 
 
 router.route("/")
-    .post(async (req, res) => {             // POST SIGNAL
+    .post(async (req, res) => {             // Adds a SIGNAL
         try {
-            const signal = Validator.validateSignal(req.body);
-            await Signal.addSignal(signal);
+            const signal = req.body;
+            Validator.validateSignal(signal)
+            const group_id = await Signal.addSignal(signal);
+            console.log("Signal added with group id: " + group_id);
             return res.sendStatus(200);
         } catch (error) {
             const { code, message } = ErrorHandler.handleError(error);
@@ -34,11 +36,12 @@ router.route("/")
     })
     .get(async (req, res) => {              // GET SIGNALS(s)
         try {
+            console.log("Getting signal");
             if (req.query.filter) {       // get specified signal
-                const signal = await Signal.getSignalsByGroupId(req.query.filter);
-                return res.status(200).send(signal);
+                console.error("Not yet implemented");
+                return res.status(500).send("Not yet implemented");
             } else {                        // get all signals
-                const signals = await Signal.getSignalss();
+                const signals = await Signal.getSignals();
                 return res.status(200).send(signals);
             }
         } catch (error) {
@@ -49,7 +52,7 @@ router.route("/")
     })
     .delete(async (req, res) => {               // DELETE SIGNAL by GROUP ID
         try {
-            await Signal.deleteSignal(req.query.id);
+            await Signal.deleteSignalByGroupId(req.query.id);
             return res.sendStatus(200);
         } catch (error) {
             const { code, message } = ErrorHandler.handleError(error);

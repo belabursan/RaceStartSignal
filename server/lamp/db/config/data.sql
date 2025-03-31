@@ -10,17 +10,18 @@ USE `MYSQL_DATABASE`;
 
 -- Table that holds information about the registered users --
 CREATE TABLE IF NOT EXISTS `user_info` (
-    `user_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `email` VARCHAR(64) UNIQUE NOT NULL,
+    `user_id`   INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `email`     VARCHAR(64) UNIQUE NOT NULL,
     `pass_hash` VARCHAR(128) NOT NULL,
     PRIMARY KEY(`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 -- Table holds the signals --
-CREATE TABLE IF NOT EXISTS `signal` (
+CREATE TABLE IF NOT EXISTS `signals` (
+    `id`            INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `date_time`     DATETIME UNIQUE NOT NULL,
-    `group_uuid`      VARCHAR(40) NOT NULL,
-    `signal_type`   INTEGER NOT NULL DEFAULT 1,
-    PRIMARY KEY(`date_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+    `group_id`      INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    `signal_type`   INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY(`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

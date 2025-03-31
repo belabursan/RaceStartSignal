@@ -3,8 +3,12 @@ const validator = require('validator')
 
 // TODO: https://www.npmjs.com/package/jsonschema
 function validateSignal(signal) {
-    // TODO fix this
-    return signal;
+    if(isNotEmptyObject(signal, "Invalid signal")) {
+        if(isNotEmptyString(signal.date_time), "Invalid date_time") {
+            return signal;
+        }
+    }
+    throw new Error("ERROR400: Invalid signal json");
 }
 
 
@@ -12,13 +16,13 @@ function isValidEmail(email) {
     if (email && validator.isEmail(email.toString())) {
         return true;
     }
-    throw new Error("Invalid email");
+    throw new Error("ERROR400: Invalid email");
 }
 
 
 function isNotEmptyString(value, txt = "") {
     if (!value || validator.isEmpty(value)) {
-        throw new Error("String is empty." + txt);
+        throw new Error("ERROR400: String is empty." + txt);
     }
     return true;
 }
