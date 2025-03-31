@@ -104,11 +104,17 @@ body {
     width: 100%;
     border-collapse: collapse;
 }
-.list-section th, .list-section td {
+.list-section th {
     border: 1px solid #ddd;
-    border-left: white;
-    border-right: white;
     padding: 8px;
+}
+
+.list-section td {
+    border-bottom: 1px solid #3c5a48;
+    padding: 8px;
+}
+.subrow-td {
+    border-bottom: none;
 }
 .list-section .subrow {
     border: none;

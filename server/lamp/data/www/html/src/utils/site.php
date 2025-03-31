@@ -162,4 +162,14 @@ function deleteSignal($group_id):bool {
     return true;     
 }
 
+
+function sortSignalGroup($signalGroup):array {
+    $out = [];
+    foreach ($signalGroup as $signal) {
+
+        $out[$signal['signal_type']] = $signal['date_time'];
+    }
+    return $out;
+}
+
 ?>
