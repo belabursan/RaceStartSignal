@@ -62,6 +62,6 @@ handleLogin();
             <button type="submit" name="login">Login</button>
         </form>
     </div>
+    <?php printFooter(""); ?>
 </body>
-
 </html>

@@ -172,4 +172,20 @@ function sortSignalGroup($signalGroup):array {
     return $out;
 }
 
+/**
+ * @brief Prints the footer on a page
+ * Shall be printed after the closing tag of <main>
+ */
+function printFooter($vers="") {
+    $YEAR = date('Y');
+
+    echo "<div class=\"signal-footer\">
+        <section>
+            <address property=\"email\">
+                <span class=\"copy\">&copy;$YEAR <a href=\"mailto:burszan@gmail.com\">buri</a> $vers</span>
+            </address>
+        </section>
+    </div>\n";
+}
+
 ?>

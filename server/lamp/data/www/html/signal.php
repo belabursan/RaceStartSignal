@@ -182,5 +182,6 @@ if(isLoggedIn() === false) {
             </table>
         </form>
     </div>
+    <?php printFooter(); ?>
 </body>
 </html>

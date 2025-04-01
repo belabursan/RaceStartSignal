@@ -46,6 +46,6 @@ handle_register();
             </form>
         </div>
     </div>
+    <?php printFooter(); ?>
 </body>
-
 </html>
