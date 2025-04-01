@@ -1,11 +1,11 @@
 <?php
 include_once "src/utils/site.php";
-
+s_start();
 if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
     exit(header("Location: https://$host/signal.php", true));
 }
-
+s_stop();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +14,7 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow" />
-    <title>Login Page</title>
+    <title>Signal Login Page</title>
     <link rel="stylesheet" type='text/css' href="src/css/index.css">
     <script src="src/scripts/site.js"></script>
 </head>
@@ -33,11 +33,13 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     </div>
     
     <?php
-        if (isset($_SESSION["login_error"])) {
-            printError($_SESSION["login_error"]);
-            unset($_SESSION["login_error"]);
-        }
-        printFooter();
+    s_start();
+    if (isset($_SESSION["login_error"])) {
+        printError($_SESSION["login_error"]);
+        unset($_SESSION["login_error"]);
+    }
+    printFooter();
+    s_stop();
     ?>
 </body>
 </html>

@@ -11,8 +11,8 @@ $ONLY_ERRORS = false;
  */
 function log_all($msg, $type=I_INFO) {
     $now = date("Y-m-d H:i:s");
-    $logfile = "../logs/race_signal_php.log";
-
+    $root = $_SERVER['DOCUMENT_ROOT'];
+    $logfile = "$root/src/logs/race_signal_php.log";
     error_log("$type($now) - $msg\n", 3, $logfile);
 }
 

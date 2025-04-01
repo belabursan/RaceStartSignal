@@ -64,6 +64,7 @@ function logout(){
     unset($_SESSION['login_error']);
     unset($_SESSION['register_error']);
     unset($_SESSION['signal_auth_token']);
+    log_i("Logged out");
 }
 
 
@@ -75,6 +76,7 @@ function cleanSession() {
     logout();
     s_stop();
     session_destroy();
+    log_i("Session destroyed");
 }
 
 /**
@@ -102,6 +104,7 @@ function site_login($email, $password):bool  {
             $message = "Could not login!";
         }
     }
+    log_e($message);
     throw new Exception($message, $code, null);
 }
 
@@ -129,11 +132,19 @@ function site_register(string $email) : bool {
             $message = "Could not register, code: $code";
         }
     }
+    log_e($message);
     throw new Exception($message, $code, null);
 }
 
 
+/**
+ * Adds a signal to the db
+ * @param string $date_time date to add the signal for
+ * @param bool $five_min_serie true if five min serie should be added too
+ * @return bool true if addition succeeded, false otherwise
+ */
 function addSignal($date_time, $five_min_serie):bool {
+    log_i("adding signal: $date_time");
     $ret = node_add_signal($date_time, $five_min_serie);
     //var_dump($ret);
     $reason= $ret['response'];
@@ -146,9 +157,11 @@ function addSignal($date_time, $five_min_serie):bool {
                 logout();
             }
             $_SESSION['signal_error'] = "Could not add signal($reason), code: $http";
+            log_e("Could not add signal($reason), code: $http");
         }
     } else {
         $_SESSION['signal_error'] = "Could not add signal, curl failed!";
+        log_e("Could not add signal, curl failed!");
     }
     return false;     
 }
@@ -159,6 +172,8 @@ function addSignal($date_time, $five_min_serie):bool {
  * @return array - list of signals or empty list if db is empty
  */
 function site_get_signal_list(): array {
+    log_i("Getting signal list");
+
     $list = node_get_signals();
     $groups = [];
 
@@ -174,10 +189,17 @@ function site_get_signal_list(): array {
     return $groups;
 }
 
-
+/**
+ * Deletes a signal group from db
+ * @param string $group_id greoup id to delete
+ * @return bool true if deletion has succeeded, false otherwise
+ */
 function deleteSignal($group_id):bool {
+    log_i("deleting group $group_id");
+
     $ret = node_delete_signal($group_id);
     if($ret === false) {
+        log_e("Could not delete signal $group_id, curl failed!");
         $_SESSION['signal_error'] = "Could not delete signal, curl failed!";
         return false;
     }
@@ -188,7 +210,6 @@ function deleteSignal($group_id):bool {
 function sortSignalGroup($signalGroup):array {
     $out = [];
     foreach ($signalGroup as $signal) {
-
         $out[$signal['signal_type']] = $signal['date_time'];
     }
     return $out;
@@ -198,7 +219,7 @@ function sortSignalGroup($signalGroup):array {
  * @brief Prints the footer on a page
  * Shall be printed after the closing tag of <main>
  */
-function printFooter($vers="v0.1.0") {
+function printFooter($vers="v1.0.0") {
     $YEAR = date('Y');
 
     echo "<div class=\"signal-footer\">
@@ -216,7 +237,7 @@ function printFooter($vers="v0.1.0") {
  */
 function printError($error="") {
     echo "<div id=\"error-monitor\" class=\"error-footer\" onclick=\"fadeOut(this.id);\">
-        <h3>
+        <h3 style=\"background-color: lightcoral;\">
             $error
         </h3>
     </div>\n";
