@@ -1,0 +1,171 @@
+@import "footer.css";
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/**************** HEADER ****************/
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+    padding: 10px 20px;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Ensure text and link stay on the same line */
+}
+
+.header h1 {
+    margin: 0 auto; /* Center the title */
+    text-align: left;
+    margin-left: 30px;
+    color: coral;;
+}
+
+.header a {
+    margin-left: auto; /* Push the logout link to the far right */
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+/**************** FORM (add signal) ****************/
+.add_form_section {
+    width: 25%;
+    min-width: 140px;
+    text-align: left; /* Align content to the left */
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #ddd;
+}
+
+.add_form_section label, .add_form_section input, .add_form_section button {
+    display: inline-block; /* Ensure label and input are on the same line */
+    vertical-align: middle; /* Align label and input vertically */
+    margin: 5px 0; /* Add consistent spacing */
+}
+
+.add_form_section label {
+    width: 35%; /* Set a fixed width for labels to align inputs */
+}
+
+.add_form_section input {
+    width: 30%; /* Adjust input width to fit next to the label */
+    min-width: 80px; /* Ensure enough space for input */
+}
+
+.add_form_section button {
+    width: 100%;
+    padding: 10px;
+    background: #adf3e4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px; /* Add space between input and button */
+}
+
+.add_form_section button:hover {
+    background: #4dbdae;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgb(81, 79, 79);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+/**************** LIST (signal list) ****************/
+.list-section {
+    width: 60%;
+    padding: 8px;
+    min-width: 300px;
+}
+
+.list-section th {   
+    background-color: #f2f2f2;
+}
+
+.list_button {
+    width: 80%;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 0px 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    color:#000
+  }
+
+  .list_button:hover {
+    background: #f5a294;
+    color:white
+}
+
+.list-section table {
+    table-layout: fixed;
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    padding: 8px;
+}
+.list-section .startsignal{
+    border-top: 1px solid #f2f2f2;
+}
+.img-col {
+    padding-left: 8px;
+}
+
+.list-section .sub-td {
+    padding-left: 40px;
+}
+
+.list-section .subrow {
+    padding-left: 40px;
+    border: none;
+    visibility: hidden;
+    display: none;
+}
+
+.list-section .subrow-visible {
+    padding-left: 40px;
+    border: none;
+    visibility: visible;
+}
+/**************** error handler ****************/
+body .error-footer {
+    position: fixed;
+    width: 800%;
+    bottom: 200px;
+    font-size: 18px;
+    background-color: lightcoral;
+    text-align: center;
+    z-index: 10;
+}

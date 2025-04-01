@@ -10,6 +10,9 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Mac
+.DS_Store
+
 # Runtime data
 pids
 *.pid
@@ -128,3 +131,15 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+##############################33
+.env
+server/rest/node/secret/*
+server/lamp/data/mysql/*
+server/lamp/data/log/*
+server/lamp/php/config/vhosts/*
+#server/lamp/data/www/html/*
+!server/lamp/data/www/html/index.php
+id_rsa
+id_rsa.pub
+tmp.txt

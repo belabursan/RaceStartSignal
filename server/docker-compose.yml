@@ -1,0 +1,147 @@
+# Docker compose file for the SailRaceSignal server
+# v1.1.0 Bela Bursan <burszan@gmail.com>
+#
+services:
+  webserver:
+    build:
+      context: ./lamp/php
+      args:
+        SSL_KEY_PASS: ${SSL_KEY_PASS}
+        SIGNAL_DOMAIN: ${SIGNAL_DOMAIN}
+    container_name: "SailRaceSignal-Web"
+    restart: "unless-stopped"
+    hostname: ${SIGNAL_DOMAIN}
+    ports:
+      - "443:443"
+    volumes:
+      - ./lamp/data/www/html:/var/www/html
+      - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini
+      - ./lamp/php/config/vhosts:/etc/apache2/sites-enabled
+      - ./lamp/data/log/apache2:/var/log/apache2
+      - /var/log/xdebug:/var/log/xdebug
+    environment:
+      APACHE_DOCUMENT_ROOT: "/var/www/html"
+      PMA_PORT: 8080
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      HOST_MACHINE_MYSQL_PORT: ${HOST_MACHINE_MYSQL_PORT}
+      XDEBUG_CONFIG: "client_host=host.docker.internal remote_port=${XDEBUG_PORT}"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: '0' # Allow non-root user to bind to port 80
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.40
+        aliases:
+          - webserver
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - database
+  database:
+    build:
+      context: "./lamp/db"
+      args:
+        SAILRACE_DATABASE: ${MYSQL_DATABASE}
+    container_name: "SailRaceSignal-DB"
+    restart: "unless-stopped"
+    volumes:
+      - ./lamp/data/mysql:/var/lib/mysql
+      - /var/log/mysql:/var/log/mysql
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.50
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  phpmyadmin:
+#    put this in /etc/phpmyadmin/config.inc.php file:  $cfg['Lang'] = 'en';
+    build:
+      context: "./phpmyadmin"
+      args:
+        SIGNAL_DOMAIN: ${SIGNAL_DOMAIN}
+    restart: "unless-stopped"
+    container_name: "SailRaceSignal-Phpmyadmin"
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.80
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      UPLOAD_LIMIT: 512M
+      MEMORY_LIMIT: 512M
+    ports:
+      - "8000:80"
+    volumes:
+      - ./lamp/php/config/php.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+    depends_on:
+      - database
+#  redis:
+#    container_name: "SailRaceSignal-Redis"
+#    image: redis:latest
+#    ports:
+#      - "127.0.0.1:6379:6379"
+#    networks:
+#      sailnetwork:
+#        ipv4_address: 172.19.0.60
+  dozzle:
+    container_name: "SailRaceSignal-Dozzle"
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9000:8080
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.90
+  node:
+    build:
+      context: ./rest/node
+      args:
+        SSL_KEY_PASS: ${SSL_KEY_PASS}
+    container_name: "SailRaceSignal-Node"
+    restart: "unless-stopped"
+#    ports:
+#      - 7000:${NODE_HTTP_PORT}
+#      - 7443:${NODE_HTTPS_PORT}
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.70
+    depends_on:
+      - database
+    environment:
+      NODE_JWT_EXP: ${NODE_JWT_EXP}
+      SSL_KEY_PASS: ${SSL_KEY_PASS}
+      NODE_HTTPS_PORT: ${NODE_HTTPS_PORT}
+      NODE_HTTP_PORT: ${NODE_HTTP_PORT}
+      NODE_HTTPS: ${NODE_HTTPS}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_HOST: "database"
+      NODE_LOGIN_SECRET: ${NODE_LOGIN_SECRET}
+      DEBUG: ${DEBUG}
+      DEVELOP: ${DEVELOP}
+      NODE_SECURE_LOGIN: ${NODE_SECURE_LOGIN}
+      NODE_STRICT_JOIN: ${NODE_STRICT_JOIN}
+      DEFAULT_DNS_POINT: ${DEFAULT_DNS_POINT}
+networks:
+  sailnetwork:
+    name: "SailRaceSignalNetwork"
+    driver: bridge
+    ipam:
+        driver: default
+        config:
+          - subnet: 172.19.0.0/24
+
+# https://github.com/sprintcube/docker-compose-lamp/blob/master/docker-compose.yml
