@@ -70,3 +70,15 @@ body {
 .login_container button:hover {
     background: #0056b3;
 }
+
+
+.error-footer {
+    position: fixed;
+    width: 800%;
+    bottom: 200px;
+    
+    font-size: 18px;
+    background-color: lightcoral;
+    text-align: center;
+    z-index: 10;
+}

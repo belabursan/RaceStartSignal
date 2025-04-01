@@ -1,5 +1,6 @@
 <?php
 include_once "node_intf.php";
+include_once "logger.php";
 
 
 
@@ -84,7 +85,7 @@ function cleanSession() {
  */
 function site_login($email, $password):bool  {
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {     
-        throw new Exception("Invalid email format!", -1, null);           
+        throw new Exception("Invalid email format!", -2, null);           
     }
     $ret = node_login($email, $password);
     $message = "Could not login, curl failed (node down?).";
@@ -190,7 +191,7 @@ function sortSignalGroup($signalGroup):array {
  * @brief Prints the footer on a page
  * Shall be printed after the closing tag of <main>
  */
-function printFooter($vers="") {
+function printFooter($vers="v0.1.0") {
     $YEAR = date('Y');
 
     echo "<div class=\"signal-footer\">
@@ -207,10 +208,10 @@ function printFooter($vers="") {
  * Shall be printed after the closing tag of <main>
  */
 function printError($error="") {
-    echo "<div class=\"error-footer\">
-        <span>
+    echo "<div id=\"error-monitor\" class=\"error-footer\" onclick=\"fadeOut(this.id);\">
+        <h3>
             $error
-        </span>
+        </h3>
     </div>\n";
 }
 
