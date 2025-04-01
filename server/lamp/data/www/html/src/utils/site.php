@@ -22,6 +22,18 @@ function isLoggedIn(): bool {
     }
 }
 
+/**
+ * Sets a login
+ * @param string $token auth token to set
+ * @return bool Always true
+ */
+function setLogin(string $token):bool {
+    $_SESSION['signal_auth_token'] = $token;
+    $_SESSION['isloggedintosignal'] = true;
+    log_i("login set");
+    return true;
+}
+
 
 /**
  * Starts the session if not already started
@@ -68,27 +80,29 @@ function cleanSession() {
  * Logs in a user. If it fails an error message is stored in the session.
  * @param string email the user identifier
  * @param string password Clean password of the user
- * @return string return page to redirect to
+ * @return boolean true if login succeded, throws exception otherwise
  */
-function site_login($email, $password):string  {
+function site_login($email, $password):bool  {
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {     
+        throw new Exception("Invalid email format!", -1, null);           
+    }
     $ret = node_login($email, $password);
+    $message = "Could not login, curl failed (node down?).";
+    $code = 555;
 
     if($ret["response"] !== false) {
         $http = $ret["info"]["http_code"];
         if ($http === 200) {
-            // login succeeded, store auth token and return signal page
-            $_SESSION['signal_auth_token'] = $ret["response"];
-            $_SESSION['isloggedintosignal'] = true;
-            return 'signal.php';
+            // login succeeded, store auth token
+            return setLogin($ret["response"]);
         } else  if ($http === 401) {
-            $_SESSION['login_error'] = "Could not login, unauthorized!";
+            $message = "Could not login, unauthorized!";
         } else {
-            $_SESSION['login_error'] = "Could not login, code: $http";
+            $message = "Could not login!";
+            $code = $http;
         }
-    } else {
-        $_SESSION['login_error'] = "Could not login, curl failed!";
     }
-    return 'index.php';
+    throw new Exception($message, $code, null);
 }
 
 
@@ -185,6 +199,18 @@ function printFooter($vers="") {
                 <span class=\"copy\">&copy;$YEAR <a href=\"mailto:burszan@gmail.com\">buri</a> $vers</span>
             </address>
         </section>
+    </div>\n";
+}
+
+/**
+ * @brief Prints the footer on a page
+ * Shall be printed after the closing tag of <main>
+ */
+function printError($error="") {
+    echo "<div class=\"error-footer\">
+        <span>
+            $error
+        </span>
     </div>\n";
 }
 

@@ -6,39 +6,6 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     exit(header("Location: https://$host/signal.php", true));
 }
 
-/**
- * @brief Handles the login procedure for a user
- * Called on the login.php
- */
-function handleLogin()
-{
-    s_start();
-    if ( isset($_SESSION['login_error'])) {
-        echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
-        unset($_SESSION['login_error']);
-    } else {
-        if (isset($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password'])) {
-            unset($_POST['login']);
-            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                echo "<script>alert('Invalid email format!');</script>";
-            } else {
-                $host = $_SERVER['HTTP_HOST'];
-                $page = site_login($_POST['email'], $_POST['password']);
-                unset($_POST['password']);
-                unset($_POST['email']);
-                if ( isset($_SESSION['login_error'])) {
-                    echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
-                    unset($_SESSION['login_error']);
-                } else {
-                    exit(header("Location: https://$host/$page", true));
-                }
-            }
-        }
-    }
-    s_stop();
-}
-
-handleLogin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,6 +29,12 @@ handleLogin();
             <button type="submit" name="login">Login</button>
         </form>
     </div>
-    <?php printFooter(""); ?>
+    
+    <?php
+        if (isset($_SESSION["login_error"])) {
+            printError($_SESSION["login_error"]);
+        }
+        printFooter("");
+    ?>
 </body>
 </html>
