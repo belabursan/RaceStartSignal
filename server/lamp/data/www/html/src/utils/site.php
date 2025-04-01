@@ -92,37 +92,44 @@ function site_login($email, $password):bool  {
     $code = 555;
 
     if($ret["response"] !== false) {
-        $http = $ret["info"]["http_code"];
-        if ($http === 200) {
+        $code = $ret["info"]["http_code"];
+        if ($code === 200) {
             // login succeeded, store auth token
             return setLogin($ret["response"]);
-        } else  if ($http === 401) {
+        } else  if ($code === 401) {
             $message = "Could not login, unauthorized!";
         } else {
             $message = "Could not login!";
-            $code = $http;
         }
     }
     throw new Exception($message, $code, null);
 }
 
-
-function site_register($email) : string {
+/**
+ * Registers an email on the server
+ * @param string $email
+ * @throws \Exception in case of not 200 http error code
+ * @return bool if registering succeeded
+ */
+function site_register(string $email) : bool {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {     
+        throw new Exception("Invalid email format!", -2, null);           
+    }
+    $message = "Could not register, curl failed (node down?).";
+    $code = 555;
     $ret = node_register($email);
     
     if($ret["response"] !== false) {
-        $http = $ret["info"]["http_code"];
-        if ($http === 201) {
-            return 'index.php';
-        } else if ($http === 409) {
-            $_SESSION['register_error'] = "Could not register, user already registered";
+        $code = $ret["info"]["http_code"];
+        if ($code === 201) {
+            return true;
+        } else if ($code === 409) {
+            $message = "Could not register, user already registered";
         } else {
-            $_SESSION['register_error'] = "Could not register, code: $http";
+            $message = "Could not register, code: $code";
         }
-    } else {
-        $_SESSION['register_error'] = "Could not register, curl failed!";
     }
-    return 'register.php';
+    throw new Exception($message, $code, null);
 }
 
 
