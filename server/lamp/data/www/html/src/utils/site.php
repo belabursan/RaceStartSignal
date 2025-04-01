@@ -3,7 +3,18 @@ include_once "node_intf.php";
 include_once "logger.php";
 
 
-
+/**
+ * @brief Redirects the page to the secure https
+ * Shall be placed first in the index.php
+ */
+function redirectTohttps() {
+    if ($_SERVER['HTTPS'] != "on") {
+        $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        header('HTTP/1.1 301 Moved Permanently');
+        header("Location: $redirect");
+        exit();
+    }
+}
 
 /**
  * @brief Checks whether the user is logged in or not

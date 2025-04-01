@@ -97,7 +97,7 @@ s_stop();
                                 echo "<!--       Start Signal       -->\n";
                                 echo "<tr class=\"startsignal\">\n";
                                 if(count($sorted) >1) {
-                                    echo "    <td class=\"img-col\" ><img id=\"$group_id\" onmouseover=\"hoverIn(this);\" onmouseleave=\"hoverOut(this);\" onclick=\"toggle(this);\" src=\"src/images/expand.png\" width=\"20\" height=\"20\"/></td>\n";
+                                    echo "    <td class=\"img-col\" ><img id=\"$group_id\" onmouseover=\"hoverIn(this);\" onmouseleave=\"hoverOut(this);\" onclick=\"toggle(this);\" src=\"src/images/expand.png\" width=\"16\" height=\"16\"/></td>\n";
                                 } else {
                                     echo "    <td></td>\n";
                                 }
