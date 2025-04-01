@@ -23,9 +23,9 @@ function redirectTohttps() {
 function isLoggedIn(): bool {
     try {
         s_start();
-        if(isset($_SESSION["isloggedintosignal"]) 
+        if(isset($_SESSION["isloggedintosignal"]) === true
             && $_SESSION["isloggedintosignal"] === true 
-            && isset($_SESSION["signal_auth_token"])) {
+            && isset($_SESSION["signal_auth_token"]) === true) {
             return true;
         }
         return false;
