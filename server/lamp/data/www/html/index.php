@@ -1,44 +1,11 @@
 <?php
 include_once "src/utils/site.php";
-
+s_start();
 if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
     exit(header("Location: https://$host/signal.php", true));
 }
-
-/**
- * @brief Handles the login procedure for a user
- * Called on the login.php
- */
-function handleLogin()
-{
-    s_start();
-    if ( isset($_SESSION['login_error'])) {
-        echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
-        unset($_SESSION['login_error']);
-    } else {
-        if (isset($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password'])) {
-            unset($_POST['login']);
-            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                echo "<script>alert('Invalid email format!');</script>";
-            } else {
-                $host = $_SERVER['HTTP_HOST'];
-                $page = site_login($_POST['email'], $_POST['password']);
-                unset($_POST['password']);
-                unset($_POST['email']);
-                if ( isset($_SESSION['login_error'])) {
-                    echo "<script>alert('". $_SESSION['login_error'] . "');</script>";
-                    unset($_SESSION['login_error']);
-                } else {
-                    exit(header("Location: https://$host/$page", true));
-                }
-            }
-        }
-    }
-    s_stop();
-}
-
-handleLogin();
+s_stop();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,22 +13,33 @@ handleLogin();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Signal Login Page</title>
     <link rel="stylesheet" type='text/css' href="src/css/index.css">
+    <script src="src/scripts/site.js"></script>
 </head>
 
-<body>
+<body onload="fadeOut('error-monitor');">
     <div class="headerx">
         <h1>Lagunens Race Signal Page</h1>
         <span class="register_text" >Dont't have an account? <a href="register.php">Register</a></span>
     </div>
     <div class="login_container">
-        <form action="" method="POST">
+        <form action="src/utils/login.php" method="POST">
             <input type="text" pattern="[a-zA-Z0-9@.]+" name="email" placeholder="Email Address" required autofocus /><br />
             <input type="password" name="password" placeholder="Password" required /><br />
             <button type="submit" name="login">Login</button>
         </form>
     </div>
+    
+    <?php
+    s_start();
+    if (isset($_SESSION["login_error"])) {
+        printError($_SESSION["login_error"]);
+        unset($_SESSION["login_error"]);
+    }
+    printFooter();
+    s_stop();
+    ?>
 </body>
-
 </html>

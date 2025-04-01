@@ -1,51 +1,44 @@
 <?php
 include_once "src/utils/site.php";
 
-function handle_register() {
-    if ( isset($_SESSION['register_error'])) {
-        echo "<script>alert('". $_SESSION['register_error'] . "');</script>";
-        unset($_SESSION['register_error']);
-    } else {
-        if (isset($_POST['register']) && !empty($_POST['reg_email'])) {
-            unset($_POST['register']);
-            if (!filter_var($_POST['reg_email'], FILTER_VALIDATE_EMAIL)) {
-                echo "<script>alert('Invalid email format!');</script>";
-            } else {
-                $host = $_SERVER['HTTP_HOST'];
-                $page = site_register($_POST['reg_email']);
-                if ( isset($_SESSION['register_error'])) {
-                    echo "<script>alert('". $_SESSION['register_error'] . "');</script>";
-                    unset($_SESSION['register_error']);
-                } else{
-                    exit(header("Location: https://$host/$page", true));
-                }
-            }
-        }
-    }
+s_start();
+if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
+    $host = $_SERVER['HTTP_HOST'];
+    exit(header("Location: https://$host/signal.php", true));
 }
-handle_register();
-
+s_stop();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Page</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Signal Register Page</title>
     <link rel="stylesheet" type='text/css' href="src/css/register.css">
+    <script src="src/scripts/site.js"></script>
 </head>
 
-<body>
+<body onload="fadeOut('error-monitor');">
     <div class="center">
         <div class="register_container">
             <h2>Register as user</h2>
-            <form action="" method="POST">
+            <form action="src/utils/doregister.php" method="POST">
                 <input type="text" pattern="[a-zA-Z0-9@.]+" name="reg_email" placeholder="Email Address" required autofocus /><br />
                 <button type="submit" name="register">Register</button>
             </form>
         </div>
     </div>
+    <?php 
+    s_start();
+    if (isset($_SESSION["register_error"])) {
+        printError($_SESSION["register_error"]);
+        unset($_SESSION["login_error"]);
+    }
+    printFooter();
+    s_stop();
+    ?>
 </body>
-
 </html>

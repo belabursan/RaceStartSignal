@@ -1,7 +1,6 @@
 <?php
-// https://stackoverflow.com/questions/8683528/embed-image-in-a-button-element -->
-session_start();
 include_once "src/utils/site.php";
+s_start();
 
 if(isLoggedIn() === false) {
     $host = $_SERVER['HTTP_HOST'];
@@ -14,69 +13,27 @@ if (isset($_POST['add_signal'])) {
     $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
     addSignal($datetime, $five_min_serie);
     unset($_POST['add_signal']);
-    if(isset($_SESSION['signal_error'])) {
-        echo "<script>alert('". $_SESSION['signal_error'] . "');</script>";
-        unset($_SESSION['signal_error']);
-    }
 }
 
 if(isset($_POST['delete_pressed'])) {
     $group_id = intval($_POST['delete_pressed']);
     deleteSignal($group_id);
     unset($_POST['delete_pressed']);
-    if(isset($_SESSION['signal_error'])) {
-        echo "<script>alert('". $_SESSION['signal_error'] . "');</script>";
-        unset($_SESSION['signal_error']);
-    }
 }
-if(isLoggedIn() === false) {
-    exit(header("Location: logout.php", true));
-}
-
+s_stop();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow" />
     <link rel="stylesheet" type='text/css' href="src/css/signal.css">
+    <script src="src/scripts/site.js"></script>
     <title>Race Signal Manager</title>
-    <script>
-        function toggle(element){
-            var i = element.id;
-            var one = document.getElementById("subrow_"+i+"-1");
-            var four = document.getElementById("subrow_"+i+"-4");
-            var five = document.getElementById("subrow_"+i+"-5");
-            
-            if(element.src.search("expand") > -1) {
-                one.classList.remove('subrow');
-                one.classList.add('subrow-visible');
-                four.classList.remove('subrow');
-                four.classList.add('subrow-visible');
-                five.classList.remove('subrow');
-                five.classList.add('subrow-visible');
-                element.src = "src/images/shrink.png";
-            } else {
-                one.classList.remove('subrow-visible');
-                one.classList.add('subrow');
-                four.classList.remove('subrow-visible');
-                four.classList.add('subrow');
-                five.classList.remove('subrow-visible');
-                five.classList.add('subrow');
-                element.src = "src/images/expand.png";
-                
-            }
-        }
 
-        function hoverIn(element){
-            element.style.backgroundColor = "#e0e0e0";
-        }
-        function hoverOut(element){
-            element.style.backgroundColor = "white";
-        }
-    </script>
 </head>
-<body>
+<body onload="fadeOut('error-monitor');">
     <div class="header">
         <h1>Race Signal Manager</h1>
         <a href="logout.php">Logout</a>
@@ -132,6 +89,7 @@ if(isLoggedIn() === false) {
                 <tbody>
                     <?php
                         try {
+                            s_start();
                             $list = site_get_signal_list();
                             foreach ($list as $group_id => $signalGroup) {
                                 // Set Start signal first
@@ -173,14 +131,33 @@ if(isLoggedIn() === false) {
                                 logout();
                                 // todo fix redirect
                             } else {
-                                $message= $e->getMessage();
-                                echo "<script>alert('ERROR $code: $message');</script>";
+                                $_SESSION['signal_error'] = $e->getMessage();
                             }
+                        } finally {
+                            s_stop();
                         }
                     ?>
                 </tbody>
             </table>
         </form>
     </div>
+    <?php
+    s_start();
+    if(isset($_SESSION['signal_error']) === true) {
+        printError($_SESSION['signal_error']);
+        unset($_SESSION['signal_error']);
+    }
+    printFooter();
+    s_stop();
+    ?>
 </body>
 </html>
+<?php
+s_start();
+if(isLoggedIn() === false) {
+    $host = $_SERVER['HTTP_HOST'];
+    //exit(header("Location: https://$host/index.php", true));
+    exit(header("Location: logout.php", true));
+}
+s_stop();
+?>
