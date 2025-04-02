@@ -148,7 +148,7 @@ services:
     depends_on:
       - database
     volumes:
-      - ./dispatcher/:/opt/dispatcher:rw
+      - ./dispatcher/:/home/dispatcher:rw
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
