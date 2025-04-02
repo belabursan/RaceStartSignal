@@ -2,6 +2,7 @@ FROM eclipse-temurin
 # Docker file for SailRaceSignal-Dispatcher
 # v1.0.0 Bela Bursan <burszan@gmail.com>
 #
+#https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
 
 ARG PI4J_VERSION=3.0.1
 ENV DEBIAN_FRONTEND=noninteractive
