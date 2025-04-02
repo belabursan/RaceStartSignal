@@ -135,6 +135,28 @@ services:
       NODE_SECURE_LOGIN: ${NODE_SECURE_LOGIN}
       NODE_STRICT_JOIN: ${NODE_STRICT_JOIN}
       DEFAULT_DNS_POINT: ${DEFAULT_DNS_POINT}
+  dispatcher:
+    build:
+      context: ./dispatcher
+    container_name: "SailRaceSignal-Dispatcher"
+    restart: "unless-stopped"
+    tty: true
+    privileged: true
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.30
+    depends_on:
+      - database
+    volumes:
+      - ./dispatcher/:/opt/dispatcher:rw
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_HOST: "database"
+      DEBUG: ${DEBUG}
+      DEVELOP: ${DEVELOP}
 networks:
   sailnetwork:
     name: "SailRaceSignalNetwork"
