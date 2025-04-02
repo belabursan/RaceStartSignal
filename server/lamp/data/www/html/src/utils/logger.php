@@ -3,8 +3,8 @@
 define('I_ERROR', "ERR");
 define('I_INFO', "INF");
 $ONLY_ERRORS = false;
-$PATH = "src/serverlogs";
-$LOGFILE = "race_signal_php.log";
+$SPATH = "/var/log/php";
+$LOGFILE = "racesignal_php.log";
 
 /**
  * Writes a log message to the logfile defined in the config
@@ -12,12 +12,15 @@ $LOGFILE = "race_signal_php.log";
  * @param string type Type of the message, can be I_ERROR or I_INFO
  */
 function log_all($msg, $type=I_INFO) {
-    global $PATH;
+    global $SPATH;
     global $LOGFILE;
 
+    if (!file_exists("$SPATH/")) {
+        mkdir($SPATH, 0755, true);
+    }
+
     $now = date("Y-m-d H:i:s");
-    $root = $_SERVER['DOCUMENT_ROOT'];
-    $logfile = "$root/$PATH/$LOGFILE";
+    $logfile = "$SPATH/$LOGFILE";
     error_log("$type($now) - $msg\n", 3, $logfile);
 }
 

@@ -15,10 +15,10 @@ services:
       - "443:443"
     volumes:
       - ./lamp/data/www/html:/var/www/html
-      - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini
-      - ./lamp/php/config/vhosts:/etc/apache2/sites-enabled
-      - ./lamp/data/log/apache2:/var/log/apache2
-      - /var/log/xdebug:/var/log/xdebug
+      - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./lamp/php/config/vhosts:/etc/apache2/sites-enabled:ro
+      - ./lamp/data/log/apache2:/var/log/apache2:rw
+      - ./lamp/data/log/php:/var/log/php:rw
     environment:
       APACHE_DOCUMENT_ROOT: "/var/www/html"
       PMA_PORT: 8080
