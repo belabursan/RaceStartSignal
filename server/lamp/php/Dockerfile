@@ -16,12 +16,6 @@ RUN apt-get -y update && apt-get -y install nano openssl net-tools wget default-
     rm -rf /var/lib/apt/lists/* && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-#     docker-php-ext-install bcmath && \
-#RUN docker-php-ext-install mbstring 
-#RUN docker-php-ext-install exif
-# RUN docker-php-ext-install -j$(nproc) intl 
-#RUN docker-php-ext-install calendar 
-
 ## Other PHP8 Extensions
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install mysqli
@@ -44,8 +38,6 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/ssl/private/s
 ## Add ssl cert
 RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/etc\/ssl\/certs\/signal-ssl-cert.pem' /etc/apache2/sites-available/default-ssl.conf
 RUN sed -i '/SSLCertificateKeyFile.*snakeoil\.key/cSSLCertificateKeyFile /etc/ssl/private/signal-ssl-cert.key\' /etc/apache2/sites-available/default-ssl.conf
-
-RUN mkdir -p /var/log/php && chmod 777 /var/log/php
 
 # modules
 RUN a2enmod rewrite && a2enmod rewrite headers && a2enmod ssl && a2enmod socache_shmcb
