@@ -15,7 +15,6 @@ services:
       - "443:443"
     volumes:
       - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini:ro
-      - ./lamp/php/config/vhosts:/etc/apache2/sites-enabled:ro
       - ./lamp/data/www/html:/var/www/html:ro
       - ./lamp/data/log/apache2:/var/log/apache2:rw
     environment:
