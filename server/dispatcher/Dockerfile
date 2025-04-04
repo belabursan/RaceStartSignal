@@ -21,9 +21,6 @@ RUN mkdir -p /opt/pi4j &&\
 # Cleanup
 RUN rm -rf /tmp/pi4j-${PI4J_VERSION}.zip
 
-
-
-
 # Create user
 RUN useradd -rm -d /home/dispatcher -s /bin/bash -g root -G sudo -u 1001 dispatcher
 USER dispatcher
@@ -33,3 +30,5 @@ RUN mkdir -p /home/dispatcher/app
 WORKDIR /home/dispatcher/app
 
 SHELL ["/bin/bash", "-c"]
+#mvn package -DskipTests=true
+#java -cp target/app-0.0.1.jar com.buri.App

@@ -9,8 +9,11 @@ public class App
     public static void main( String[] args )
     {
         try {
-            System.out.println( "Hello Signal!" );
-            Thread.sleep(100000);
+            int x=0;
+            while(true) {
+                System.out.println( "Hello Signal: " + x++ );
+                Thread.sleep(10000);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -145,8 +145,7 @@ services:
       MYSQL_HOST: "database"
       DEBUG: ${DEBUG}
       DEVELOP: ${DEVELOP}
-    command: [ "mvn", "package", "-DskipTests=true" ]
-    entrypoint: ["java", "-cp", "target/app-0.0.1.jar", "com.buri.App"]
+    entrypoint: ["mvn", "clean", "package", "-DskipTests=true", "exec:java"]
 networks:
   sailnetwork:
     name: "SailRaceSignalNetwork"
