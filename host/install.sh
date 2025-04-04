@@ -35,11 +35,13 @@ sudo usermod -a -G docker ${USER}
 
 # Adding ntp stuff
 echo -e "\n Adding ntp stuff"
-sudo service ntp stop
-sudo ntpd -gq
-sudo service ntp start
+sudo systemctl restart systemd-timesyncd.service
+timedatectl status
+echo
+timedatectl timesync-status
+
 
 #Reboot
 echo -e "\n Rebooting the system"
-sleep 2
+sleep 5
 sudo reboot
