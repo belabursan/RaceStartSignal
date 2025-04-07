@@ -33,4 +33,24 @@ public enum SignalType {
     public int value() {
         return value;
     }
+
+    /**
+     * Get the SignalType enum from an integer value.
+     * @param type the integer value representing the signal type
+     * @return the corresponding SignalType enum
+     * @throws IllegalArgumentException if the value is not valid
+     */
+    static SignalType fromInt(int type) {
+        if(type == 0) {
+            return START_SIGNAL;
+        } else if (type == 1) {
+            return ONE_MINUTE_SIGNAL;
+        } else if (type == 4) {
+            return FOUR_MINUTE_SIGNAL;
+        } else if (type == 5) {
+            return FIVE_MINUTE_SIGNAL;
+        } else {
+            throw new IllegalArgumentException("Invalid signal type value: " + type);
+        }
+    }
 }

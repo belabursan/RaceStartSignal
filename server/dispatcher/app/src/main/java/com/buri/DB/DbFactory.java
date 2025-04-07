@@ -15,15 +15,18 @@ public final class DbFactory {
     private DbFactory() {
     }
 
+
     /**
      * Initialize the DbFactory with the provided arguments.
      * This method should be called once before using the DbFactory.
      * @param arguments Arguments object containing the necessary parameters
+     * @throws IllegalStateException if DbFactory is already initialized
      */
-    public static void init(Arguments arguments) {
+    public static void init(Arguments arguments) throws IllegalStateException {
         DbFactory.arguments = arguments;
         initDbHandler();
     }
+
 
     /**
      * Get the singleton instance of DbHandler.
@@ -38,12 +41,33 @@ public final class DbFactory {
     }
 
 
+    /**
+     * Reset the DbFactory and close the existing DbHandler.
+     * This method can be used to reinitialize the DbFactory with new arguments.
+     */
+    public static void reset() {
+        DbFactory.arguments = null;
+        if(DbFactory.db != null) {
+            DbFactory.db.close();
+        }
+        DbFactory.db = null;
+        System.out.println("DbFactory reset.");
+    }
+
+
+    /**
+     * Initialize the DbHandler with the provided arguments.
+     * This method is called internally by the init() method.
+     * @throws IllegalStateException if DbFactory is already initialized
+     */
     private static void initDbHandler() {
         if (DbFactory.db == null) {
             DbHandler dbHandler = new DbHandler(DbFactory.arguments);
             dbHandler.connect();
             DbFactory.db = (Db)dbHandler;
             System.out.println("DbHandler initialized: " + dbHandler.toString());
+        } else{
+            throw new IllegalStateException("DbFactory already initialized. Call getDb() to get the instance.");
         }
     }
     

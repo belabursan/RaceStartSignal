@@ -20,4 +20,10 @@ public class DbHandler implements Db {
         throw new UnsupportedOperationException("Unimplemented method 'getNextSignal'");
     }
 
+    @Override
+    public void close() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'close'");
+    }
+
 }
