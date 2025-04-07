@@ -40,7 +40,7 @@ public enum SignalType {
      * @return the corresponding SignalType enum
      * @throws IllegalArgumentException if the value is not valid
      */
-    static SignalType fromInt(int type) {
+    public static SignalType fromInt(int type) {
         if(type == 0) {
             return START_SIGNAL;
         } else if (type == 1) {

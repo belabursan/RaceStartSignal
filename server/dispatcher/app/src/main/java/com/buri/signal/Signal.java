@@ -1,7 +1,5 @@
 package com.buri.signal;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,37 +8,24 @@ import java.util.Date;
  */
 public final class Signal {
 
+    private int id;
+    private int groupId;
     private Date date;
     private SignalType type;
 
     /**
      * Constructor for Signal class.
      * 
-     * @param date the date of the signal from the database
-     * @param type the type of the signal from the database
-     *             throws IllegalArgumentException if the date is null or empty or
-     *             cannot be parsed
+     * @param id       the id of the signal
+     * @param groupId  the group id of the signal
+     * @param dateTime the date of the signal
+     * @param type     the type of the signal
      */
-    public Signal(String dateTime, SignalType type) throws IllegalArgumentException {
-        if (dateTime == null || dateTime.isEmpty()) {
-            throw new IllegalArgumentException("Date cannot be null or empty");
-        }
-        try {
-            this.date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTime);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date format: " + dateTime, e);
-        }
+    public Signal(int id, int groupId, Date dateTime, SignalType type) {
+        this.id = id;
+        this.groupId = groupId;
+        this.date = dateTime;
         this.type = type;
-    }
-
-    /**
-     * Constructor for Signal class.
-     * 
-     * @param date the date of the signal from the database
-     * @param type the type of the signal from the database
-     */
-    public Signal(String dateTime, int type) {
-        this(dateTime, SignalType.fromInt(type));
     }
 
     /**
@@ -71,6 +56,24 @@ public final class Signal {
      */
     public SignalType getType() {
         return type;
+    }
+
+    /**
+     * Get the id of the signal.
+     * 
+     * @return the id of the signal
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Get the group id of the signal.
+     * 
+     * @return the group id of the signal
+     */
+    public int getGroupId() {
+        return groupId;
     }
 
 }

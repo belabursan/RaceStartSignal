@@ -1,98 +1,135 @@
 package com.buri.DB;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+
 import com.buri.Arguments;
 import com.buri.signal.Signal;
+import com.buri.signal.SignalType;
 
+/**
+ * DbHandler is a class that implements the Db interface.
+ * It handles the connection to the database and provides methods to interact
+ * with it.
+ */
 public class DbHandler implements Db {
 
-    public DbHandler(Arguments arguments) {
-        //TODO Auto-generated constructor stub
+    private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    private final String DB_URL;
+    private final String USER;
+    private final String PASS;
+    private Connection conn = null;
+
+
+    /**
+     * Constructor for DbHandler class.
+     * 
+     * @param arguments Arguments object containing the necessary parameters
+     * @throws ClassNotFoundException if the JDBC driver class is not found
+     */
+    public DbHandler(final Arguments arguments) {
+        try {
+            DB_URL = "jdbc:mariadb://" + arguments.getMysqlHost() + "/" + arguments.getMysqlDb();
+            USER = arguments.getMysqlUser();
+            PASS = arguments.getMysqlPass();
+            Class.forName(JDBC_DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("JDBC Driver not found");
+        }
     }
 
-    public void connect() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'connect'");
+
+    /**
+     * Connects to the database.
+     * This method establishes a connection to the database using the provided URL,
+     * user, and password.
+     * 
+     * @throws SQLException if there is an error connecting to the database
+     */
+    public void connect() throws SQLException {
+        try {
+            System.out.println("Connecting to a selected database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        } catch (SQLException e) {
+            System.out.println("Connection to database failed");
+            throw e;
+        }
     }
 
+
+    /**
+     * Returns the next signal from the database based on time.
+     * This method retrieves the next signal from the database and returns it as a
+     * Signal object.
+     * 
+     * @return the next signal as Signal object
+     * @throws SQLException if there is an error executing the query
+     * @throws IllegalArgumentException if the signal type is not found
+     */
     @Override
-    public Signal getNextSignal() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNextSignal'");
+    public Signal getNextSignal() throws SQLException, IllegalArgumentException {
+        final Statement stmt = conn.createStatement();
+        final String query = "SELECT * FROM signals ORDER BY date LIMIT 1";
+        try {
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                Date dateTime = rs.getDate("date_time");
+                SignalType type = SignalType.fromInt(rs.getInt("signal_type"));
+                int groupId= rs.getInt("group_id");
+                int id = rs.getInt("id");
+                return new Signal(id, groupId, dateTime, type);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e.getMessage());
+            throw e;
+        } finally {
+            stmt.close();
+        }
+        System.out.println("No signal found.");
+        return null;
     }
 
+
+    public void removeSignal(final int id) throws SQLException {
+        final Statement stmt = conn.createStatement();
+        final String query = "DELETE FROM signals WHERE id = " + id;
+        try {
+            int rowsAffected = stmt.executeUpdate(query);
+            if (rowsAffected > 0) {
+                System.out.println("Signal with ID " + id + " removed successfully.");
+            } else {
+                System.out.println("No signal found with ID " + id);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e.getMessage());
+            throw e;
+        } finally {
+            stmt.close();
+        }
+    }
+
+    /**
+     * Closes the database connection.
+     * This method should be called to release resources when done with the
+     * database.
+     */
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'close'");
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            } finally {
+                conn = null;
+            }
+        }
+        System.out.println("Connection closed.");
     }
 
 }
-/*
- //STEP 1. Import required packages
-package mariadb;
-
-import java.sql.*;
-
-public class Mariadb {
-    // JDBC driver name and database URL
-
-    static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
-    static final String DB_URL = "jdbc:mariadb://192.168.100.174/db";
-
-    //  Database credentials
-    static final String USER = "root";
-    static final String PASS = "root";
-
-    public static void main(String[] args) {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            //STEP 2: Register JDBC driver
-            Class.forName("org.mariadb.jdbc.Driver");
-
-            //STEP 3: Open a connection
-            System.out.println("Connecting to a selected database...");
-            conn = DriverManager.getConnection(
-                    "jdbc:mariadb://192.168.100.174/db", "root", "root");
-            System.out.println("Connected database successfully...");
-
-            //STEP 4: Execute a query
-            System.out.println("Creating table in given database...");
-            stmt = conn.createStatement();
-
-            String sql = "CREATE TABLE REGISTRATION "
-                    + "(id INTEGER not NULL, "
-                    + " first VARCHAR(255), "
-                    + " last VARCHAR(255), "
-                    + " age INTEGER, "
-                    + " PRIMARY KEY ( id ))";
-
-            stmt.executeUpdate(sql);
-            System.out.println("Created table in given database...");
-        } catch (SQLException se) {
-            //Handle errors for JDBC
-            se.printStackTrace();
-        } catch (Exception e) {
-            //Handle errors for Class.forName
-            e.printStackTrace();
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null) {
-                    conn.close();
-                }
-            } catch (SQLException se) {
-            }// do nothing
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }//end finally try
-        }//end try
-        System.out.println("Goodbye!");
-    }//end main
-}//end JDBCExample
-
- */

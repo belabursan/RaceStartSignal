@@ -23,11 +23,14 @@ public class App
                 Thread.sleep(10000);
             }
         } catch (InterruptedException e) {
+            System.out.println("Thread interrupted: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            DbFactory.reset();
         }
+        System.out.println( "Goodbye Signal!" );
+        System.exit(0);
     }
-
-    /*sudo service ntp stop
-sudo ntpd -gq
-sudo service ntp start */
 }

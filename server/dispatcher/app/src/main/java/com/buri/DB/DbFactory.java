@@ -1,5 +1,7 @@
 package com.buri.DB;
 
+import java.sql.SQLException;
+
 import com.buri.Arguments;
 
 /**
@@ -21,8 +23,10 @@ public final class DbFactory {
      * This method should be called once before using the DbFactory.
      * @param arguments Arguments object containing the necessary parameters
      * @throws IllegalStateException if DbFactory is already initialized
+     * @throws SQLException if there is an error connecting to the database
+     * @throws ClassNotFoundException if the JDBC driver class is not found
      */
-    public static void init(Arguments arguments) throws IllegalStateException {
+    public static void init(Arguments arguments) throws IllegalStateException, SQLException {
         DbFactory.arguments = arguments;
         initDbHandler();
     }
@@ -58,9 +62,11 @@ public final class DbFactory {
     /**
      * Initialize the DbHandler with the provided arguments.
      * This method is called internally by the init() method.
+     * @throws SQLException if there is an error connecting to the database
+     * @throws ClassNotFoundException if the JDBC driver class is not found
      * @throws IllegalStateException if DbFactory is already initialized
      */
-    private static void initDbHandler() {
+    private static void initDbHandler() throws SQLException {
         if (DbFactory.db == null) {
             DbHandler dbHandler = new DbHandler(DbFactory.arguments);
             dbHandler.connect();
