@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
  * Class representing a signal with a date and type.
  * The date is formatted as "yyyy-MM-dd HH:mm:ss".
  */
-public final class Signal {
+public final class Signal implements Comparable<Signal> {
+    @SuppressWarnings("unused")
+    private static final long serialVersionUID = 1971L;
 
     private int id;
     private int groupId;
@@ -36,12 +38,18 @@ public final class Signal {
      *         less than, equal to, or greater than the specified signal
      * @throws NullPointerException if the other signal is null
      */
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof Signal) && (this.id == ((Signal) obj).id);
+    }
+
+    @Override
     public int compareTo(Signal other) {
         return this.date.compareTo(other.date);
     }
 
     /**
-     * Get the date of the signal.
+     * Get the date and time of the signal.
      * 
      * @return the date of the signal
      */

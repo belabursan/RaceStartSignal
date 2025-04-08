@@ -1,6 +1,7 @@
 package com.buri.signal;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 public final class SignalList extends LinkedList<Signal> {
     private static final long serialVersionUID = 1L;
@@ -13,19 +14,20 @@ public final class SignalList extends LinkedList<Signal> {
     }
 
     /**
-     * Adds a signal to the list.
+     * Adds a signal to the list in a sorted way.
      * @param signal the signal to add
      */
-    public void addSignal(Signal signal) {
-        this.add(signal);
+    public synchronized boolean addSignal(Signal signal) {
+        // https://www.baeldung.com/java-sort-list-by-date
+        return this.offerLast(signal);
     }
 
     /**
      * Gets the next signal from the list.
      * @return the next signal
      */
-    public Signal getNextSignal() {
-        return this.poll();
+    public synchronized Signal getNextSignal() throws NoSuchElementException {
+        return this.getFirst();
     }
 
 }

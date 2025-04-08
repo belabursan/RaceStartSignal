@@ -1,7 +1,7 @@
 package com.buri;
 
-import com.buri.DB.Db;
-import com.buri.DB.DbFactory;
+import com.buri.db.Db;
+import com.buri.db.DbFactory;
 import com.buri.signal.Signal;
 
 /**

@@ -1,6 +1,7 @@
-package com.buri.DB;
+package com.buri.db;
 
 import java.sql.SQLException;
+
 import com.buri.signal.Signal;
 
 /**

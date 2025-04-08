@@ -1,4 +1,4 @@
-package com.buri.DB;
+package com.buri.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
