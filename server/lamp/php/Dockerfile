@@ -28,16 +28,21 @@ RUN service apache2 start
 ## Ensure an SSL directory exists
 RUN mkdir -p /etc/ssl/certs && mkdir -p /etc/ssl/private
 
+
+# https://stackoverflow.com/questions/75137218/whats-the-simplest-way-to-deploy-a-node-app-on-linux-mint
+# openssl req -x509 -nodes -days 999999 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt 
+# https://superhero.ninja/2015/07/22/create-a-simple-https-server-with-openssl-s_server/
+
 # SSL stuff
 RUN echo "ServerName ${SIGNAL_DOMAIN}" >> /etc/apache2/apache2.conf
 RUN openssl dhparam -out /etc/ssl/certs/dh-strong.pem 2048
-RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/ssl/private/signal-ssl-cert.key \
- -out /etc/ssl/certs/signal-ssl-cert.pem -days 3650 \
+RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/ssl/private/signal-server-cert-pr.key \
+ -out /etc/ssl/certs/signal-server-ca.crt -days 3650 \
  -subj "/C=SE/ST=./L=Malmoe/O=Lagunen/OU=Kappseglingsklubb/CN=${SIGNAL_DOMAIN}}" -passout pass:${SSL_KEY_PASS}
 
 ## Add ssl cert
-RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/etc\/ssl\/certs\/signal-ssl-cert.pem' /etc/apache2/sites-available/default-ssl.conf
-RUN sed -i '/SSLCertificateKeyFile.*snakeoil\.key/cSSLCertificateKeyFile /etc/ssl/private/signal-ssl-cert.key\' /etc/apache2/sites-available/default-ssl.conf
+RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/etc\/ssl\/certs\/signal-server-ca.crt' /etc/apache2/sites-available/default-ssl.conf
+RUN sed -i '/SSLCertificateKeyFile.*snakeoil\.key/cSSLCertificateKeyFile /etc/ssl/private/signal-server-cert-pr.key\' /etc/apache2/sites-available/default-ssl.conf
 
 # modules
 RUN a2enmod rewrite && a2enmod rewrite headers && a2enmod ssl && a2enmod socache_shmcb
