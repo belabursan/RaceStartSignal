@@ -34,13 +34,12 @@ public final class Signal implements Comparable<Signal> {
      * Compare this signal with another signal based on the date.
      * 
      * @param other the other signal to compare with
-     * @return a negative integer, zero, or a positive integer as this signal is
-     *         less than, equal to, or greater than the specified signal
+     * @return true if the objects are equal, false otherwise
      * @throws NullPointerException if the other signal is null
      */
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof Signal) && (this.id == ((Signal) obj).id);
+        return (obj instanceof Signal) && (this.date.equals(((Signal)obj).getDate()));
     }
 
     @Override

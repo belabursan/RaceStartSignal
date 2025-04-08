@@ -1,8 +1,9 @@
 package com.buri.db;
 
 import java.sql.SQLException;
-
-import com.buri.signal.Signal;
+import com.buri.config.Config;
+import com.buri.config.ConfigStatus;
+import com.buri.signal.SignalList;
 
 /**
  * Database interface for handling signals.
@@ -10,32 +11,37 @@ import com.buri.signal.Signal;
  */
 public interface Db {
 
-    /**
-     * Return the next signal from the database based on time
-     * @return the next signal as Signal object
-     * @throws SQLException if there is an error retrieving the signal
-     * @throws IllegalArgumentException if the signal type is not valid
+     /**
+     * Checks if the config and lis in the database has changed
+     * @return ConfigStatus object
+     * @throws SQLException if there is an error reading the database
      */
-    public Signal getNextSignal() throws SQLException, IllegalArgumentException;
+    public ConfigStatus getDbStatus() throws SQLException;
 
+    /**
+     * Returns the current configuration
+     * @return configuration
+     * @throws SQLException if there is an error reading the database
+     */
+    public Config getConfig() throws SQLException;
+
+    /**
+     * Returns all the signals from the database
+     * @return List of signals sorted by date or empty list if db is empty
+     * @throws SQLException
+     */
+    public SignalList getSignalList() throws SQLException;
 
     /**
      * Removes a signal from the database
+     * 
      * @param id the id of the signal to be removed
      * @throws SQLException if there is an error removing the signal
      */
     public void removeSignal(int id) throws SQLException;
 
-/* 
-    public boolean hasListChanged() throws SQLException;
-    public boolean hasConfigChanged() throws SQLException;
-    public boolean yellowFlag() throws SQLException;
-    public void setYellowFlagOff() throws SQLException;
-*/
-
-
     /**
-     * Closes the database  connection
+     * Closes the database connection
      */
     public void close();
 

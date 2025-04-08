@@ -1,4 +1,4 @@
--- VERSION 1.0.0 --
+-- VERSION 2.0.0 --
 -- Create database for SailRaceSignal --
 -- Credit: Bela Bursan<burszan@gmail.com>
 
@@ -31,10 +31,13 @@ CREATE TABLE IF NOT EXISTS `config` (
     `id`            INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `list_changed`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `conf_changed`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `yellow_flag`   INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `paused`        INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    `mute`          INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `race_start`    TIME NOT NULL DEFAULT '07:59:00',
-    `race_end`      TIME NOT NULL DEFAULT '19:59:00',
-    `enable_light`  INTEGER UNSIGNED NOT NULL DEFAULT 0
+    `race_end`      TIME NOT NULL DEFAULT '19:59:00'
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- Insert default config row --
+-- Note: if id number is changed the CONFIG_ID constant value in DbHandler shall be changed too --
+INSERT INTO `config` (id) VALUES(1);

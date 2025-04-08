@@ -6,9 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.buri.Arguments;
+import com.buri.config.Config;
+import com.buri.config.ConfigStatus;
 import com.buri.signal.Signal;
+import com.buri.signal.SignalList;
 import com.buri.signal.SignalType;
 
 /**
@@ -18,6 +22,7 @@ import com.buri.signal.SignalType;
  */
 public class DbHandler implements Db {
 
+    private static final int CONFIG_ID = 1;
     private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     private final String DB_URL;
     private final String USER;
@@ -59,43 +64,42 @@ public class DbHandler implements Db {
         }
     }
 
-    /**
-     * Returns the next signal from the database based on time.
-     * This method retrieves the next signal from the database and returns it as a
-     * Signal object.
-     * 
-     * @return the next signal as Signal object
-     * @throws SQLException             if there is an error executing the query
-     * @throws IllegalArgumentException if the signal type is not found
-     */
     @Override
-    public Signal getNextSignal() throws SQLException, IllegalArgumentException {
-        final String query = "SELECT * FROM signals ORDER BY date_time ASC LIMIT 1";
-        Statement stmt = conn.createStatement();
+    public SignalList getSignalList() throws SQLException, IllegalArgumentException {
+        final String query = "SELECT * FROM signals ORDER BY date_time ASC";
+        SignalList list = new SignalList();
+        Statement stmt = null;
         ResultSet rs = null;
+
         try {
+            stmt = conn.createStatement();
             rs = stmt.executeQuery(query);
 
-            if (rs.next()) {
+            while (rs.next()) {
                 LocalDateTime dateTime = rs.getObject("date_time", LocalDateTime.class);
                 SignalType type = SignalType.fromInt(rs.getInt("signal_type"));
                 int groupId = rs.getInt("group_id");
                 int id = rs.getInt("id");
-                return new Signal(id, groupId, dateTime, type);
+                list.addSignal(new Signal(id, groupId, dateTime, type));
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
             throw e;
+        } catch (IllegalArgumentException i) {
+            System.out.println("Illegal argument: " + i.getMessage());
+            throw new SQLException(i.getMessage());
         } finally {
             if (rs != null) {
                 rs.close();
             }
-            stmt.close();
+            if (stmt != null) {
+                stmt.close();
+            }
         }
-        System.out.println("No signal found.");
-        return null;
+        return list.sort();
     }
 
+    @Override
     public void removeSignal(final int id) throws SQLException {
         final Statement stmt = conn.createStatement();
         final String query = "DELETE FROM signals WHERE id = " + id;
@@ -131,6 +135,66 @@ public class DbHandler implements Db {
             }
         }
         System.out.println("Connection closed.");
+    }
+
+    @Override
+    public ConfigStatus getDbStatus() throws SQLException {
+        final String query = "SELECT list_changed, conf_changed FROM config WHERE id = " + CONFIG_ID;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                LocalDateTime listChanged = rs.getObject("list_changed", LocalDateTime.class);
+                LocalDateTime confChanged = rs.getObject("conf_changed", LocalDateTime.class);
+                return new ConfigStatus(confChanged, listChanged);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e.getMessage());
+            throw e;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+        throw new SQLException("'config' table empty, this should not happen so something is wrong!!");
+    }
+
+    @Override
+    public Config getConfig() throws SQLException {
+        final String query = "SELECT * FROM config WHERE id = " + CONFIG_ID;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                LocalDateTime listChanged = rs.getObject("list_changed", LocalDateTime.class);
+                LocalDateTime confChanged = rs.getObject("conf_changed", LocalDateTime.class);
+                boolean paused = rs.getBoolean("paused");
+                boolean mute = rs.getBoolean("mute");
+                LocalTime race_start = rs.getObject("race_start", LocalTime.class);
+                LocalTime race_end = rs.getObject("race_end", LocalTime.class);
+                return new Config(confChanged, listChanged, paused, mute, race_start, race_end);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e.getMessage());
+            throw e;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+        throw new SQLException("'config' table empty, this should not happen so something is wrong!!");
     }
 
 }

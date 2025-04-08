@@ -1,5 +1,7 @@
 package com.buri;
 
+import com.buri.config.Config;
+import com.buri.config.ConfigStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
 import com.buri.signal.Signal;
@@ -18,8 +20,8 @@ public class App
             DbFactory.init(arguments);
             Db db = DbFactory.getDb();
 
-            Signal s = db.getNextSignal();
-            System.out.println(s.toString());
+            Config config = db.getConfig();
+            System.out.println(config.toString());
             
             int x=0;
             while(true) {
