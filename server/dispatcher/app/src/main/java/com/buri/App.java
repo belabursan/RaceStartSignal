@@ -2,6 +2,7 @@ package com.buri;
 
 import com.buri.DB.Db;
 import com.buri.DB.DbFactory;
+import com.buri.signal.Signal;
 
 /**
  * Hello world!
@@ -13,9 +14,12 @@ public class App
     {
         try {
             Arguments arguments = new Arguments().readArguments();
-            System.out.println("Arguments: " + arguments.toString());
+            System.out.println(arguments.toString());
             DbFactory.init(arguments);
             Db db = DbFactory.getDb();
+
+            Signal s = db.getNextSignal();
+            System.out.println(s.toString());
             
             int x=0;
             while(true) {

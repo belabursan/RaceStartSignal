@@ -29,6 +29,10 @@ USER dispatcher
 RUN mkdir -p /home/dispatcher/app
 WORKDIR /home/dispatcher/app
 
+# load dependencies
+COPY app/pom.xml pom.xml
+RUN mvn dependency:resolve
+
 SHELL ["/bin/bash", "-c"]
 #mvn package -DskipTests=true
 #java -cp target/app-0.0.1.jar com.buri.App

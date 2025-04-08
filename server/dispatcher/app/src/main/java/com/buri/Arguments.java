@@ -8,12 +8,13 @@ package com.buri;
  * The class provides getter methods to access the stored configuration values.
  * </p>
  * <ul>
- *   <li>{@code mysql_db} - The name of the MySQL database.</li>
- *   <li>{@code mysql_user} - The username for the MySQL database.</li>
- *   <li>{@code mysql_pass} - The password for the MySQL database.</li>
- *   <li>{@code mysql_host} - The host address of the MySQL database.</li>
- *   <li>{@code debug} - A flag indicating whether debug mode is enabled.</li>
- *   <li>{@code develop} - A flag indicating whether development mode is enabled.</li>
+ * <li>{@code mysql_db} - The name of the MySQL database.</li>
+ * <li>{@code mysql_user} - The username for the MySQL database.</li>
+ * <li>{@code mysql_pass} - The password for the MySQL database.</li>
+ * <li>{@code mysql_host} - The host address of the MySQL database.</li>
+ * <li>{@code debug} - A flag indicating whether debug mode is enabled.</li>
+ * <li>{@code develop} - A flag indicating whether development mode is
+ * enabled.</li>
  * </ul>
  * <p>
  * The {@code readArguments} method initializes these values by reading
@@ -32,6 +33,7 @@ public final class Arguments {
 
     /**
      * Reads the environment variables.
+     * 
      * @return this instance of Arguments with the read values.
      * @throws Exception if an error occurs while reading the environment variables.
      */
@@ -43,11 +45,33 @@ public final class Arguments {
             this.mysql_host = System.getenv("MYSQL_HOST");
             this.debug = Boolean.parseBoolean(System.getenv("DEBUG"));
             this.develop = Boolean.parseBoolean(System.getenv("DEVELOP"));
-            return this;
+            return this.validate();
         } catch (Exception e) {
             System.out.println("Error reading environment variables: " + e.getMessage());
             throw e;
         }
+    }
+
+    /**
+     * Validates the required environment variables.
+     * 
+     * @return this instance of Arguments if all required variables are set.
+     * @throws IllegalArgumentException if any required variable is not set.
+     */
+    public Arguments validate() {
+        if (mysql_db == null || mysql_db.isEmpty()) {
+            throw new IllegalArgumentException("MYSQL_DATABASE is not set");
+        }
+        if (mysql_user == null || mysql_user.isEmpty()) {
+            throw new IllegalArgumentException("MYSQL_USER is not set");
+        }
+        if (mysql_pass == null || mysql_pass.isEmpty()) {
+            throw new IllegalArgumentException("MYSQL_PASSWORD is not set");
+        }
+        if (mysql_host == null || mysql_host.isEmpty()) {
+            throw new IllegalArgumentException("MYSQL_HOST is not set");
+        }
+        return this;
     }
 
     // Getter for mysql_db
@@ -88,7 +112,7 @@ public final class Arguments {
         return "Arguments {" +
                 "\n mysql_db='" + mysql_db + '\'' +
                 ",\n mysql_user='" + mysql_user + '\'' +
-                ",\n mysql_pass='" + mysql_pass + '\'' +
+                ",\n mysql_pass='" + (develop ? mysql_pass : "******") + '\'' +
                 ",\n mysql_host='" + mysql_host + '\'' +
                 ",\n debug=" + debug +
                 ",\n develop=" + develop +

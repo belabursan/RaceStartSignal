@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.buri.Arguments;
 import com.buri.signal.Signal;
@@ -23,7 +23,6 @@ public class DbHandler implements Db {
     private final String USER;
     private final String PASS;
     private Connection conn = null;
-
 
     /**
      * Constructor for DbHandler class.
@@ -43,7 +42,6 @@ public class DbHandler implements Db {
         }
     }
 
-
     /**
      * Connects to the database.
      * This method establishes a connection to the database using the provided URL,
@@ -61,26 +59,27 @@ public class DbHandler implements Db {
         }
     }
 
-
     /**
      * Returns the next signal from the database based on time.
      * This method retrieves the next signal from the database and returns it as a
      * Signal object.
      * 
      * @return the next signal as Signal object
-     * @throws SQLException if there is an error executing the query
+     * @throws SQLException             if there is an error executing the query
      * @throws IllegalArgumentException if the signal type is not found
      */
     @Override
     public Signal getNextSignal() throws SQLException, IllegalArgumentException {
-        final Statement stmt = conn.createStatement();
-        final String query = "SELECT * FROM signals ORDER BY date LIMIT 1";
+        final String query = "SELECT * FROM signals ORDER BY date_time ASC LIMIT 1";
+        Statement stmt = conn.createStatement();
+        ResultSet rs = null;
         try {
-            ResultSet rs = stmt.executeQuery(query);
+            rs = stmt.executeQuery(query);
+
             if (rs.next()) {
-                Date dateTime = rs.getDate("date_time");
+                LocalDateTime dateTime = rs.getObject("date_time", LocalDateTime.class);
                 SignalType type = SignalType.fromInt(rs.getInt("signal_type"));
-                int groupId= rs.getInt("group_id");
+                int groupId = rs.getInt("group_id");
                 int id = rs.getInt("id");
                 return new Signal(id, groupId, dateTime, type);
             }
@@ -88,12 +87,14 @@ public class DbHandler implements Db {
             System.out.println("Error executing query: " + e.getMessage());
             throw e;
         } finally {
+            if (rs != null) {
+                rs.close();
+            }
             stmt.close();
         }
         System.out.println("No signal found.");
         return null;
     }
-
 
     public void removeSignal(final int id) throws SQLException {
         final Statement stmt = conn.createStatement();

@@ -1,6 +1,6 @@
 package com.buri.signal;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Class representing a signal with a date and type.
@@ -10,7 +10,7 @@ public final class Signal {
 
     private int id;
     private int groupId;
-    private Date date;
+    private LocalDateTime date;
     private SignalType type;
 
     /**
@@ -21,7 +21,7 @@ public final class Signal {
      * @param dateTime the date of the signal
      * @param type     the type of the signal
      */
-    public Signal(int id, int groupId, Date dateTime, SignalType type) {
+    public Signal(int id, int groupId, LocalDateTime dateTime, SignalType type) {
         this.id = id;
         this.groupId = groupId;
         this.date = dateTime;
@@ -37,7 +37,7 @@ public final class Signal {
      * @throws NullPointerException if the other signal is null
      */
     public int compareTo(Signal other) {
-        return this.date.toString().compareTo(other.date.toString());
+        return this.date.compareTo(other.date);
     }
 
     /**
@@ -45,7 +45,7 @@ public final class Signal {
      * 
      * @return the date of the signal
      */
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
@@ -74,6 +74,18 @@ public final class Signal {
      */
     public int getGroupId() {
         return groupId;
+    }
+
+    /**
+     * returns a string representation of the Signal object.
+     */
+    public String toString() {
+        return "Signal{" +
+                "id=" + id +
+                ", groupId=" + groupId +
+                ", date=" + date.toString() +
+                ", type=" + type +
+                '}';
     }
 
 }
