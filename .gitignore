@@ -143,3 +143,18 @@ server/lamp/php/config/vhosts/*
 id_rsa
 id_rsa.pub
 tmp.txt
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath

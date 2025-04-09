@@ -14,11 +14,9 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./lamp/data/www/html:/var/www/html
-      - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini
-      - ./lamp/php/config/vhosts:/etc/apache2/sites-enabled
-      - ./lamp/data/log/apache2:/var/log/apache2
-      - /var/log/xdebug:/var/log/xdebug
+      - ./lamp/php/config/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./lamp/data/www/html:/var/www/html:ro
+      - ./lamp/data/log/apache2:/var/log/apache2:rw
     environment:
       APACHE_DOCUMENT_ROOT: "/var/www/html"
       PMA_PORT: 8080
@@ -28,7 +26,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       HOST_MACHINE_MYSQL_PORT: ${HOST_MACHINE_MYSQL_PORT}
-      XDEBUG_CONFIG: "client_host=host.docker.internal remote_port=${XDEBUG_PORT}"
     sysctls:
       net.ipv4.ip_unprivileged_port_start: '0' # Allow non-root user to bind to port 80
     networks:
@@ -59,7 +56,6 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   phpmyadmin:
-#    put this in /etc/phpmyadmin/config.inc.php file:  $cfg['Lang'] = 'en';
     build:
       context: "./phpmyadmin"
       args:
@@ -85,14 +81,6 @@ services:
       - ./lamp/php/config/php.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
     depends_on:
       - database
-#  redis:
-#    container_name: "SailRaceSignal-Redis"
-#    image: redis:latest
-#    ports:
-#      - "127.0.0.1:6379:6379"
-#    networks:
-#      sailnetwork:
-#        ipv4_address: 172.19.0.60
   dozzle:
     container_name: "SailRaceSignal-Dozzle"
     image: amir20/dozzle:latest
@@ -105,7 +93,7 @@ services:
         ipv4_address: 172.19.0.90
   node:
     build:
-      context: ./rest/node
+      context: ./node
       args:
         SSL_KEY_PASS: ${SSL_KEY_PASS}
     container_name: "SailRaceSignal-Node"
@@ -135,6 +123,29 @@ services:
       NODE_SECURE_LOGIN: ${NODE_SECURE_LOGIN}
       NODE_STRICT_JOIN: ${NODE_STRICT_JOIN}
       DEFAULT_DNS_POINT: ${DEFAULT_DNS_POINT}
+  dispatcher:
+    build:
+      context: ./dispatcher
+    container_name: "SailRaceSignal-Dispatcher"
+    restart: "unless-stopped"
+    tty: true
+    privileged: true
+    networks:
+      sailnetwork:
+        ipv4_address: 172.19.0.30
+    depends_on:
+      - database
+    volumes:
+      - ./dispatcher/app:/home/dispatcher/app:rw
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_HOST: "database"
+      DEBUG: ${DEBUG}
+      DEVELOP: ${DEVELOP}
+    entrypoint: ["mvn", "clean", "package", "-DskipTests=true", "exec:java"]
 networks:
   sailnetwork:
     name: "SailRaceSignalNetwork"
