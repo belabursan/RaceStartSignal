@@ -11,7 +11,8 @@ if(isLoggedIn() === false) {
 if (isset($_POST['add_signal'])) {
     $datetime = "".$_POST['date']." ".$_POST['time'].":00";
     $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
-    addSignal($datetime, $five_min_serie);
+    $yellow_flag = false;
+    addSignal($datetime, $five_min_serie, $yellow_flag);
     unset($_POST['add_signal']);
 }
 
@@ -106,7 +107,7 @@ s_stop();
                                 echo "    <td><button class=\"list_button\" type=\"submit\" name=\"delete_pressed\" value=\"$group_id\">Delete</button></td>\n";
                                 echo "</tr>\n";
                                 if(count($sorted) >1) {
-                                    $i = [1,4,5];
+                                    $i = [1,4,5,15];
                                     foreach ($i as $index) {
                                         $date = $sorted[$index];
                                         $type = "One Minute Signal";
@@ -114,6 +115,8 @@ s_stop();
                                             $type = "Four Minute Signal";
                                         } else if($index === 5) {
                                             $type = "Five Minute Signal";
+                                        } else if($index === 15) {
+                                            $type = "Yellow Flag";
                                         }
 
                                         echo "<tr id=\"subrow_$group_id-$index\" class=\"subrow\">\n";

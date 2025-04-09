@@ -23,28 +23,29 @@ module.exports = class Signal {
      * @param {JSON} signal data from web
      */
     static async addSignal(signal) {
-        const times = Time.getFiveSeriesTime(signal.date_time);
-        console.log("Adding signal at: " + times[Time.StartSignal] + " ("+signal.five_min_serie+")");
-        const id = await Signal.#insert(times[Time.StartSignal], 0, SIGNAL_TYPE.StartSignal);
-        if (id == -1) {
-            throw new Error("Error when adding signal");
+        const id = -1;
+        const times = Time.getFiveSeriesTime(signal.date_time, signal.five_min_serie, signal.yellow_flag);
+        console.log("Adding signal at: " + times[Time.StartSignal] + " ("+signal.five_min_serie+"-"+signal.yellow_flag+")");
+        try {
+            await pool.query('START TRANSACTION;');
+            id = await Signal.#insert(times[Time.StartSignal], 0, SIGNAL_TYPE.StartSignal);
+            await Signal.#setGroup(id);
+            if (signal.five_min_serie === true) {
+                if(debug) console.log("Adding five min signals");
+                await Signal.#insert(times[Time.OneMinSignal], id, SIGNAL_TYPE.OneMinSignal);
+                await Signal.#insert(times[Time.FourMinSignal], id, SIGNAL_TYPE.FourMinSignal);
+                await Signal.#insert(times[Time.FiveMinSignal], id, SIGNAL_TYPE.FiveMinSignal);
+                if (signal.yellow_flag === true) {
+                if(debug) console.log("Adding yellow flag signal");
+                    await Signal.#insert(times[Time.YellowSignal], id, SIGNAL_TYPE.YellowFlag);
+                }
+            }
+            await pool.query('COMMIT;');
+        } catch (error) {
+            await pool.query('ROLLBACK;');
+            throw new Error("ERROR 503: Error when adding signal");
         }
-        await Signal.#setGroup(id);
-        if (signal.five_min_serie === true) {
-            if(debug) console.log("Adding five min signals");
-            var i = await Signal.#insert(times[Time.OneMinSignal], id, SIGNAL_TYPE.OneMinSignal);
-            if (i == -1) {
-                throw new Error("Error when adding one min signal");
-            }
-            i = await Signal.#insert(times[Time.FourMinSignal], id, SIGNAL_TYPE.FourMinSignal);
-            if (i == -1) {
-                throw new Error("Error when adding four min signal");
-            }
-            i = await Signal.#insert(times[Time.FiveMinSignal], id, SIGNAL_TYPE.FiveMinSignal);
-            if (i == -1) {
-                throw new Error("Error when adding five min signal");
-            }
-        }
+        console.log("Signals added successfully");
         return id;
     }
 
@@ -71,10 +72,11 @@ module.exports = class Signal {
         const query = "INSERT INTO signals (date_time, group_id, signal_type) VALUES(?, ?, ?);";
         const result = await pool.query(query, [datetime, group_id, signal_type]);
         if(result.affectedRows == 1 && result.warningStatus == 0) {
+            if(debug) console.log("insert ok");
             return result.insertId;
         }
         console.log("Failed to insert signal " + datetime);
-        return -1;
+        throw new Error("Error when adding signal");
     }
 
 
@@ -89,6 +91,10 @@ module.exports = class Signal {
         const data = [id, id];
         const result = await pool.query(query, data);
         if(debug) console.log("Set group id: " + id);
-        return result;
+        if(result.affectedRows == 1 && result.warningStatus == 0) {
+            console.log("Set group id ok");
+            return;
+        }
+        throw new Error("Error when setting group");
     }
 }
