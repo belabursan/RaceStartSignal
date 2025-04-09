@@ -87,12 +87,12 @@ public final class Signal implements Comparable<Signal> {
      * returns a string representation of the Signal object.
      */
     public String toString() {
-        return "Signal{" +
+        return "Signal{ " +
                 "id=" + id +
                 ", groupId=" + groupId +
                 ", date=" + date.toString() +
                 ", type=" + type +
-                '}';
+                " }";
     }
 
 }

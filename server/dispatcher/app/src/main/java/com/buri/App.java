@@ -39,6 +39,9 @@ public class App
                         //  1 abort signaling thread
                         list = db.getSignalList();
                         System.out.println("New list size: " + list.size());
+                        System.out.println(list.toString());
+                        System.out.println("----");
+                        System.out.println(list.getFirst().toString());
                         //start signaling with the new list
                     } else {
                         config = db.getConfig();
@@ -47,7 +50,6 @@ public class App
                     status = statusTmp;
                     statusTmp = null;
                 } else {
-                    System.out.println("No change in db, sleeping...");
                     Thread.sleep(5000);
                 }
             }
