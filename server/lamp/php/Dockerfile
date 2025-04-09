@@ -35,7 +35,7 @@ RUN mkdir -p /etc/ssl/certs && mkdir -p /etc/ssl/private
 
 # SSL stuff
 RUN echo "ServerName ${SIGNAL_DOMAIN}" >> /etc/apache2/apache2.conf
-RUN openssl dhparam -out /etc/ssl/certs/dh-strong.pem 2048
+#RUN openssl dhparam -out /etc/ssl/certs/dh-strong.pem 2048
 RUN openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout /etc/ssl/private/signal-server-cert-pr.key \
  -out /etc/ssl/certs/signal-server-ca.crt -days 3650 \
  -subj "/C=SE/ST=./L=Malmoe/O=Lagunen/OU=Kappseglingsklubb/CN=${SIGNAL_DOMAIN}}" -passout pass:${SSL_KEY_PASS}

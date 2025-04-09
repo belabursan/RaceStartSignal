@@ -27,17 +27,17 @@ CREATE TABLE IF NOT EXISTS `signals` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- Table that holds the app configuration --
-CREATE TABLE IF NOT EXISTS `config` (
+CREATE TABLE IF NOT EXISTS `app_config` (
     `id`            INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `list_changed`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `conf_changed`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `list_changed`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `conf_changed`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `paused`        INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `mute`          INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `race_start`    TIME NOT NULL DEFAULT '07:59:00',
-    `race_end`      TIME NOT NULL DEFAULT '19:59:00'
+    `race_end`      TIME NOT NULL DEFAULT '19:59:00',
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- Insert default config row --
 -- Note: if id number is changed the CONFIG_ID constant value in DbHandler shall be changed too --
-INSERT INTO `config` (id) VALUES(1);
+INSERT INTO `app_config` (id) VALUES(1);

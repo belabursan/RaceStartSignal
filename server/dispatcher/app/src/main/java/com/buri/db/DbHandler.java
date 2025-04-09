@@ -22,7 +22,6 @@ import com.buri.signal.SignalType;
  */
 public class DbHandler implements Db {
 
-    private static final int CONFIG_ID = 1;
     private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     private final String DB_URL;
     private final String USER;
@@ -139,7 +138,7 @@ public class DbHandler implements Db {
 
     @Override
     public ConfigStatus getDbStatus() throws SQLException {
-        final String query = "SELECT list_changed, conf_changed FROM config WHERE id = " + CONFIG_ID;
+        final String query = "SELECT list_changed, conf_changed FROM " + CONFIG_TABLE_NAME + " WHERE id = " + CONFIG_ID;
         Statement stmt = null;
         ResultSet rs = null;
         try {
@@ -167,7 +166,7 @@ public class DbHandler implements Db {
 
     @Override
     public Config getConfig() throws SQLException {
-        final String query = "SELECT * FROM config WHERE id = " + CONFIG_ID;
+        final String query = "SELECT * FROM " + CONFIG_TABLE_NAME + " WHERE id = " + CONFIG_ID;
         Statement stmt = null;
         ResultSet rs = null;
         try {

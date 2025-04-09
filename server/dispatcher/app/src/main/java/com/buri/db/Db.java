@@ -1,6 +1,7 @@
 package com.buri.db;
 
 import java.sql.SQLException;
+
 import com.buri.config.Config;
 import com.buri.config.ConfigStatus;
 import com.buri.signal.SignalList;
@@ -10,6 +11,9 @@ import com.buri.signal.SignalList;
  * This interface defines the methods for interacting with the database.
  */
 public interface Db {
+
+    static final String CONFIG_TABLE_NAME = "app_config";
+    static final int CONFIG_ID = 1;
 
      /**
      * Checks if the config and lis in the database has changed
