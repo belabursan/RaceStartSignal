@@ -11,7 +11,7 @@ if(isLoggedIn() === false) {
 if (isset($_POST['add_signal'])) {
     $datetime = "".$_POST['date']." ".$_POST['time'].":00";
     $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
-    $yellow_flag = false;
+    $yellow_flag = isset($_POST['yellowflag']) ? true : false;
     addSignal($datetime, $five_min_serie, $yellow_flag);
     unset($_POST['add_signal']);
 }
@@ -60,9 +60,11 @@ s_stop();
                 value="19:00"
                 required
             />
+            <label for="yellowflag">Yellow Flag:</label>
+            <input type="checkbox" id="yellowflag" name="yellowflag" />
             <div class="tooltip">
                 <label for="fiveminserie">Simple:</label>
-                <input type="checkbox" id="fiveminserie" name="fiveminserie" />
+                <input type="checkbox" id="fiveminserie" name="fiveminserie" onclick="uncheckYellow(this);"/>
                 <span class="tooltiptext">Check if you only want to set one signal. No One/Four and Five minutes signals will be set.</span>
             </div>
             <br><button id="add-button" type="submit" name="add_signal">Add</button>
@@ -97,7 +99,7 @@ s_stop();
                                 $sorted = sortSignalGroup($signalGroup);
                                 echo "<!--       Start Signal       -->\n";
                                 echo "<tr class=\"startsignal\">\n";
-                                if(count($sorted) >1) {
+                                if(count($sorted) > 1) {
                                     echo "    <td class=\"img-col\" ><img id=\"$group_id\" onmouseover=\"hoverIn(this);\" onmouseleave=\"hoverOut(this);\" onclick=\"toggle(this);\" src=\"src/images/expand.png\" width=\"16\" height=\"16\"/></td>\n";
                                 } else {
                                     echo "    <td></td>\n";
@@ -119,14 +121,13 @@ s_stop();
                                             } else if($index === 15) {
                                                 $type = "Yellow Flag";
                                             }
-                                        }
-
-                                        echo "<tr id=\"subrow_$group_id-$index\" class=\"subrow\">\n";
-                                        echo "    <td></td>\n";
-                                        echo "    <td class=\"sub-td\">$date</td>\n";
-                                        echo "    <td class=\"sub-td\">$type</td>\n";
-                                        echo "    <td></td>\n";
-                                        echo "</tr>\n";
+                                            echo "<tr id=\"subrow_$group_id-$index\" class=\"subrow\">\n";
+                                            echo "    <td></td>\n";
+                                            echo "    <td class=\"sub-td\">$date</td>\n";
+                                            echo "    <td class=\"sub-td\">$type</td>\n";
+                                            echo "    <td></td>\n";
+                                            echo "</tr>\n";
+                                        }                                        
                                     }
                                 }
                             }

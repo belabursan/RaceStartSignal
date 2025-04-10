@@ -42,9 +42,11 @@ module.exports = class Signal {
      */
     static async addSignal(signal) {
         var gid = -1;
-        const times = Time.getFiveSeriesTime(signal.date_time, signal.five_min_serie, signal.yellow_flag);
-        Signal.#ii("Adding signal at: " + times[Time.StartSignal] + " (" + signal.five_min_serie + "-" + signal.yellow_flag + ")");
+
         try {
+            const times = Time.getFiveSeriesTime(signal.date_time, signal.five_min_serie, signal.yellow_flag);
+            Signal.#ii("Adding signal at: " + times[Time.StartSignal] + " (" + signal.five_min_serie + "-" + signal.yellow_flag + ")");
+
             await pool.query('START TRANSACTION;');
             gid = await Signal.#insert(times[Time.StartSignal], 0, SIGNAL_TYPE.StartSignal);
             await Signal.#setGroup(gid);
@@ -105,7 +107,9 @@ module.exports = class Signal {
      */
     static async deleteSignalByGroupId(group_id) {
         Signal.#ii("Deleting signals with group id: " + group_id);
-        return await pool.query("DELETE FROM signals WHERE group_id=?;", [group_id]);
+        const gid = await pool.query("DELETE FROM signals WHERE group_id=?;", [group_id]);
+        await Signal.#setListChanged();
+        return gid;
     }
 
 

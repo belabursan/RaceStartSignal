@@ -6,7 +6,7 @@ module.exports = class Time {
     static OneMinSignal = 1;
     static FourMinSignal = 2;
     static FiveMinSignal = 3;
-    static YellowSignal = 6;
+    static YellowSignal = 4;
 
 
 
