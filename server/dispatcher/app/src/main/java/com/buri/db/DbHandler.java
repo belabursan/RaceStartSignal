@@ -20,7 +20,7 @@ import com.buri.signal.SignalType;
  * It handles the connection to the database and provides methods to interact
  * with it.
  */
-public class DbHandler implements Db {
+class DbHandler implements Db {
 
     private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     private final String DB_URL;
@@ -53,7 +53,7 @@ public class DbHandler implements Db {
      * 
      * @throws SQLException if there is an error connecting to the database
      */
-    public void connect() throws SQLException {
+    void connect() throws SQLException {
         try {
             System.out.println("Connecting to a selected database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
