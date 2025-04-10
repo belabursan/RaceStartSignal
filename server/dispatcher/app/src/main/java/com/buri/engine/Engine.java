@@ -6,7 +6,7 @@ import com.buri.config.Config;
 import com.buri.config.DbStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
-import com.buri.signal.SignalList;
+import com.buri.signal.SignalGroupList;
 
 public final class Engine {
 
@@ -14,7 +14,7 @@ public final class Engine {
     private boolean alive;
     private Db db;
     private DbStatus dbStatus;
-    private SignalList signalList;
+    private SignalGroupList signalGroupList;
     private SignalRunner signalRunner;
     private Config config;
 
@@ -23,13 +23,12 @@ public final class Engine {
         db = DbFactory.getDb();
         config = db.getConfig();
         dbStatus = db.getDbStatus();
-        signalList = db.getSignalList();
     }
 
     public void execute() throws SQLException, InterruptedException {
+        signalGroupList = db.getSignalList();
+        signalRunner = new SignalRunner(signalGroupList, config);
         signalRunner.start();
-        signalRunner = new SignalRunner(signalList, config);
-
         try {
             this.alive = true;
             while (alive) {
@@ -44,11 +43,11 @@ public final class Engine {
                             this.config = db.getConfig();
                         }
                         // close runner and start new with the new list
-                        signalList = db.getSignalList();
+                        signalGroupList = db.getSignalList();
                         signalRunner.close();
                         signalRunner.join();
                         signalRunner = null;
-                        signalRunner = new SignalRunner(signalList, config);
+                        signalRunner = new SignalRunner(signalGroupList, config);
                         signalRunner.start();
                     } else {
                         System.out.println("Config is changed");

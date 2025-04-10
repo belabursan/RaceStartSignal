@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import com.buri.config.Config;
 import com.buri.config.DbStatus;
-import com.buri.signal.SignalList;
+import com.buri.signal.SignalGroupList;
 
 /**
  * Database interface for handling signals.
@@ -31,18 +31,18 @@ public interface Db {
 
     /**
      * Returns all the signals from the database
-     * @return List of signals sorted by date or empty list if db is empty
+     * @return List of signals sorted by date and grouped by group id, or empty list if db is empty
      * @throws SQLException
      */
-    public SignalList getSignalList() throws SQLException;
+    public SignalGroupList getSignalList() throws SQLException;
 
     /**
      * Removes a signal from the database
      * 
-     * @param id the id of the signal to be removed
-     * @throws SQLException if there is an error removing the signal
+     * @param groupId the group id of the signals to be removed
+     * @throws SQLException if there is an error removing the signals
      */
-    public void removeSignal(int id) throws SQLException;
+    public void removeSignalGroup(int groupId) throws SQLException;
 
     /**
      * Closes the database connection

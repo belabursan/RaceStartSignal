@@ -12,6 +12,7 @@ import com.buri.Arguments;
 import com.buri.config.Config;
 import com.buri.config.DbStatus;
 import com.buri.signal.Signal;
+import com.buri.signal.SignalGroupList;
 import com.buri.signal.SignalList;
 import com.buri.signal.SignalType;
 
@@ -64,7 +65,7 @@ class DbHandler implements Db {
     }
 
     @Override
-    public SignalList getSignalList() throws SQLException, IllegalArgumentException {
+    public SignalGroupList getSignalList() throws SQLException, IllegalArgumentException {
         final String query = "SELECT * FROM signals ORDER BY date_time ASC";
         SignalList list = new SignalList();
         Statement stmt = null;
@@ -95,19 +96,19 @@ class DbHandler implements Db {
                 stmt.close();
             }
         }
-        return list.sort();
+        return new SignalGroupList(list.sort());
     }
 
     @Override
-    public void removeSignal(final int id) throws SQLException {
+    public void removeSignalGroup(final int groupId) throws SQLException {
         final Statement stmt = conn.createStatement();
-        final String query = "DELETE FROM signals WHERE id = " + id;
+        final String query = "DELETE FROM signals WHERE group_id = " + groupId;
         try {
             int rowsAffected = stmt.executeUpdate(query);
             if (rowsAffected > 0) {
-                System.out.println("Signal with ID " + id + " removed successfully.");
+                System.out.println("Signal group with groupID " + groupId + " removed successfully.");
             } else {
-                System.out.println("No signal found with ID " + id);
+                System.out.println("No signals found with groupID " + groupId);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

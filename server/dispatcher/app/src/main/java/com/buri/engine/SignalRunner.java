@@ -3,19 +3,24 @@ package com.buri.engine;
 import java.time.LocalTime;
 
 import com.buri.config.Config;
-import com.buri.signal.SignalList;
+import com.buri.db.DbFactory;
+import com.buri.signal.SignalGroup;
+import com.buri.signal.SignalGroupList;
 
+/**
+ * 
+ */
 public final class SignalRunner extends Thread {
     private boolean alive;
     private boolean mute;
     private boolean paused;
     private LocalTime minRaceStartTime;
     private LocalTime maxRaceEndTime;
-    private SignalList signalList;
+    private SignalGroupList signalGroupList;
 
-    public SignalRunner(SignalList signalList, Config config) {
+    public SignalRunner(SignalGroupList signalGroupList, Config config) {
         this.alive = false;
-        this.signalList = signalList;
+        this.signalGroupList = signalGroupList;
         setConfig(config);
     }
 
@@ -31,6 +36,15 @@ public final class SignalRunner extends Thread {
         alive = true;
         try {
             while (alive) {
+                if(signalGroupList.isEmpty()) {
+                    //just run out
+                    alive = false;
+                    return;
+                }
+                SignalGroup group = signalGroupList.removeNextGroup();
+                group.execute();
+                //DbFactory.getDb().removeSignalGroup(group.getGroupId());
+
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ix) {

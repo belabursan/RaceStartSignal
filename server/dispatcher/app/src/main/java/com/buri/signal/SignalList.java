@@ -29,8 +29,17 @@ public final class SignalList extends LinkedList<Signal> {
      * 
      * @return the next signal
      */
-    public Signal getNextSignal() throws NoSuchElementException {
-        return this.getFirst();
+    public Signal removeNextSignal() throws NoSuchElementException {
+        return this.removeFirst();
+    }
+
+    /**
+     * Returns the group id of the next element
+     * @return group id
+     * @throws NoSuchElementException if list is empty
+     */
+    public int getNextGroupId() throws NoSuchElementException {
+        return this.getFirst().getGroupId();
     }
 
     /**
