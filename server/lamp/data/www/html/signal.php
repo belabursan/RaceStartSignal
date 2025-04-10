@@ -109,14 +109,16 @@ s_stop();
                                 if(count($sorted) >1) {
                                     $i = [1,4,5,15];
                                     foreach ($i as $index) {
-                                        $date = $sorted[$index];
-                                        $type = "One Minute Signal";
-                                        if($index === 4) {
-                                            $type = "Four Minute Signal";
-                                        } else if($index === 5) {
-                                            $type = "Five Minute Signal";
-                                        } else if($index === 15) {
-                                            $type = "Yellow Flag";
+                                        if(array_key_exists($index, $sorted)) {
+                                            $date = $sorted[$index];
+                                            $type = "One Minute Signal";
+                                            if($index === 4) {
+                                                $type = "Four Minute Signal";
+                                            } else if($index === 5) {
+                                                $type = "Five Minute Signal";
+                                            } else if($index === 15) {
+                                                $type = "Yellow Flag";
+                                            }
                                         }
 
                                         echo "<tr id=\"subrow_$group_id-$index\" class=\"subrow\">\n";

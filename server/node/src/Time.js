@@ -14,22 +14,22 @@ module.exports = class Time {
      * Returns an array of as needed for five series in db/web format
      * @returns an array of the time and the time 1, 4 and 5 minutes before
      */
-    static getFiveSeriesTime(web_time, five_min_serie , yellow) {
+    static getFiveSeriesTime(web_time, five_min_serie, yellow) {
         try {
             var out = [];
             const time = web_time.split(/[- :]/);
-            var loc_time = new Date(Date.UTC(time[0], time[1]-1, time[2], time[3], time[4], time[5]));
+            var loc_time = new Date(Date.UTC(time[0], time[1] - 1, time[2], time[3], time[4], time[5]));
 
             out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // start time
 
-            if(five_min_serie === true) {
+            if (five_min_serie === true) {
                 loc_time.setMinutes(loc_time.getMinutes() - 1);
                 out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 1 min before
                 loc_time.setMinutes(loc_time.getMinutes() - 3);
                 out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 4 min before
                 loc_time.setMinutes(loc_time.getMinutes() - 1);
                 out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 5 min before
-                if(yellow === true) {
+                if (yellow === true) {
                     loc_time.setMinutes(loc_time.getMinutes() - 10);
                     out.push(loc_time.toISOString().slice(0, 19).replace('T', ' '));    // 15 min before
                 }
