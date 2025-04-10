@@ -3,7 +3,7 @@ package com.buri.db;
 import java.sql.SQLException;
 
 import com.buri.config.Config;
-import com.buri.config.ConfigStatus;
+import com.buri.config.DbStatus;
 import com.buri.signal.SignalList;
 
 /**
@@ -16,11 +16,11 @@ public interface Db {
     static final int CONFIG_ID = 1;
 
      /**
-     * Checks if the config and lis in the database has changed
+     * Checks if the config and the list in the database has changed
      * @return ConfigStatus object
      * @throws SQLException if there is an error reading the database
      */
-    public ConfigStatus getDbStatus() throws SQLException;
+    public DbStatus getDbStatus() throws SQLException;
 
     /**
      * Returns the current configuration

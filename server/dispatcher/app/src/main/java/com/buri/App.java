@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import com.buri.config.Config;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
-import com.buri.hw.Hw;
+import com.buri.engine.Engine;
 import com.buri.hw.HwException;
 import com.buri.hw.HwFactory;
 
 /**
- * Hello world!
+ * Race Start Signal App
  *
  */
 public class App {
@@ -31,7 +31,6 @@ public class App {
         try {
             runStartUp();
             System.out.println("Startup seems ok, run the engine...");
-            Thread.sleep(500);
             engine = new Engine();
             engine.execute();
         } catch (IllegalStateException e) {

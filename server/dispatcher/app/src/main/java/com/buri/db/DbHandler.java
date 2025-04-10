@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 import com.buri.Arguments;
 import com.buri.config.Config;
-import com.buri.config.ConfigStatus;
+import com.buri.config.DbStatus;
 import com.buri.signal.Signal;
 import com.buri.signal.SignalList;
 import com.buri.signal.SignalType;
@@ -137,7 +137,7 @@ class DbHandler implements Db {
     }
 
     @Override
-    public ConfigStatus getDbStatus() throws SQLException {
+    public DbStatus getDbStatus() throws SQLException {
         final String query = "SELECT list_changed, conf_changed FROM " + CONFIG_TABLE_NAME + " WHERE id = " + CONFIG_ID;
         Statement stmt = null;
         ResultSet rs = null;
@@ -148,7 +148,7 @@ class DbHandler implements Db {
             if (rs.next()) {
                 LocalDateTime listChanged = rs.getObject("list_changed", LocalDateTime.class);
                 LocalDateTime confChanged = rs.getObject("conf_changed", LocalDateTime.class);
-                return new ConfigStatus(confChanged, listChanged);
+                return new DbStatus(confChanged, listChanged);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
