@@ -67,10 +67,11 @@ function node_register($email): Array {
 }
 
 
-function node_add_signal($date_time, $five_min_serie): mixed {
+function node_add_signal($date_time, $five_min_serie, $yellow_flag): mixed {
     $signal = Array (
         'date_time' => $date_time,
-        'five_min_serie' => $five_min_serie
+        'five_min_serie' => $five_min_serie,
+        'yellow_flag' => $yellow_flag
     );
     $url = getUrl("/signal");
     $ch = curl_init();

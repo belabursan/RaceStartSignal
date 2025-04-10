@@ -26,6 +26,7 @@ const SIGNAL_TYPE = Enum({
     OneMinSignal: 1,
     FourMinSignal: 4,
     FiveMinSignal: 5,
+    YellowFlag: 15,
     None: -1
 });
 

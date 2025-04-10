@@ -41,4 +41,21 @@ public final class SignalList extends LinkedList<Signal> {
         return this;
     }
 
+    /**
+     * Returns the string representation of this list
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("SignalList: [");
+        for (Signal signal : this) {
+            sb.append("\n  ");
+            sb.append(signal.toString()).append(",");
+        }
+        if (!this.isEmpty()) {
+            sb.setLength(sb.length() - 2); // Remove the trailing comma and space
+        }
+        sb.append("\n]");
+        return sb.toString();
+    }
+
 }

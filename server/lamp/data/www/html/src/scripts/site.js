@@ -24,6 +24,7 @@ function toggle(element){
     var one = document.getElementById("subrow_"+i+"-1");
     var four = document.getElementById("subrow_"+i+"-4");
     var five = document.getElementById("subrow_"+i+"-5");
+    var yellow = document.getElementById("subrow_"+i+"-15");
     
     if(element.src.search("expand") > -1) {
         one.classList.remove('subrow');
@@ -32,6 +33,10 @@ function toggle(element){
         four.classList.add('subrow-visible');
         five.classList.remove('subrow');
         five.classList.add('subrow-visible');
+        if(yellow) {
+            yellow.classList.remove('subrow');
+            yellow.classList.add('subrow-visible');
+        }
         element.src = "src/images/shrink.png";
     } else {
         one.classList.remove('subrow-visible');
@@ -40,8 +45,27 @@ function toggle(element){
         four.classList.add('subrow');
         five.classList.remove('subrow-visible');
         five.classList.add('subrow');
+        if(yellow) {
+            yellow.classList.remove('subrow-visible');
+            yellow.classList.add('subrow'); 
+        }
         element.src = "src/images/expand.png";
         
+    }
+}
+
+function uncheckYellow(element) {
+    if(element) {
+        var yellow = document.getElementById("yellowflag");
+        if(yellow) {
+            yellow.disabled = true;
+            if(element.checked) {
+                yellow.checked = false;
+                disabled = true;
+            } else {
+                yellow.disabled = false;
+            }
+        }
     }
 }
 

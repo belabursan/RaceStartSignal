@@ -152,11 +152,12 @@ function site_register(string $email) : bool {
  * Adds a signal to the db
  * @param string $date_time date to add the signal for
  * @param bool $five_min_serie true if five min serie should be added too
+ * @param bool $yellow_flag true if yellow flag shall be visible, false otherwise
  * @return bool true if addition succeeded, false otherwise
  */
-function addSignal($date_time, $five_min_serie):bool {
+function addSignal($date_time, $five_min_serie, $yellow_flag):bool {
     log_i("adding signal: $date_time");
-    $ret = node_add_signal($date_time, $five_min_serie);
+    $ret = node_add_signal($date_time, $five_min_serie, $yellow_flag);
     //var_dump($ret);
     $reason= $ret['response'];
     if($ret["response"] !== false) {
@@ -230,7 +231,7 @@ function sortSignalGroup($signalGroup):array {
  * @brief Prints the footer on a page
  * Shall be printed after the closing tag of <main>
  */
-function printFooter($vers="v1.0.0") {
+function printFooter($vers="v2.0.0") {
     $YEAR = date('Y');
 
     echo "<div class=\"signal-footer\">
