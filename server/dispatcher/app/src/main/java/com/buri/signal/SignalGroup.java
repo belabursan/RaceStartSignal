@@ -1,5 +1,8 @@
 package com.buri.signal;
 
+import com.buri.config.Config;
+import com.buri.hw.HwException;
+
 /**
  * Represents a signal group including the start, one- four- five minute and
  * yellow signals
@@ -7,11 +10,11 @@ package com.buri.signal;
 public final class SignalGroup {
 
     private int groupId;
-    private Signal startSignal;
-    private Signal oneMinuteSignal;
-    private Signal fourMinuteSignal;
-    private Signal fiveMinuteSignal;
-    private Signal yellowSignal;
+    private StartSignal startSignal;
+    private OneMinuteSignal oneMinuteSignal;
+    private FourMinuteSignal fourMinuteSignal;
+    private FiveMinuteSignal fiveMinuteSignal;
+    private YellowSignal yellowSignal;
 
     /**
      * Constructor
@@ -31,83 +34,33 @@ public final class SignalGroup {
         }
         switch (signal.getType()) {
             case START_SIGNAL:
-                this.startSignal = signal;
+                this.startSignal = new StartSignal(signal);
                 break;
             case ONE_MINUTE_SIGNAL:
-                this.oneMinuteSignal = signal;
+                this.oneMinuteSignal = new OneMinuteSignal(signal);
                 break;
             case FOUR_MINUTE_SIGNAL:
-                this.fourMinuteSignal = signal;
+                this.fourMinuteSignal = new FourMinuteSignal(signal);
                 break;
             case FIVE_MINUTE_SIGNAL:
-                this.fiveMinuteSignal = signal;
+                this.fiveMinuteSignal = new FiveMinuteSignal(signal);
                 break;
             case YELLOW_FLAG_SIGNAL:
-                this.yellowSignal = signal;
+                this.yellowSignal = new YellowSignal(signal);
                 break;
             default:
                 throw new IllegalArgumentException("Bad signal type: " + signal.getType());
         }
     }
 
-    /**
-     * Gets the group ID.
-     *
-     * @return the group ID
-     */
-    public int getGroupId() {
-        return groupId;
-    }
-
-    /**
-     * Gets the start signal.
-     *
-     * @return the start signal
-     */
-    public Signal getStartSignal() {
-        return startSignal;
-    }
-
-    /**
-     * Gets the one-minute signal.
-     *
-     * @return the one-minute signal
-     */
-    public Signal getOneMinuteSignal() {
-        return oneMinuteSignal;
-    }
-
-    /**
-     * Gets the four-minute signal.
-     *
-     * @return the four-minute signal
-     */
-    public Signal getFourMinuteSignal() {
-        return fourMinuteSignal;
-    }
-
-    /**
-     * Gets the five-minute signal.
-     *
-     * @return the five-minute signal
-     */
-    public Signal getFiveMinuteSignal() {
-        return fiveMinuteSignal;
-    }
-
-    /**
-     * Gets the yellow signal.
-     *
-     * @return the yellow signal
-     */
-    public Signal getYellowSignal() {
-        return yellowSignal;
-    }
-
     
-    public void execute() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+    public int execute(Config config) throws HwException, InterruptedException {
+        yellowSignal.execute();
+        fiveMinuteSignal.execute();
+        fourMinuteSignal.execute();
+        oneMinuteSignal.execute();
+        startSignal.execute();
+        return groupId;
     }
 
 }

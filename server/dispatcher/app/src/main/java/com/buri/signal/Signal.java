@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
  * Class representing a signal with a date and type.
  * The date is formatted as "yyyy-MM-dd HH:mm:ss".
  */
-public final class Signal implements Comparable<Signal> {
+public class Signal implements Comparable<Signal> {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = 1971L;
 

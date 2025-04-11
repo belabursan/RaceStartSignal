@@ -64,8 +64,7 @@ final class HwHandler implements Hw {
 
     @Override
     public void yellowOn() throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'yellowOn'");
+        System.out.println("SETTING YELLOW ON");
     }
 
     @Override

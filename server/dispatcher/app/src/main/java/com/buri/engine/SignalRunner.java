@@ -1,9 +1,10 @@
 package com.buri.engine;
 
-import java.time.LocalTime;
+import java.sql.SQLException;
 
 import com.buri.config.Config;
 import com.buri.db.DbFactory;
+import com.buri.hw.HwException;
 import com.buri.signal.SignalGroup;
 import com.buri.signal.SignalGroupList;
 
@@ -12,10 +13,7 @@ import com.buri.signal.SignalGroupList;
  */
 public final class SignalRunner extends Thread {
     private boolean alive;
-    private boolean mute;
-    private boolean paused;
-    private LocalTime minRaceStartTime;
-    private LocalTime maxRaceEndTime;
+    private Config config;
     private SignalGroupList signalGroupList;
 
     public SignalRunner(SignalGroupList signalGroupList, Config config) {
@@ -25,10 +23,7 @@ public final class SignalRunner extends Thread {
     }
 
     private void setConfig(Config config) {
-        this.mute = config.isMute();
-        this.paused = config.isPaused();
-        this.minRaceStartTime = config.getRaceStart();
-        this.maxRaceEndTime = config.getRaceEnd();
+        this.config = config;
     }
 
     @Override
@@ -42,13 +37,18 @@ public final class SignalRunner extends Thread {
                     return;
                 }
                 SignalGroup group = signalGroupList.removeNextGroup();
-                group.execute();
-                //DbFactory.getDb().removeSignalGroup(group.getGroupId());
+                DbFactory.getDb().removeSignalGroup(group.execute(config));
 
                 Thread.sleep(1000);
             }
+        } catch (SQLException sx) {
+            System.out.println("Something is wrong with the DB, should we restart the app?");
+            // System.exit(-9);
         } catch (InterruptedException ix) {
             System.out.println("Signal runner Interrupted");
+        } catch (HwException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
