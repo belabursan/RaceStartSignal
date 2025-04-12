@@ -18,9 +18,10 @@ public interface Hw {
 
     /**
      * Turns off the start signal light
+     * @param mute false if the horn shall be turned on, true otherwise
      * @throws HwException
      */
-    public void startSignalOff() throws HwException;
+    public void startSignalOff(boolean mute) throws HwException;
 
     /**
      * Turns on the one minute signal light and honks for 1 seconds
@@ -31,9 +32,10 @@ public interface Hw {
 
     /**
      * Turns off the one minute signal light
+     * @param mute false if the horn shall be turned on, true otherwise
      * @throws HwException
      */
-    public void oneMinutesOff() throws HwException;
+    public void oneMinutesOff(boolean mute) throws HwException;
 
     /**
      * Turns on the four minute signal light and honks for 1 seconds
@@ -44,9 +46,10 @@ public interface Hw {
 
     /**
      * Turns off the four minute signal light
+     * @param mute false if the horn shall be turned on, true otherwise
      * @throws HwException
      */
-    public void fourMinutesOff() throws HwException;
+    public void fourMinutesOff(boolean mute) throws HwException;
 
     /**
      * Turns on the five minute signal light and honks for 1 seconds
@@ -57,9 +60,10 @@ public interface Hw {
 
     /**
      * Turns off the five minute signal light
+     * @param mute false if the horn shall be turned on, true otherwise
      * @throws HwException
      */
-    public void fiveMinuteOff() throws HwException;
+    public void fiveMinuteOff(boolean mute) throws HwException;
 
     /**
      * Turns on the yellow signal light

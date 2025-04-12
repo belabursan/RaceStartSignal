@@ -21,7 +21,7 @@ final class HwHandler implements Hw {
     }
 
     @Override
-    public void startSignalOff() throws HwException {
+    public void startSignalOff(boolean mute) throws HwException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'startSignalOff'");
     }
@@ -33,7 +33,7 @@ final class HwHandler implements Hw {
     }
 
     @Override
-    public void oneMinutesOff() throws HwException {
+    public void oneMinutesOff(boolean mute) throws HwException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'oneMinutesOff'");
     }
@@ -45,7 +45,7 @@ final class HwHandler implements Hw {
     }
 
     @Override
-    public void fourMinutesOff() throws HwException {
+    public void fourMinutesOff(boolean mute) throws HwException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'fourMinutesOff'");
     }
@@ -57,7 +57,7 @@ final class HwHandler implements Hw {
     }
 
     @Override
-    public void fiveMinuteOff() throws HwException {
+    public void fiveMinuteOff(boolean mute) throws HwException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'fiveMinuteOff'");
     }
