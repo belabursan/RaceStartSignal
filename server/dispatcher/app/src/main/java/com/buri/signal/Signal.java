@@ -1,6 +1,9 @@
 package com.buri.signal;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import com.buri.config.Config;
 
 /**
  * Class representing a signal with a date and type.
@@ -93,6 +96,14 @@ public class Signal implements Comparable<Signal> {
                 ", date=" + date.toString() +
                 ", type=" + type +
                 " }";
+    }
+
+    public boolean allowed(Config config) {
+        LocalTime signalTime = LocalTime.of(date.getHour(), date.getMinute(), date.getSecond());
+        if(signalTime.isAfter(config.getRaceStart()) && signalTime.isBefore(config.getRaceEnd())) {
+            return true;
+        }
+        return false;
     }
 
 }
