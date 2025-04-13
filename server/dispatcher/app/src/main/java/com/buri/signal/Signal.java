@@ -1,9 +1,11 @@
 package com.buri.signal;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.buri.config.Config;
+import com.buri.hw.HwException;
 
 /**
  * Class representing a signal with a date and type.
@@ -12,6 +14,8 @@ import com.buri.config.Config;
 public class Signal implements Comparable<Signal> {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = 1971L;
+    private Object EXEC = new Object();
+    private boolean aborted;
 
     private int id;
     private int groupId;
@@ -31,6 +35,7 @@ public class Signal implements Comparable<Signal> {
         this.groupId = groupId;
         this.date = dateTime;
         this.type = type;
+        this.aborted = false;
     }
 
     /**
@@ -42,7 +47,7 @@ public class Signal implements Comparable<Signal> {
      */
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof Signal) && (this.date.equals(((Signal)obj).getDate()));
+        return (obj instanceof Signal) && (this.date.equals(((Signal) obj).getDate()));
     }
 
     @Override
@@ -98,12 +103,53 @@ public class Signal implements Comparable<Signal> {
                 " }";
     }
 
-    public boolean allowed(Config config) {
+    protected boolean allowed(Config config) {
         LocalTime signalTime = LocalTime.of(date.getHour(), date.getMinute(), date.getSecond());
-        if(signalTime.isAfter(config.getRaceStart()) && signalTime.isBefore(config.getRaceEnd())) {
+        if (signalTime.isAfter(config.getRaceStart()) && signalTime.isBefore(config.getRaceEnd())) {
             return true;
         }
         return false;
+    }
+
+    boolean countDown(Config config) throws HwException, InterruptedException {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("-----signaltime:   " + this.getDate());
+        System.out.println("-----Now:          " + now);
+        Duration duration = Duration.between(now, this.getDate());
+
+        if (duration.isNegative()) {
+            System.out.println("Old signal, skipping this");
+            return false;
+        }
+        while (!aborted) {
+            synchronized (EXEC) {
+                if (duration.isZero() || duration.isNegative()) {
+                    if (allowed(config)) {
+                        return true;
+                    }
+                    System.out.println("Not allowed, time is out of range");
+                    break;
+                }
+                long dur1 = duration.toMillis();
+                System.out.println("Seconds left to wait: " + dur1 / 1000 + "," + (dur1 - ((dur1 / 1000)) * 1000));
+                if (duration.toMillis() > 3000) {
+                    System.out.println("It seems that I have to wait a while...");
+                    EXEC.wait(duration.minusSeconds(3).toMillis()); // wait until 3 seconds befor signal
+                } else {
+                    EXEC.wait(300);
+                }
+                duration = Duration.between(LocalDateTime.now(), this.getDate());
+            }
+        }
+        return false;
+    }
+
+    public void abort() {
+        System.out.println("Aborting Signal!!");
+        aborted = true;
+        synchronized (EXEC) {
+            this.notify();
+        }
     }
 
 }

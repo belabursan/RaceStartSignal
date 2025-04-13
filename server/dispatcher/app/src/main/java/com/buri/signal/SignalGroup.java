@@ -54,16 +54,40 @@ public final class SignalGroup {
     }
 
     public int execute(Config config) throws HwException, InterruptedException {
+        System.out.println("Executing " + this.toString());
         if (yellowSignal != null) {
-            yellowSignal.execute(config);
+            yellowSignal.signal(config);
         }
         if (fiveMinuteSignal != null) {
-            fiveMinuteSignal.execute(config);
-            fourMinuteSignal.execute(config);
-            oneMinuteSignal.execute(config);
+            fiveMinuteSignal.signal(config);
+            fourMinuteSignal.signal(config);
+            oneMinuteSignal.signal(config);
         }
-        startSignal.execute(config);
+        startSignal.signal(config);
         return groupId;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SignalGroup ").append(groupId).append(": {");
+        if (this.startSignal != null) {
+            sb.append("\n  ").append(this.startSignal.toString());
+        }
+        if (this.oneMinuteSignal != null) {
+            sb.append("\n  ").append(this.oneMinuteSignal.toString());
+        }
+        if (this.fourMinuteSignal != null) {
+            sb.append("\n  ").append(this.fourMinuteSignal.toString());
+        }
+        if (this.fiveMinuteSignal != null) {
+            sb.append("\n  ").append(this.fiveMinuteSignal.toString());
+        }
+        if (this.yellowSignal != null) {
+            sb.append("\n  ").append(this.yellowSignal.toString());
+        }
+        sb.append("\n}");
+        sb.trimToSize();
+        return sb.toString();
     }
 
 }

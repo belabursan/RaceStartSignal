@@ -20,7 +20,6 @@ public final class SignalList extends LinkedList<Signal> {
      * @param signal the signal to add
      */
     public boolean addSignal(Signal signal) {
-        // https://www.baeldung.com/java-sort-list-by-date
         return this.offerLast(signal);
     }
 
@@ -35,6 +34,7 @@ public final class SignalList extends LinkedList<Signal> {
 
     /**
      * Returns the group id of the next element
+     * 
      * @return group id
      * @throws NoSuchElementException if list is empty
      */

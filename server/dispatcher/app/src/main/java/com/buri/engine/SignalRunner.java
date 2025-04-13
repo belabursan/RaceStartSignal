@@ -19,10 +19,6 @@ public final class SignalRunner extends Thread {
     public SignalRunner(SignalGroupList signalGroupList, Config config) {
         this.alive = false;
         this.signalGroupList = signalGroupList;
-        setConfig(config);
-    }
-
-    private void setConfig(Config config) {
         this.config = config;
     }
 
@@ -31,19 +27,23 @@ public final class SignalRunner extends Thread {
         alive = true;
         try {
             while (alive) {
-                if(signalGroupList.isEmpty()) {
-                    //just run out
+                if (signalGroupList.isEmpty()) {
+                    // just run out
+                    System.out.println("No signals to handle...");
                     alive = false;
                     return;
                 }
                 SignalGroup group = signalGroupList.removeNextGroup();
-                DbFactory.getDb().removeSignalGroup(group.execute(config));
+
+                if (group != null) {
+                    DbFactory.getDb().removeSignalGroup(group.execute(config));
+                }
 
                 Thread.sleep(1000);
             }
         } catch (SQLException sx) {
             System.out.println("Something is wrong with the DB, should we restart the app?");
-            // System.exit(-9);
+            // System.exit(-9); ??
         } catch (InterruptedException ix) {
             System.out.println("Signal runner Interrupted");
         } catch (HwException e) {
@@ -57,10 +57,6 @@ public final class SignalRunner extends Thread {
         if (!this.isInterrupted()) {
             this.interrupt();
         }
-    }
-
-    public void setNewConfig(Config config) {
-        setConfig(config);
     }
 
 }

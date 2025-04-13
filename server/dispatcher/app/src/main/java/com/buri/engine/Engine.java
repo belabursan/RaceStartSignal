@@ -26,12 +26,10 @@ public final class Engine {
 
             while (alive) {
                 DbStatus newStatus = db.getDbStatus();
-                System.out.println("newStatus:     " + newStatus.toString());
-                if(currentDbStatus != null) System.out.println("currentStatus: " + currentDbStatus.toString());
                 if (currentDbStatus == null || currentDbStatus.isDbChanged(newStatus)) {
                     System.out.println("DB is changed");
                     currentDbStatus = newStatus;
-                    
+
                     // close runner and start new with the new list
                     if (signalRunner != null) {
                         System.out.println("Finishing old signalRunner");
@@ -39,16 +37,15 @@ public final class Engine {
                         signalRunner.join();
                         signalRunner = null;
                     }
-                    System.out.println("Reading list");
+                    System.out.println("Reading new list from Db");
                     SignalGroupList signalGroupList = db.getSignalList();
+                    System.out.println("Got new list with size " + signalGroupList.size());
                     if (!signalGroupList.isEmpty()) {
                         signalRunner = new SignalRunner(signalGroupList, db.getConfig());
                         signalRunner.start();
                     } else {
                         System.out.println("list is empty, not running signalRunner");
                     }
-                } else {
-                    System.out.println(".");
                 }
                 for (int i = 0; alive && i < DB_CHECK_FREQUENCY; i += 1000) {
                     Thread.sleep(1000);

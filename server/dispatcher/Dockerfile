@@ -6,6 +6,8 @@ FROM eclipse-temurin
 
 ARG PI4J_VERSION=3.0.1
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ="Europe/Stockholm"
+RUN date
 
 # Update and install needed stuff
 RUN apt-get update &&\
