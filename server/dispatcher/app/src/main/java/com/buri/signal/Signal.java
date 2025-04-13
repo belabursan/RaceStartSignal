@@ -132,11 +132,13 @@ public class Signal implements Comparable<Signal> {
                 }
                 long dur1 = duration.toMillis();
                 System.out.println("Seconds left to wait: " + dur1 / 1000 + "," + (dur1 - ((dur1 / 1000)) * 1000));
-                if (duration.toMillis() > 3000) {
+                if (dur1 > 3000) {
                     System.out.println("It seems that I have to wait a while...");
                     EXEC.wait(duration.minusSeconds(3).toMillis()); // wait until 3 seconds befor signal
+                } else if (dur1  > 1000) {
+                    EXEC.wait(900);
                 } else {
-                    EXEC.wait(300);
+                    EXEC.wait(100);
                 }
                 duration = Duration.between(LocalDateTime.now(), this.getDate());
             }
