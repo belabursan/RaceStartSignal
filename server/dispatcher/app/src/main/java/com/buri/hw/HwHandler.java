@@ -3,63 +3,53 @@ package com.buri.hw;
 final class HwHandler implements Hw {
 
     void init() throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'init'");
+        System.out.println("SETTING HW INIT");
     }
 
 
     @Override
     public void hornOn(int seconds) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hornOn'");
+        System.out.println("SETTING HORN ON");
     }
 
     @Override
     public void startSignalOn(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startSignalOn'");
+        System.out.println("SETTING START SIG ON");
     }
 
     @Override
     public void startSignalOff(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startSignalOff'");
+        System.out.println("SETTING START SIG OFF");
     }
 
     @Override
     public void oneMinutesOn(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'oneMinutesOn'");
+        System.out.println("SETTING 1 MIN ON");
     }
 
     @Override
     public void oneMinutesOff(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'oneMinutesOff'");
+        System.out.println("SETTING 1 MIN OFF");
     }
 
     @Override
     public void fourMinutesOn(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fourMinutesOn'");
+        System.out.println("SETTING 4 MIN ON");
     }
 
     @Override
     public void fourMinutesOff(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fourMinutesOff'");
+        System.out.println("SETTING 4 MIN OFF");
     }
 
     @Override
     public void fiveMinuteOn(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fiveMinuteOn'");
+        System.out.println("SETTING 5 MIN ON");
     }
 
     @Override
     public void fiveMinuteOff(boolean mute) throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fiveMinuteOff'");
+        System.out.println("SETTING 5 MIN OFF");
     }
 
     @Override
@@ -69,13 +59,11 @@ final class HwHandler implements Hw {
 
     @Override
     public void yellowOff() throws HwException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'yellowOff'");
+        System.out.println("SETTING YELLOW OFF");
     }
 
     public void close() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'close'");
+        System.out.println("HX CLOSE");
     }
 
 }

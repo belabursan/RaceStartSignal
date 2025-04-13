@@ -2,7 +2,6 @@ package com.buri.engine;
 
 import java.sql.SQLException;
 
-import com.buri.config.Config;
 import com.buri.config.DbStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
@@ -13,49 +12,44 @@ public final class Engine {
     private static final int DB_CHECK_FREQUENCY = 5000; // milliseconds
     private boolean alive;
     private Db db;
-    private DbStatus dbStatus;
-    private SignalGroupList signalGroupList;
     private SignalRunner signalRunner;
-    private Config config;
 
     public Engine() throws SQLException {
         alive = false;
         db = DbFactory.getDb();
-        config = db.getConfig();
-        dbStatus = db.getDbStatus();
     }
 
     public void execute() throws SQLException, InterruptedException {
-        signalGroupList = db.getSignalList();
-        signalRunner = new SignalRunner(signalGroupList, config);
-        signalRunner.start();
         try {
             this.alive = true;
+            DbStatus currentDbStatus = null;
+
             while (alive) {
                 DbStatus newStatus = db.getDbStatus();
-                if (dbStatus.isDbChanged(newStatus)) {
+                System.out.println("newStatus:     " + newStatus.toString());
+                if(currentDbStatus != null) System.out.println("currentStatus: " + currentDbStatus.toString());
+                if (currentDbStatus == null || currentDbStatus.isDbChanged(newStatus)) {
                     System.out.println("DB is changed");
-                    if (dbStatus.isListChanged(newStatus)) {
-                        System.out.println("List is changed");
-                        if (dbStatus.isConfigChanged(newStatus)) {
-                            System.out.println("Also config");
-                            // if both config and list is changed get new config
-                            this.config = db.getConfig();
-                        }
-                        // close runner and start new with the new list
-                        signalGroupList = db.getSignalList();
+                    currentDbStatus = newStatus;
+                    
+                    // close runner and start new with the new list
+                    if (signalRunner != null) {
+                        System.out.println("Finishing old signalRunner");
                         signalRunner.close();
                         signalRunner.join();
                         signalRunner = null;
-                        signalRunner = new SignalRunner(signalGroupList, config);
+                    }
+                    System.out.println("Reading list");
+                    SignalGroupList signalGroupList = db.getSignalList();
+                    if (!signalGroupList.isEmpty()) {
+                        signalRunner = new SignalRunner(signalGroupList, db.getConfig());
                         signalRunner.start();
                     } else {
-                        System.out.println("Config is changed");
-                        this.config = db.getConfig();
-                        signalRunner.setNewConfig(this.config);
+                        System.out.println("list is empty, not running signalRunner");
                     }
+                } else {
+                    System.out.println(".");
                 }
-                newStatus = null;
                 for (int i = 0; alive && i < DB_CHECK_FREQUENCY; i += 1000) {
                     Thread.sleep(1000);
                 }

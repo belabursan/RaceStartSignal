@@ -31,4 +31,12 @@ public class DbStatus {
         return this.listTime;
     }
 
+    @Override
+    public String toString() {
+        return "DbStatus {" +
+                "configTime=" + configTime +
+                ", listTime=" + listTime +
+                " }";
+    }
+
 }

@@ -53,12 +53,15 @@ public final class SignalGroup {
         }
     }
 
-    
     public int execute(Config config) throws HwException, InterruptedException {
-        yellowSignal.execute(config);
-        fiveMinuteSignal.execute(config);
-        fourMinuteSignal.execute(config);
-        oneMinuteSignal.execute(config);
+        if (yellowSignal != null) {
+            yellowSignal.execute(config);
+        }
+        if (fiveMinuteSignal != null) {
+            fiveMinuteSignal.execute(config);
+            fourMinuteSignal.execute(config);
+            oneMinuteSignal.execute(config);
+        }
         startSignal.execute(config);
         return groupId;
     }
