@@ -1,15 +1,17 @@
 package com.buri.hw;
 
 final class HwHandler implements Hw {
+    private RaspiHw raspi;
 
     void init() throws HwException {
+        this.raspi = new RaspiHw();
         System.out.println("SETTING HW INIT");
     }
 
 
     @Override
     public void hornOn(int seconds) throws HwException {
-        System.out.println("SETTING HORN ON");
+        System.out.println("TODO:::::SETTING HORN ON");
     }
 
     @Override

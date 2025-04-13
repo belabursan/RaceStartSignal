@@ -11,7 +11,7 @@ public class OneMinuteSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing one minute signal...");
+        System.out.println("Executing ONE MINUTE SIGNAL");
         if (countDown(config)) {
             HwFactory.getHw().fourMinutesOff(config.isMute());
         }

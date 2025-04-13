@@ -11,7 +11,7 @@ public class StartSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing start signal...");
+        System.out.println("Executing START SIGNAL");
         if (countDown(config)) {
             HwFactory.getHw().fiveMinuteOff(config.isMute());
         }
