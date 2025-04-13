@@ -35,9 +35,9 @@ public final class Arguments {
      * Reads the environment variables.
      * 
      * @return this instance of Arguments with the read values.
-     * @throws Exception if an error occurs while reading the environment variables.
+     * @throws IllegalArgumentException if an error occurs while reading the environment variables.
      */
-    final Arguments readArguments() {
+    final Arguments readArguments() throws IllegalArgumentException {
         try {
             this.mysql_db = System.getenv("MYSQL_DATABASE");
             this.mysql_user = System.getenv("MYSQL_USER");
@@ -48,7 +48,7 @@ public final class Arguments {
             return this.validate();
         } catch (Exception e) {
             System.out.println("Error reading environment variables: " + e.getMessage());
-            throw e;
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public final class Arguments {
      * @return this instance of Arguments if all required variables are set.
      * @throws IllegalArgumentException if any required variable is not set.
      */
-    public Arguments validate() {
+    public Arguments validate() throws IllegalArgumentException {
         if (mysql_db == null || mysql_db.isEmpty()) {
             throw new IllegalArgumentException("MYSQL_DATABASE is not set");
         }

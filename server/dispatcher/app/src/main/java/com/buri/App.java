@@ -1,67 +1,67 @@
 package com.buri;
 
+import java.sql.SQLException;
+
 import com.buri.config.Config;
-import com.buri.config.ConfigStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
-import com.buri.signal.SignalList;
+import com.buri.engine.Engine;
+import com.buri.hw.HwException;
+import com.buri.hw.HwFactory;
 
 /**
- * Hello world!
+ * Race Start Signal App
  *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+    private void runStartUp() throws IllegalStateException, SQLException,
+            ClassNotFoundException, IllegalArgumentException, HwException {
+        Arguments arguments = new Arguments().readArguments();
+        System.out.println(arguments.toString());
+
+        DbFactory.init(arguments);
+        Db db = DbFactory.getDb();
+        Config config = db.getConfig();
+        System.out.println(config.toString());
+        HwFactory.init();
+    }
+
+    void run() {
+        Engine engine = null;
         try {
-            Arguments arguments = new Arguments().readArguments();
-            System.out.println(arguments.toString());
-            DbFactory.init(arguments);
-            Db db = DbFactory.getDb();
-
-            Config config = db.getConfig();
-            System.out.println(config.toString());
-            ConfigStatus status = db.getDbStatus();
-            SignalList list = null;
-
-            while(true) {
-                ConfigStatus statusTmp = db.getDbStatus();
-                if(list == null) {
-                    list = db.getSignalList();
-                    System.out.println("List size: " + list.size());
-                }
-
-                if(status.isDbChanged(statusTmp)) {
-                    System.out.println("Db status changed!!!");
-                    if(status.isListChanged(statusTmp)) {
-                        // handle list change
-                        //  1 abort signaling thread
-                        list = db.getSignalList();
-                        System.out.println("New list size: " + list.size());
-                        System.out.println(list.toString());
-                        System.out.println("----");
-                        System.out.println(list.getFirst().toString());
-                        //start signaling with the new list
-                    } else {
-                        config = db.getConfig();
-                        //handle mute and paus
-                    }
-                    status = statusTmp;
-                    statusTmp = null;
-                } else {
-                    Thread.sleep(5000);
-                }
-            }
-        } catch (InterruptedException e) {
-            System.out.println("Thread interrupted: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            runStartUp();
+            System.out.println("Startup seems ok, run the engine...");
+            engine = new Engine();
+            engine.execute();
+        } catch (IllegalStateException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (HwException e) {
+            e.printStackTrace();
+        } catch (InterruptedException i) {
+            System.out.println("Interrupted");
         } finally {
-            DbFactory.reset();
+            if (engine != null) {
+                engine.close();
+            }
+            DbFactory.close();
+            HwFactory.close();
         }
-        System.out.println( "Goodbye Signal!" );
+    }
+
+    public static void main(String[] args) {
+        try {
+            new App().run();
+        } catch (Exception e) {
+            // Catch everything it is possible to catch, just to see...
+            e.printStackTrace();
+        }
+        System.out.println("Goodbye Signal!");
         System.exit(0);
     }
 }

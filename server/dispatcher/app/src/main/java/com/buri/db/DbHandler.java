@@ -10,8 +10,9 @@ import java.time.LocalTime;
 
 import com.buri.Arguments;
 import com.buri.config.Config;
-import com.buri.config.ConfigStatus;
+import com.buri.config.DbStatus;
 import com.buri.signal.Signal;
+import com.buri.signal.SignalGroupList;
 import com.buri.signal.SignalList;
 import com.buri.signal.SignalType;
 
@@ -20,7 +21,7 @@ import com.buri.signal.SignalType;
  * It handles the connection to the database and provides methods to interact
  * with it.
  */
-public class DbHandler implements Db {
+class DbHandler implements Db {
 
     private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     private final String DB_URL;
@@ -53,7 +54,7 @@ public class DbHandler implements Db {
      * 
      * @throws SQLException if there is an error connecting to the database
      */
-    public void connect() throws SQLException {
+    void connect() throws SQLException {
         try {
             System.out.println("Connecting to a selected database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -64,7 +65,7 @@ public class DbHandler implements Db {
     }
 
     @Override
-    public SignalList getSignalList() throws SQLException, IllegalArgumentException {
+    public SignalGroupList getSignalList() throws SQLException, IllegalArgumentException {
         final String query = "SELECT * FROM signals ORDER BY date_time ASC";
         SignalList list = new SignalList();
         Statement stmt = null;
@@ -95,19 +96,19 @@ public class DbHandler implements Db {
                 stmt.close();
             }
         }
-        return list.sort();
+        return new SignalGroupList(list.sort());
     }
 
     @Override
-    public void removeSignal(final int id) throws SQLException {
+    public void removeSignalGroup(final int groupId) throws SQLException {
         final Statement stmt = conn.createStatement();
-        final String query = "DELETE FROM signals WHERE id = " + id;
+        final String query = "DELETE FROM signals WHERE group_id = " + groupId;
         try {
             int rowsAffected = stmt.executeUpdate(query);
             if (rowsAffected > 0) {
-                System.out.println("Signal with ID " + id + " removed successfully.");
+                System.out.println("Signal group with groupID " + groupId + " removed successfully.");
             } else {
-                System.out.println("No signal found with ID " + id);
+                System.out.println("No signals found with groupID " + groupId);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
@@ -137,7 +138,7 @@ public class DbHandler implements Db {
     }
 
     @Override
-    public ConfigStatus getDbStatus() throws SQLException {
+    public DbStatus getDbStatus() throws SQLException {
         final String query = "SELECT list_changed, conf_changed FROM " + CONFIG_TABLE_NAME + " WHERE id = " + CONFIG_ID;
         Statement stmt = null;
         ResultSet rs = null;
@@ -148,7 +149,7 @@ public class DbHandler implements Db {
             if (rs.next()) {
                 LocalDateTime listChanged = rs.getObject("list_changed", LocalDateTime.class);
                 LocalDateTime confChanged = rs.getObject("conf_changed", LocalDateTime.class);
-                return new ConfigStatus(confChanged, listChanged);
+                return new DbStatus(confChanged, listChanged);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
