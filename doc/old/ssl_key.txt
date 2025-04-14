@@ -1,0 +1,9 @@
+How to install/use ssl for NODE
+
+1. Generate keys: use/see the function install_keys() in the setup.sh file.
+2. During key generation the openssl will ask for a password, save that in the .env file as SSL_KEY_PASS=<pass>
+3. set the https port in .env file: NODE_HTTPS_PORT=7443
+4. in .env file enable ssl by setting NODE_HTTPS=true
+5. if started, stop and remove node before restart
+
+NOT VALID ANYMORE: ssl key is genarated automatically in docker file

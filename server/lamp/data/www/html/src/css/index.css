@@ -1,0 +1,84 @@
+@import "footer.css";
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.headerx {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+    padding: 10px 20px;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Ensure text and link stay on the same line */
+}
+
+.headerx h1 {
+    text-align: center;
+    margin-left: 30px;
+    color: coral;
+}
+
+.headerx a {
+    margin-left: auto; /* Push the logout link to the far right */
+    text-decoration: none;
+    color: #f2f2f2;
+    font-weight: bold;
+    cursor: default;
+}
+
+.headerx span {
+    color: #f2f2f2;
+    cursor: default;
+}
+
+.login_container {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.login_container input {
+    display: block;
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login_container button{
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login_container button:hover {
+    background: #0056b3;
+}
+
+
+.error-footer {
+    position: fixed;
+    width: 800%;
+    bottom: 200px;
+    
+    font-size: 18px;
+    background-color: lightcoral;
+    text-align: center;
+    z-index: 10;
+}
