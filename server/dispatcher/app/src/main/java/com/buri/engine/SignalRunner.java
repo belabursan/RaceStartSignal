@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import com.buri.config.Config;
 import com.buri.db.DbFactory;
 import com.buri.hw.HwException;
+import com.buri.hw.HwFactory;
 import com.buri.signal.SignalGroup;
 import com.buri.signal.SignalGroupList;
 
@@ -37,6 +38,7 @@ public final class SignalRunner extends Thread {
 
                 if (group != null) {
                     DbFactory.getDb().removeSignalGroup(group.execute(config));
+                    HwFactory.getHw().resetState(); // just to be sure...
                 }
 
                 Thread.sleep(1000);
@@ -49,6 +51,8 @@ public final class SignalRunner extends Thread {
         } catch (HwException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            System.out.println("Signal runner ended");
         }
     }
 

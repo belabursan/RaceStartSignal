@@ -130,13 +130,16 @@ public class Signal implements Comparable<Signal> {
                     System.out.println("Not allowed, time is out of range");
                     break;
                 }
-                long dur1 = duration.toMillis();
-                System.out.println("Seconds left to wait: " + dur1 / 1000 + "," + (dur1 - ((dur1 / 1000)) * 1000));
-                if (duration.toMillis() > 3000) {
-                    System.out.println("It seems that I have to wait a while...");
-                    EXEC.wait(duration.minusSeconds(3).toMillis()); // wait until 3 seconds befor signal
+                long durationMillis = duration.toMillis();
+                if (durationMillis > 5000) {
+                    System.out.println("It seems that I have to wait for a while...");
+                    System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
+                    EXEC.wait(duration.minusSeconds(5).toMillis()); // wait until 5 seconds befor signal
+                    System.out.println("Less then 5 seconds to signal");
+                } else if (durationMillis  > 1000) {
+                    EXEC.wait(900);
                 } else {
-                    EXEC.wait(300);
+                    EXEC.wait(100);
                 }
                 duration = Duration.between(LocalDateTime.now(), this.getDate());
             }

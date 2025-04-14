@@ -1,8 +1,10 @@
 package com.buri.signal;
 
 import com.buri.config.Config;
+import com.buri.hw.Hw;
 import com.buri.hw.HwException;
 import com.buri.hw.HwFactory;
+import com.buri.hw.PiSettings;
 
 public class OneMinuteSignal extends Signal {
 
@@ -11,9 +13,13 @@ public class OneMinuteSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing one minute signal...");
+        System.out.println("Executing ONE MINUTE SIGNAL");
+        Hw hw = HwFactory.getHw();
         if (countDown(config)) {
-            HwFactory.getHw().fourMinutesOff(config.isMute());
+            hw.hwPFlagOff();
+            if(!config.isMute()) {
+                hw.hornOn(PiSettings.TOOT_LENGTH_LONG_MS);
+            }
         }
 
     }
