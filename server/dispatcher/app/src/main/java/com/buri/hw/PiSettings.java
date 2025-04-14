@@ -1,20 +1,23 @@
 package com.buri.hw;
 
+/**
+ * Raspberry Pi settings for model 3 B+
+ */
 public final class PiSettings {
     // Class flag  - goes up at 5 min - short toot
     //              -goes down at start - short toot
-    protected static final int GPIO_CLASS_FLAG = 0;
+    protected static final int GPIO_CLASS_FLAG = 6;
 
     // P-flag (Blue Peter)  - goes up at 4 min - short toot
     //                      - goes down at 1 min - long toot
-    protected static final int GPIO_P_FLAG = 1;
+    protected static final int GPIO_P_FLAG = 13;
 
     // Yellow flag (optional)   - goes up 15 min before start - indicates that race is to be started soon
     //                          - goes down 5 min before start, when classflag goes up
-    protected static final int GPIO_YELLOW = 2;
+    protected static final int GPIO_YELLOW = 19;
 
     // Horn gpio - on starts the horn, off shuts it down
-    protected static final int GPIO_HORN = 3;
+    protected static final int GPIO_HORN = 26;
 
     // TOOT length in milliseconds
     public static final int TOOT_LENGTH_SHORT_MS = 500;
