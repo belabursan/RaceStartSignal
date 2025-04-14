@@ -28,6 +28,10 @@ public final class SignalGroup {
         this.groupId = group_id;
     }
 
+    public int getGroupId() {
+        return groupId;
+    }
+
     public void setSignal(Signal signal) {
         if (signal.getGroupId() != this.groupId) {
             throw new IllegalArgumentException("Bad group id: " + signal.getGroupId());
@@ -88,6 +92,24 @@ public final class SignalGroup {
         sb.append("\n}");
         sb.trimToSize();
         return sb.toString();
+    }
+
+    public void abort() {
+        if (yellowSignal != null) {
+            yellowSignal.abort();
+        }
+        if (fiveMinuteSignal != null) {
+            fiveMinuteSignal.abort();
+        }
+        if (fourMinuteSignal != null) {
+            fourMinuteSignal.abort();
+        }
+        if (oneMinuteSignal != null) {
+            oneMinuteSignal.abort();
+        }
+        if (oneMinuteSignal != null) {
+            startSignal.abort();
+        }
     }
 
 }
