@@ -137,6 +137,7 @@ services:
       - database
     volumes:
       - ./dispatcher/app:/home/dispatcher/app:rw
+      - /lib/libpigpio.so.1:/lib/libpigpio.so.1:ro
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}

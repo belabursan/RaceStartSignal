@@ -13,7 +13,7 @@ public class FourMinuteSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing FOUR MINUTE SIGNAL");
+        System.out.println("--> Executing FOUR MINUTE SIGNAL");
         Hw hw = HwFactory.getHw();
         if (countDown(config)) {
             hw.hwPFlagOn();

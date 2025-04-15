@@ -23,7 +23,7 @@ public class App {
         Db db = DbFactory.getDb();
         Config config = db.getConfig();
         System.out.println(config.toString());
-        HwFactory.init(arguments.isDebug(), arguments.isDevelop());
+        HwFactory.init(arguments.isDebug());
     }
 
     void run() {

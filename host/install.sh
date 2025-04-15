@@ -5,7 +5,7 @@ PASS="test"
 
 echo "Welcome to the install script for the server"
 echo "  Installing neccesary packages"
-sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl ntp wget binutils curl yes
+sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl ntp wget binutils curl yes pigpio
 sudo install -m 0755 -d /etc/apt/keyrings
 
 #Add user and add it to sudoers

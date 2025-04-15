@@ -13,7 +13,7 @@ public class StartSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing START SIGNAL");
+        System.out.println("--> Executing START SIGNAL");
         Hw hw = HwFactory.getHw();
         if (countDown(config)) {
             hw.hwClassFlagOff();

@@ -2,7 +2,6 @@ package com.buri.hw;
 
 public final class HwFactory {
     private static HwHandler hw = null;
-    private static boolean develop;
     private static boolean debug;
 
     private HwFactory() {
@@ -14,9 +13,8 @@ public final class HwFactory {
      * 
      * @throws HwException in case of hw error
      */
-    public static void init(boolean debug, boolean develop) throws HwException {
+    public static void init(boolean debug) throws HwException {
         HwFactory.debug = debug;
-        HwFactory.develop = develop;
         HwFactory.getHw();
     }
 
@@ -28,7 +26,7 @@ public final class HwFactory {
      */
     public static Hw getHw() throws HwException {
         if (HwFactory.hw == null) {
-            HwFactory.hw = new HwHandler(HwFactory.develop, HwFactory.debug);
+            HwFactory.hw = new HwHandler(HwFactory.debug);
             HwFactory.hw.init();
         }
         return (Hw) HwFactory.hw;

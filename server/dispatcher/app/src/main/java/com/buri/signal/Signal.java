@@ -16,7 +16,7 @@ public class Signal implements Comparable<Signal> {
     private static final long serialVersionUID = 1971L;
     private Object EXEC = new Object();
     private boolean aborted;
-
+    private boolean debug;
     private int id;
     private int groupId;
     private LocalDateTime date;
@@ -36,6 +36,11 @@ public class Signal implements Comparable<Signal> {
         this.date = dateTime;
         this.type = type;
         this.aborted = false;
+        this.debug = false;
+    }
+
+    public void setDebug(boolean debug){
+        this.debug = debug;
     }
 
     /**
@@ -113,8 +118,10 @@ public class Signal implements Comparable<Signal> {
 
     boolean countDown(Config config) throws HwException, InterruptedException {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("-----signaltime:   " + this.getDate());
-        System.out.println("-----Now:          " + now);
+        if(debug) {
+            System.out.println("-----signaltime:   " + this.getDate());
+            System.out.println("-----Now:          " + now);
+        }
         Duration duration = Duration.between(now, this.getDate());
 
         if (duration.isNegative()) {
