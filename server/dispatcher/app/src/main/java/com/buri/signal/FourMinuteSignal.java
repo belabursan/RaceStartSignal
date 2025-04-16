@@ -18,7 +18,7 @@ public class FourMinuteSignal extends Signal {
         if (countDown(config)) {
             hw.hwPFlagOn();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_SHORT_MS);
+                hw.hornOn(config.shortSignal());
             }
         }
     }

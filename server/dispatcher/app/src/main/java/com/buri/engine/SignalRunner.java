@@ -44,6 +44,7 @@ public final class SignalRunner extends Thread {
                     } catch (NullPointerException e) {
                         System.out.println("Null pointer exception when executing group " + gid);
                         System.out.println("Bad group?");
+                    } finally {
                         group.abort();
                     }
 
@@ -63,9 +64,7 @@ public final class SignalRunner extends Thread {
             System.out.println("HW exception in signal runner: " + e.getMessage());
         } finally {
             System.out.println("Signal runner ended");
-            if (group != null) {
-                group.abort();
-            }
+            // add abort?
             try {
                 HwFactory.getHw().resetState();
             } catch (HwException e) {

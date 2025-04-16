@@ -19,7 +19,7 @@ public class FiveMinuteSignal extends Signal {
             hw.hwYellowFlagOff();
             hw.hwClassFlagOn();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_SHORT_MS);
+                hw.hornOn(config.shortSignal());
             }
         }
         

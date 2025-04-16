@@ -97,7 +97,7 @@ final class HwHandler implements Hw {
     }
 
     @Override
-    public void hornOn(int milliseconds) throws HwException, InterruptedException {
+    public void hornOn(long milliseconds) throws HwException, InterruptedException {
             synchronized (HornLock) {
                 if (milliseconds > 0) {
                     System.out.println("horn on");

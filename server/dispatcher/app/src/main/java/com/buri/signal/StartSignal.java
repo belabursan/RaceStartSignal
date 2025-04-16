@@ -18,7 +18,7 @@ public class StartSignal extends Signal {
         if (countDown(config)) {
             hw.hwClassFlagOff();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_SHORT_MS);
+                hw.hornOn(config.shortSignal());
             }
         }
     }

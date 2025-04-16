@@ -18,7 +18,7 @@ public class OneMinuteSignal extends Signal {
         if (countDown(config)) {
             hw.hwPFlagOff();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_LONG_MS);
+                hw.hornOn(config.longSignal());
             }
         }
 

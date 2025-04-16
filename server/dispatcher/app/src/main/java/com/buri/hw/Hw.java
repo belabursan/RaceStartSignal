@@ -21,7 +21,7 @@ public interface Hw {
      * @throws HwException          in case of hw error
      * @throws InterruptedException if exec is interrupted
      */
-    public void hornOn(int milliseconds) throws HwException, InterruptedException;
+    public void hornOn(long milliseconds) throws HwException, InterruptedException;
 
     /**
      * Sets the pin steering the classflag relay on

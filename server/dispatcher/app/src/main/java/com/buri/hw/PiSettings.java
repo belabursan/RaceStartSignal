@@ -19,11 +19,6 @@ public final class PiSettings {
     // Horn gpio - on starts the horn, off shuts it down
     protected static final int GPIO_HORN = 26;
 
-    // TOOT length in milliseconds
-    public static final int TOOT_LENGTH_SHORT_MS = 500;
-    public static final int TOOT_LENGTH_LONG_MS = 1600;
-
-
     
     public static String values() {
         StringBuilder sb = new StringBuilder();
@@ -32,8 +27,6 @@ public final class PiSettings {
             sb.append("  - ").append("GPIO_P_FLAG").append("     = ").append(GPIO_P_FLAG).append("\n");
             sb.append("  - ").append("GPIO_YELLOW").append("     = ").append(GPIO_YELLOW).append("\n");
             sb.append("  - ").append("GPIO_HORN").append("       = ").append(GPIO_HORN).append("\n");
-            sb.append("  - ").append("TOOT_LENGTH_SHORT_MS").append(" = ").append(TOOT_LENGTH_SHORT_MS).append("\n");
-            sb.append("  - ").append("TOOT_LENGTH_LONG_MS").append("  = ").append(TOOT_LENGTH_LONG_MS).append("\n");
         sb.append("}\n");
         return sb.toString();
     }

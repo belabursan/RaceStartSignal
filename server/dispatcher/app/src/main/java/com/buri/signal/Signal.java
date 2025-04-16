@@ -145,7 +145,7 @@ public class Signal implements Comparable<Signal> {
                 } else if (durationMillis > 5000) {
                     System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
                     EXEC.wait(duration.minusSeconds(5).toMillis()); // wait until 5 seconds befor signal
-                    System.out.println("Less then 6 seconds to signal");
+                    if(debug) System.out.println("Less then 6 seconds to signal");
                 } else if (durationMillis  > 1000) {
                     EXEC.wait(900);
                 } else {
@@ -158,10 +158,12 @@ public class Signal implements Comparable<Signal> {
     }
 
     public void abort() {
-        System.out.println("Aborting Signal!!");
-        aborted = true;
-        synchronized (EXEC) {
-            this.notify();
+        if(!aborted) {
+            System.out.println("Aborting Signal!!");
+            aborted = true;
+            synchronized (EXEC) {
+                this.notifyAll();
+            }
         }
     }
 

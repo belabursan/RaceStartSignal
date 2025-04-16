@@ -5,7 +5,7 @@ PASS="test"
 
 echo "Welcome to the install script for the server"
 echo "  Installing neccesary packages"
-sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl ntp wget binutils curl yes pigpio
+sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools
 sudo install -m 0755 -d /etc/apt/keyrings
 
 #Add user and add it to sudoers
@@ -34,14 +34,16 @@ sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.i
 sudo usermod -a -G docker ${USER}
 
 # Adding ntp stuff
-echo -e "\n Adding ntp stuff"
-sudo systemctl restart systemd-timesyncd.service
-timedatectl status
-echo
-timedatectl timesync-status
+#echo -e "\n Adding ntp stuff"
+#sudo systemctl restart systemd-timesyncd.service
+#timedatectl status
+#echo
+#timedatectl timesync-status
 
 
 #Reboot
 echo -e "\n Rebooting the system"
 sleep 5
 sudo reboot
+ ## ?? add spidev.bufsiz=xxxx to /boot/firmware/cmdline.txt
+ ## open rasp-config an enable spi
