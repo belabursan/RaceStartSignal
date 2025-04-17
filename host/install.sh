@@ -39,6 +39,7 @@ sudo dtparam spi=on
 # Adding network time sync stuff
 echo -e "\n Enabling time/ntp stuff"
 # https://blog.pishop.co.za/time-sync-from-the-network-on-the-raspberry-pi/
+sudo apt -y install systemd-timesyncd
 sudo timedatectl set-timezone Europe/Stockholm
 sudo timedatectl set-ntp true
 timedatectl
