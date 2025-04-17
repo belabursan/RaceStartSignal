@@ -44,8 +44,6 @@ public final class SignalRunner extends Thread {
                     } catch (NullPointerException e) {
                         System.out.println("Null pointer exception when executing group " + gid);
                         System.out.println("Bad group?");
-                    } finally {
-                        group.abort();
                     }
 
                     DbFactory.getDb().removeSignalGroup(gid);

@@ -33,17 +33,20 @@ echo \
 sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
 sudo usermod -a -G docker ${USER}
 
-# Adding ntp stuff
-#echo -e "\n Adding ntp stuff"
-#sudo systemctl restart systemd-timesyncd.service
-#timedatectl status
-#echo
-#timedatectl timesync-status
+# Enable spi
+sudo dtparam spi=on
 
+# Adding network time sync stuff
+echo -e "\n Enabling time/ntp stuff"
+# https://blog.pishop.co.za/time-sync-from-the-network-on-the-raspberry-pi/
+sudo timedatectl set-timezone Europe/Stockholm
+sudo timedatectl set-ntp true
+timedatectl
+timedatectl timesync-status -a
+# nn /etc/systemd/timesycd.conf -> #FallbackNTP=0.debian.pool.ntp.org 1.debian.pool.ntp.org 2.debian.pool.ntp.org 3.debian.pool.ntp.org
+# nn /etc/systemd/timesycd.conf -> #FallbackNTP=0.se.pool.ntp.org 1.se.pool.ntp.org 2.se.pool.ntp.org 3.se.pool.ntp.org
 
 #Reboot
 echo -e "\n Rebooting the system"
 sleep 5
 sudo reboot
- ## ?? add spidev.bufsiz=xxxx to /boot/firmware/cmdline.txt
- ## open rasp-config an enable spi
