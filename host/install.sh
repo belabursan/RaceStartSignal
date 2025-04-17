@@ -35,6 +35,9 @@ sudo usermod -a -G docker ${USER}
 
 # Enable spi
 sudo dtparam spi=on
+sudo dtparam audio=off
+sudo dtparam i2s=off
+sudo dtparam audio=off
 
 # Adding network time sync stuff
 echo -e "\n Enabling time/ntp stuff"
