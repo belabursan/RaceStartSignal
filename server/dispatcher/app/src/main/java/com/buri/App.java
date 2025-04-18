@@ -14,7 +14,7 @@ import com.buri.hw.HwFactory;
  *
  */
 public class App {
-    private void runStartUp() throws IllegalStateException, SQLException,
+    private Arguments runStartUp() throws IllegalStateException, SQLException,
             ClassNotFoundException, IllegalArgumentException, HwException {
         Arguments arguments = new Arguments().readArguments();
         System.out.println(arguments.toString());
@@ -24,14 +24,15 @@ public class App {
         Config config = db.getConfig();
         System.out.println(config.toString());
         HwFactory.init(arguments.isDebug());
+        return arguments;
     }
 
     void run() {
         Engine engine = null;
         try {
-            runStartUp();
+            Arguments args = runStartUp();
             System.out.println("Startup seems ok, run the engine...");
-            engine = new Engine();
+            engine = new Engine(args);
             engine.execute();
         } catch (IllegalStateException e) {
             e.printStackTrace();

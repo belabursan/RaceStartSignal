@@ -2,6 +2,8 @@ package com.buri.engine;
 
 import java.sql.SQLException;
 
+import com.buri.Arguments;
+import com.buri.config.Config;
 import com.buri.config.DbStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
@@ -13,8 +15,10 @@ public final class Engine {
     private boolean alive;
     private Db db;
     private SignalRunner signalRunner;
+    private final Arguments arguments;
 
-    public Engine() throws SQLException {
+    public Engine(Arguments arguments) throws SQLException {
+        this.arguments = arguments;
         alive = false;
         db = DbFactory.getDb();
     }
@@ -41,7 +45,9 @@ public final class Engine {
                     SignalGroupList signalGroupList = db.getSignalList();
                     System.out.println("Got new list with size " + signalGroupList.size());
                     if (!signalGroupList.isEmpty()) {
-                        signalRunner = new SignalRunner(signalGroupList, db.getConfig());
+                        Config config = db.getConfig();
+                        config.setSignalTime(arguments.getShortSignal(), arguments.getLongSignal());
+                        signalRunner = new SignalRunner(signalGroupList, config);
                         signalRunner.start();
                     } else {
                         System.out.println("list is empty, not running signalRunner");

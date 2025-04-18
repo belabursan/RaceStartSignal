@@ -1,11 +1,15 @@
 <?php
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 include_once "src/utils/site.php";
-s_start();
+
 if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
     exit(header("Location: https://$host/signal.php", true));
 }
-s_stop();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,13 +37,11 @@ s_stop();
     </div>
     
     <?php
-    s_start();
     if (isset($_SESSION["login_error"])) {
         printError($_SESSION["login_error"]);
         unset($_SESSION["login_error"]);
     }
     printFooter();
-    s_stop();
     ?>
 </body>
 </html>
