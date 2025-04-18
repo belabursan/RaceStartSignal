@@ -10,8 +10,8 @@ public final class Config {
     private final boolean mute;
     private final LocalTime race_start;
     private final LocalTime race_end;
-    private static final long SHORT_SIGNAL_TIME_MS = 800;
-    private static final long LONG_SIGNAL_TIME_MS = 1600;
+    private long shortSignalTime = 1000;
+    private long longSignalTime = 2000;
 
     public Config(LocalDateTime confChanged, LocalDateTime listChanged, boolean paused, boolean mute,
             LocalTime race_start,
@@ -24,18 +24,30 @@ public final class Config {
         this.race_end = race_end;
     }
 
+    public void setSignalTime(long shortSignal, long longSignal) {
+        this.shortSignalTime = shortSignal;
+        this.longSignalTime = longSignal;
+    }
+
     public long shortSignal() {
-        return SHORT_SIGNAL_TIME_MS;
+        return shortSignalTime;
     }
 
     public long longSignal() {
-        return LONG_SIGNAL_TIME_MS;
+        return longSignalTime;
     }
 
     @Override
     public String toString() {
-        return "Config [configChangeDate=" + configChangeDate + ", listChangeDate=" + listChangeDate + ", paused="
-                + paused + ", mute=" + mute + ", race_start=" + race_start + ", race_end=" + race_end + "]";
+        return "Config [configChangeDate=" + configChangeDate + 
+        ", listChangeDate=" + listChangeDate + 
+        ", paused=" + paused + 
+        ", mute=" + mute + 
+        ", race_start=" + race_start + 
+        ", race_end=" + race_end + 
+        ", long_signal=" + longSignalTime + 
+        ", short_signal=" + shortSignalTime + 
+        "]";
     }
 
     

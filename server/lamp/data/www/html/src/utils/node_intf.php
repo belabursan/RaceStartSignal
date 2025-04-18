@@ -1,5 +1,8 @@
 <?php
-
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 /**
  * Returns the total url to the node server
  * @param mixed $url to be added to the base url
