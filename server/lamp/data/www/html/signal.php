@@ -48,7 +48,7 @@ s_stop();
                 name="date"
                 min="2025-03-20"
                 max="2095-05-20"
-                value="2025-01-18"
+                value="2025-04-18"
                 required
             />
             <label for="time">Time:</label>

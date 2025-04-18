@@ -28,6 +28,7 @@ class DbHandler implements Db {
     private final String USER;
     private final String PASS;
     private Connection conn = null;
+    private boolean debug;
 
     /**
      * Constructor for DbHandler class.
@@ -36,6 +37,7 @@ class DbHandler implements Db {
      * @throws ClassNotFoundException if the JDBC driver class is not found
      */
     public DbHandler(final Arguments arguments) {
+        this.debug = arguments.isDebug();
         try {
             DB_URL = "jdbc:mariadb://" + arguments.getMysqlHost() + "/" + arguments.getMysqlDb();
             USER = arguments.getMysqlUser();
@@ -80,7 +82,9 @@ class DbHandler implements Db {
                 SignalType type = SignalType.fromInt(rs.getInt("signal_type"));
                 int groupId = rs.getInt("group_id");
                 int id = rs.getInt("id");
-                list.addSignal(new Signal(id, groupId, dateTime, type));
+                Signal s = new Signal(id, groupId, dateTime, type);
+                s.setDebug(debug);
+                list.addSignal(s);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

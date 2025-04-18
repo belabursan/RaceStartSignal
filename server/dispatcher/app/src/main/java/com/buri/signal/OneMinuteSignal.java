@@ -13,12 +13,12 @@ public class OneMinuteSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing ONE MINUTE SIGNAL");
+        System.out.println("--> Executing ONE MINUTE SIGNAL");
         Hw hw = HwFactory.getHw();
         if (countDown(config)) {
             hw.hwPFlagOff();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_LONG_MS);
+                hw.hornOn(config.longSignal());
             }
         }
 
