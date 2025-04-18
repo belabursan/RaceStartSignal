@@ -1,10 +1,8 @@
 const validator = require('validator')
-//const Enums = require("./Enums.js");
 
-// TODO: https://www.npmjs.com/package/jsonschema
 function validateSignal(signal) {
-    if(isNotEmptyObject(signal, "Invalid signal")) {
-        if(isNotEmptyString(signal.date_time), "Invalid date_time") {
+    if (isNotEmptyObject(signal, "Invalid signal")) {
+        if (isNotEmptyString(signal.date_time), "Invalid date_time") {
             return signal;
         }
     }

@@ -11,7 +11,7 @@ public class YellowSignal extends Signal {
     }
 
     public synchronized void signal(Config config) throws HwException, InterruptedException {
-        if(countDown(config)) {
+        if (countDown(config)) {
             HwFactory.getHw().hwYellowFlagOn();
         }
     }

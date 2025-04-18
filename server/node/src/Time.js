@@ -9,7 +9,6 @@ module.exports = class Time {
     static YellowSignal = 4;
 
 
-
     /**
      * Returns an array of as needed for five series in db/web format
      * @returns an array of the time and the time 1, 4 and 5 minutes before
@@ -38,7 +37,7 @@ module.exports = class Time {
             return out;
         } catch (error) {
             console.log("Error when getting five series time: " + error.message);
-            throw new Error("ERROR400 - Incorrect time value");
+            throw new Error("ERROR400 - Incorrect time value: " + web_time);
         }
     }
 

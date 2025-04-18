@@ -16,7 +16,6 @@ function Enum(baseEnum) {
 }
 
 
-
 /**
  * Enum for signal types
  */

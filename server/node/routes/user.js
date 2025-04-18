@@ -50,7 +50,7 @@ router
             const user_id = user.getId();
             const token = Authenticator.sign(user_id);
 
-            if(debug) console.log("User " + email + " has logged in");
+            if (debug) console.log("User " + email + " has logged in");
             return res.status(200).send(token.toString());
         }
         catch (error) {

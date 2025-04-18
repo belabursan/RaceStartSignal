@@ -16,9 +16,11 @@ public final class Engine {
     private Db db;
     private SignalRunner signalRunner;
     private final Arguments arguments;
+    private boolean debug;
 
     public Engine(Arguments arguments) throws SQLException {
         this.arguments = arguments;
+        this.debug = arguments.isDebug();
         alive = false;
         db = DbFactory.getDb();
     }
@@ -31,7 +33,9 @@ public final class Engine {
             while (alive) {
                 DbStatus newStatus = db.getDbStatus();
                 if (currentDbStatus == null || currentDbStatus.isDbChanged(newStatus)) {
-                    System.out.println("DB is changed");
+                    if (debug) {
+                        System.out.println("DB is changed");
+                    }
                     currentDbStatus = newStatus;
 
                     // close runner and start new with the new list

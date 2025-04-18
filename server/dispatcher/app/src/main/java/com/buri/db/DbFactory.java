@@ -58,7 +58,7 @@ public final class DbFactory {
             DbFactory.db.close();
         }
         DbFactory.db = null;
-        System.out.println("DbFactory reset.");
+        System.out.println("DbFactory closed");
     }
 
 }

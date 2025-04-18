@@ -1,8 +1,7 @@
 <?php
-if(!isset($_SESSION)) 
-    { 
-        session_start(); 
-    } 
+if (!isset($_SESSION)) {
+    session_start();
+}
 include_once "site.php";
 
 /**
@@ -18,7 +17,7 @@ function handleLogin(): never
         log_i("Somebody tries to log in...");
         $host = $_SERVER['HTTP_HOST'];
         $page = "index.php";
-    
+
         if (isset($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password'])) {
             $epost = $_POST['email'];
             log_i("Somebody($epost) tries to log in...");
@@ -26,9 +25,9 @@ function handleLogin(): never
                 site_login($epost, $_POST['password']);
                 $page = "signal.php";
             } catch (Exception $e) {
-                log_e("Error during login: ".$e->getMessage()." code: ".$e->getCode());
+                log_e("Error during login: " . $e->getMessage() . " code: " . $e->getCode());
                 $_SESSION['login_error'] = $e->getMessage();
-            }                
+            }
         }
         exit(header("Location: https://$host/$page", true));
     } finally {
@@ -43,12 +42,15 @@ handleLogin();
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login Page</title>
-    </head>
-    <body>
-        <h3>This should not be visible, something is very wrong :-)</h3>
-    </body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+
+<body>
+    <h3>This should not be visible, something is very wrong :-)</h3>
+</body>
+
 </html>

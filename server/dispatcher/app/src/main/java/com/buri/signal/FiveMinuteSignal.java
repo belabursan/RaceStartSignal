@@ -4,7 +4,6 @@ import com.buri.config.Config;
 import com.buri.hw.Hw;
 import com.buri.hw.HwException;
 import com.buri.hw.HwFactory;
-import com.buri.hw.PiSettings;
 
 public class FiveMinuteSignal extends Signal {
 
@@ -18,11 +17,11 @@ public class FiveMinuteSignal extends Signal {
         if (countDown(config)) {
             hw.hwYellowFlagOff();
             hw.hwClassFlagOn();
-            if(!config.isMute()) {
+            if (!config.isMute()) {
                 hw.hornOn(config.shortSignal());
             }
         }
-        
+
     }
 
 }

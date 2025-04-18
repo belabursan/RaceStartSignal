@@ -10,7 +10,7 @@ ADD ./config/my.cnf /etc/mysql/conf.d
 ADD ./config/data.sql /etc/mysql/data.sql
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install apt-utils \
-    iputils-ping net-tools mariadb-client tzdata sed nano && \
-chown -R mysql:root /var/lib/mysql/ && \
-sed -i -r "s/MYSQL_DATABASE/$SAILRACE_DATABASE/g" /etc/mysql/data.sql && \
-cp /etc/mysql/data.sql /docker-entrypoint-initdb.d
+        iputils-ping net-tools mariadb-client tzdata sed nano && \
+    chown -R mysql:root /var/lib/mysql/ && \
+    sed -i -r "s/MYSQL_DATABASE/$SAILRACE_DATABASE/g" /etc/mysql/data.sql && \
+    cp /etc/mysql/data.sql /docker-entrypoint-initdb.d

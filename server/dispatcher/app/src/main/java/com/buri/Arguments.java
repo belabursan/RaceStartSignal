@@ -37,7 +37,8 @@ public final class Arguments {
      * Reads the environment variables.
      * 
      * @return this instance of Arguments with the read values.
-     * @throws IllegalArgumentException if an error occurs while reading the environment variables.
+     * @throws IllegalArgumentException if an error occurs while reading the
+     *                                  environment variables.
      */
     final Arguments readArguments() throws IllegalArgumentException {
         try {

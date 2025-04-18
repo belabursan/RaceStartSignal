@@ -5,11 +5,6 @@ let pool = DB.getConn();
 const develop = process.env.DEVELOP === "true";
 const debug = process.env.DEBUG === "true";
 
-/*
-    `user_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `email` VARCHAR(64) UNIQUE NOT NULL,
-    `pass_hash` VARCHAR(128) NOT NULL,
-*/
 
 /**
  * User class handles the user interactopn with the DB
@@ -80,8 +75,7 @@ module.exports = class User {
         const characters = '!ABCDEFGHIJKLMNO&PQRSTUVWXYZ_abcdefghijklmno%pqrstuvwxyz*0123456789?' + this.#salt;
         const charactersLength = characters.length;
 
-        
-        if(develop) {
+        if (develop) {
             pass = '111111';
         } else {
             while (counter < length) {

@@ -25,7 +25,6 @@ final class HwHandler implements Hw {
         this.HornLock = new Object();
         this.console = new Console();
         this.pi4j = Pi4J.newAutoContext();
-        
         System.out.println("Hw created using: " + PiSettings.values());
     }
 
@@ -35,28 +34,27 @@ final class HwHandler implements Hw {
      * @throws HwException
      */
     void init() throws HwException {
-        System.out.println("Initing HW");
-            // init gpios
-            this.pinClassFlag = pi4j.digitalOutput().create(PiSettings.GPIO_CLASS_FLAG);
-            this.pinP_Flag = pi4j.digitalOutput().create(PiSettings.GPIO_P_FLAG);
-            this.pinYellowFlag = pi4j.digitalOutput().create(PiSettings.GPIO_YELLOW);
-            this.pinHorn = pi4j.digitalOutput().create(PiSettings.GPIO_HORN);
-            reset();
-            // print some info
-            console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
-            console.println("Operating system: " + pi4j.boardInfo().getOperatingSystem());
-            console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
+        if (debug) System.out.println("Initing HW");
+        // init gpios
+        this.pinClassFlag = pi4j.digitalOutput().create(PiSettings.GPIO_CLASS_FLAG);
+        this.pinP_Flag = pi4j.digitalOutput().create(PiSettings.GPIO_P_FLAG);
+        this.pinYellowFlag = pi4j.digitalOutput().create(PiSettings.GPIO_YELLOW);
+        this.pinHorn = pi4j.digitalOutput().create(PiSettings.GPIO_HORN);
+        reset();
+        // print some info
+        console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
+        console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
 
-            if (!debug) {
-                // This info is also available directly from the BoardInfoHelper,
-                // and with some additional realtime data.
-                console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
-                console.println("Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
-                console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
-                console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
-                console.println(
-                        "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
-            }
+        if (debug) {
+            // This info is also available directly from the BoardInfoHelper,
+            // and with some additional realtime data.
+            console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
+            console.println("Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
+            console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
+            console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
+            console.println(
+                    "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
+        }
         System.out.println("Hw inited");
     }
 
@@ -67,26 +65,26 @@ final class HwHandler implements Hw {
             System.out.println("resetting hw");
         }
 
-            try {
-                synchronized (HornLock) {
-                    HornLock.notify();
-                }
-                if(pinClassFlag != null) {
-                    pinClassFlag.low();
-                }
-                if(pinP_Flag != null) {
-                    pinP_Flag.low();
-                }
-                if(pinYellowFlag != null) {
-                    pinYellowFlag.low();
-                }
-                if(pinHorn != null) {
-                    pinHorn.low();
-                }
-            } catch (Exception e) {
-                System.out.println("Exception when reset hw: " + e.getMessage());
-                throw new HwException(e.getMessage());
+        try {
+            synchronized (HornLock) {
+                HornLock.notify();
             }
+            if (pinClassFlag != null) {
+                pinClassFlag.low();
+            }
+            if (pinP_Flag != null) {
+                pinP_Flag.low();
+            }
+            if (pinYellowFlag != null) {
+                pinYellowFlag.low();
+            }
+            if (pinHorn != null) {
+                pinHorn.low();
+            }
+        } catch (Exception e) {
+            System.out.println("Exception when reset hw: " + e.getMessage());
+            throw new HwException(e.getMessage());
+        }
     }
 
     /****** P U B L I C I N T E R F A C E ************************* */
@@ -98,15 +96,15 @@ final class HwHandler implements Hw {
 
     @Override
     public void hornOn(long milliseconds) throws HwException, InterruptedException {
-            synchronized (HornLock) {
-                if (milliseconds > 0) {
-                    System.out.println("horn on");
-                    this.pinHorn.high();
-                    HornLock.wait(milliseconds);
-                }
-                System.out.println("horn off");
-                this.pinHorn.low();
+        synchronized (HornLock) {
+            if (milliseconds > 0) {
+                System.out.println("horn on");
+                this.pinHorn.high();
+                HornLock.wait(milliseconds);
             }
+            System.out.println("horn off");
+            this.pinHorn.low();
+        }
     }
 
     @Override
@@ -169,10 +167,10 @@ final class HwHandler implements Hw {
         }
         if (console != null) {
             console.goodbye();
-        }        
-            if (pi4j != null) {
-                pi4j.shutdown();
-            }        
+        }
+        if (pi4j != null) {
+            pi4j.shutdown();
+        }
     }
 
 }

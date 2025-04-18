@@ -1,6 +1,6 @@
 FROM node:lts-alpine3.21
 # SailRace Node Server
-# v2.0.0 Bela Bursan <burszan@gmail.com>
+# v1.0.0 Bela Bursan <burszan@gmail.com>
 #
 
 ARG SSL_KEY_PASS
@@ -22,6 +22,5 @@ WORKDIR /home/node/app/
 
 COPY --chown=node:node . .
 RUN npm install
-#EXPOSE 8080
 
 CMD ["npm", "start"]

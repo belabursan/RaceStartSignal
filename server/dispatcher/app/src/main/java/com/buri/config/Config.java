@@ -39,18 +39,17 @@ public final class Config {
 
     @Override
     public String toString() {
-        return "Config [configChangeDate=" + configChangeDate + 
-        ", listChangeDate=" + listChangeDate + 
-        ", paused=" + paused + 
-        ", mute=" + mute + 
-        ", race_start=" + race_start + 
-        ", race_end=" + race_end + 
-        ", long_signal=" + longSignalTime + 
-        ", short_signal=" + shortSignalTime + 
-        "]";
+        return "Config [configChangeDate=" + configChangeDate +
+                ", listChangeDate=" + listChangeDate +
+                ", paused=" + paused +
+                ", mute=" + mute +
+                ", race_start=" + race_start +
+                ", race_end=" + race_end +
+                ", long_signal=" + longSignalTime +
+                ", short_signal=" + shortSignalTime +
+                "]";
     }
 
-    
     public LocalDateTime getConfigChangeDate() {
         return configChangeDate;
     }

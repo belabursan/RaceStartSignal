@@ -1,14 +1,13 @@
 <?php
-if(!isset($_SESSION)) 
-    { 
-        session_start(); 
-    } 
+if (!isset($_SESSION)) {
+    session_start();
+}
 include_once "src/utils/site.php";
 
 if (isset($_SESSION["login_error"]) === true) {
     unset($_SESSION["login_error"]);
 }
-if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
+if (isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
     exit(header("Location: https://$host/signal.php", true));
 }
@@ -36,7 +35,7 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
             </form>
         </div>
     </div>
-    <?php 
+    <?php
     if (isset($_SESSION["register_error"])) {
         printError($_SESSION["register_error"]);
         unset($_SESSION["login_error"]);
@@ -44,4 +43,5 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     printFooter();
     ?>
 </body>
+
 </html>

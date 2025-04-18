@@ -58,7 +58,7 @@ class DbHandler implements Db {
      */
     void connect() throws SQLException {
         try {
-            System.out.println("Connecting to a selected database...");
+            System.out.println("Connecting to database as " + USER);
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
         } catch (SQLException e) {
             System.out.println("Connection to database failed");
@@ -138,7 +138,7 @@ class DbHandler implements Db {
                 conn = null;
             }
         }
-        System.out.println("Connection closed.");
+        System.out.println("DB connection closed.");
     }
 
     @Override

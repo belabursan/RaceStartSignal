@@ -1,11 +1,10 @@
 <?php
-if(!isset($_SESSION)) 
-    { 
-        session_start(); 
-    } 
+if (!isset($_SESSION)) {
+    session_start();
+}
 include_once "src/utils/site.php";
 
-if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
+if (isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
     exit(header("Location: https://$host/signal.php", true));
 }
@@ -26,7 +25,7 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
 <body onload="fadeOut('error-monitor');">
     <div class="headerx">
         <h1>Lagunens Race Signal Page</h1>
-        <span class="register_text" >Dont't have an account? <a href="register.php">Register</a></span>
+        <span class="register_text">Dont't have an account? <a href="register.php">Register</a></span>
     </div>
     <div class="login_container">
         <form action="src/utils/login.php" method="POST">
@@ -35,7 +34,7 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
             <button type="submit" name="login">Login</button>
         </form>
     </div>
-    
+
     <?php
     if (isset($_SESSION["login_error"])) {
         printError($_SESSION["login_error"]);
@@ -44,4 +43,5 @@ if(isLoggedIn() === true && isset($_SERVER['HTTP_HOST'])) {
     printFooter();
     ?>
 </body>
+
 </html>

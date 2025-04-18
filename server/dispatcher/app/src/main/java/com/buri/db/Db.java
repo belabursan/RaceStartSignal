@@ -15,8 +15,9 @@ public interface Db {
     static final String CONFIG_TABLE_NAME = "app_config";
     static final int CONFIG_ID = 1;
 
-     /**
+    /**
      * Checks if the config and the list in the database has changed
+     * 
      * @return ConfigStatus object
      * @throws SQLException if there is an error reading the database
      */
@@ -24,6 +25,7 @@ public interface Db {
 
     /**
      * Returns the current configuration
+     * 
      * @return configuration
      * @throws SQLException if there is an error reading the database
      */
@@ -31,7 +33,9 @@ public interface Db {
 
     /**
      * Returns all the signals from the database
-     * @return List of signals sorted by date and grouped by group id, or empty list if db is empty
+     * 
+     * @return List of signals sorted by date and grouped by group id, or empty list
+     *         if db is empty
      * @throws SQLException
      */
     public SignalGroupList getSignalList() throws SQLException;

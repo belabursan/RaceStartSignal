@@ -5,7 +5,7 @@ const Enums = require("./Enums.js");
 const Time = require("./Time.js");
 
 const debug = process.env.DEBUG === "true";
-const expireTime = process.env.NODE_JWT_EXP || "1y"
+const expireTime = process.env.NODE_JWT_EXP || "1800s"
 const secret = process.env.NODE_LOGIN_SECRET || '1234567890abcdefghijklmnopqrstvzx';
 
 
