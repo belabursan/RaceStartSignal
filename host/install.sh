@@ -1,11 +1,15 @@
 #!/bin/bash
-#installs the neccesary stuff on the server
+#installs the neccesary stuff on the server(the raspi 4b)
+# Copy/paste this file to the raspi and run it
+
 USER="dispatcher"
 PASS="Dispatcher2025"
+GIT_TAG="v1.0.0"
 
 echo "Welcome to the install script for the server"
 echo "  Installing neccesary packages"
-sudo apt-get update && sudo apt-get install -y git nano apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools
+sudo apt-get update && 
+sudo apt-get -y DEBIAN_FRONTEND=noninteractive upgrade && sudo apt-get install -y git nano apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools
 sudo install -m 0755 -d /etc/apt/keyrings
 
 #Add user and add it to sudoers
@@ -63,7 +67,7 @@ echo "7. run the server with docker: docker compose up/down (--build) (--detach)
 
 # autostart
 echo -e "\nAdding autostart"
-echo -e "\ncd /home/${USER}/RaceStartSignal/server && docker compose up -d\n" >> /home/${USER}/.bashrc
+echo -e "\ncd /home/${USER}/RaceStartSignal/server && git checkout ${GIT_TAG} && docker compose up -d\n" >> /home/${USER}/.bashrc
 
 sleep 10
 echo "Rebooting in 10..."
