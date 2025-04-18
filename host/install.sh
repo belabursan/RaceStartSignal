@@ -1,17 +1,23 @@
 #!/bin/bash
-#installs the neccesary stuff on the server
-USER="test"
-PASS="test"
+#installs the neccesary stuff on the server(the raspi 4b)
+# Copy/paste this file to the raspi and run it
+
+USER="dispatcher"
+PASS="Dispatcher2025"
+GIT_TAG="v1.0.0"
 
 echo "Welcome to the install script for the server"
 echo "  Installing neccesary packages"
-sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools
+sudo apt-get update && 
+sudo apt-get -y DEBIAN_FRONTEND=noninteractive upgrade && sudo apt-get install -y git nano apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools
 sudo install -m 0755 -d /etc/apt/keyrings
 
 #Add user and add it to sudoers
 echo -e "\n Adding user stuff"
 sudo useradd -m $USER && sudo passwd $USER
-sudo usermod -a -G sudo ${USER} && sudo usermod -a -G gpio ${USER}
+#sudo usermod -a -G sudo ${USER}
+sudo usermod -a -G gpio ${USER}
+sudo usermod -a -G video ${USER}
 # Change the password for the user
 sudo chpasswd <<EOF
 $USER:$PASS
@@ -50,7 +56,24 @@ timedatectl timesync-status -a
 # nn /etc/systemd/timesycd.conf -> #FallbackNTP=0.debian.pool.ntp.org 1.debian.pool.ntp.org 2.debian.pool.ntp.org 3.debian.pool.ntp.org
 # nn /etc/systemd/timesycd.conf -> #FallbackNTP=0.se.pool.ntp.org 1.se.pool.ntp.org 2.se.pool.ntp.org 3.se.pool.ntp.org
 
+# git stuff
+echo "git stuff.."
+echo "1. copy /home/${USER}/.ssh/id_rsa.pub to github first!!"
+echo "2. after reboot log in as ${USER}"
+echo "3. clone git to user home: git clone https://github.com/belabursan/RaceStartSignal.git"
+echo "4. got to ~/RaceStartSignal/server"
+echo "5. copy template.env to .env"
+echo "6. edit .env, set needed parameters"
+echo "7. run the server with docker: docker compose up/down (--build) (--detach)"
+
+# autostart
+echo -e "\nAdding autostart"
+echo -e "\ncd /home/${USER}/RaceStartSignal/server && git checkout ${GIT_TAG} && docker compose up -d\n" >> /home/${USER}/.bashrc
+
+sleep 10
+echo "Rebooting in 10..."
+sleep 10
 #Reboot
 echo -e "\n Rebooting the system"
-sleep 5
+sleep 1
 sudo reboot
