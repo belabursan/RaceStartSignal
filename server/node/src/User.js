@@ -65,7 +65,6 @@ module.exports = class User {
      * @returns {String} md5 sum hash of password
      */
     async #hashPassword(password) {
-        if (develop) console.log("PASS: " + password);
         return await bcrypt.hash(password, 10);
     }
 
@@ -81,11 +80,20 @@ module.exports = class User {
         const characters = '!ABCDEFGHIJKLMNO&PQRSTUVWXYZ_abcdefghijklmno%pqrstuvwxyz*0123456789?' + this.#salt;
         const charactersLength = characters.length;
 
-        while (counter < length) {
-            pass += characters.charAt(Math.floor(Math.random() * charactersLength));
-            counter += 1;
+        
+        if(develop) {
+            pass = '111111';
+        } else {
+            while (counter < length) {
+                pass += characters.charAt(Math.floor(Math.random() * charactersLength));
+                counter += 1;
+            }
         }
         const hash = await this.#hashPassword(pass);
+        if (develop) {
+            console.log("PASS: " + pass);
+            console.log("HASH: " + hash);
+        }
         const result = { "password": pass, "hash": hash };
         return result;
     }

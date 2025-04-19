@@ -1,4 +1,8 @@
 <?php
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 include_once "site.php";
 
 /**
@@ -8,7 +12,6 @@ include_once "site.php";
 function handleLogin(): never
 {
     try {
-        s_start();
         if (isset($_SESSION["login_error"])) {
             unset($_SESSION["login_error"]);
         }
@@ -32,7 +35,6 @@ function handleLogin(): never
         unset($_POST['login']);
         unset($_POST['password']);
         unset($_POST['email']);
-        s_stop();
     }
 }
 

@@ -1,6 +1,10 @@
 <?php
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 include_once "src/utils/site.php";
-s_start();
+
 
 if(isLoggedIn() === false) {
     $host = $_SERVER['HTTP_HOST'];
@@ -21,7 +25,7 @@ if(isset($_POST['delete_pressed'])) {
     deleteSignal($group_id);
     unset($_POST['delete_pressed']);
 }
-s_stop();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +52,7 @@ s_stop();
                 name="date"
                 min="2025-03-20"
                 max="2095-05-20"
-                value="2025-01-18"
+                value="2025-04-18"
                 required
             />
             <label for="time">Time:</label>
@@ -92,7 +96,6 @@ s_stop();
                 <tbody>
                     <?php
                         try {
-                            s_start();
                             $list = site_get_signal_list();
                             foreach ($list as $group_id => $signalGroup) {
                                 // Set Start signal first
@@ -139,8 +142,6 @@ s_stop();
                             } else {
                                 $_SESSION['signal_error'] = $e->getMessage();
                             }
-                        } finally {
-                            s_stop();
                         }
                     ?>
                 </tbody>
@@ -148,22 +149,11 @@ s_stop();
         </form>
     </div>
     <?php
-    s_start();
     if(isset($_SESSION['signal_error']) === true) {
         printError($_SESSION['signal_error']);
         unset($_SESSION['signal_error']);
     }
     printFooter();
-    s_stop();
     ?>
 </body>
 </html>
-<?php
-s_start();
-if(isLoggedIn() === false) {
-    $host = $_SERVER['HTTP_HOST'];
-    //exit(header("Location: https://$host/index.php", true));
-    exit(header("Location: logout.php", true));
-}
-s_stop();
-?>

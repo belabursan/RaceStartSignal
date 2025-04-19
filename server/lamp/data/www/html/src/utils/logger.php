@@ -1,4 +1,8 @@
 <?php
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 
 define('I_ERROR', "ERR");
 define('I_INFO', "INF");

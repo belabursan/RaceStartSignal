@@ -28,6 +28,8 @@ public final class Arguments {
     private String mysql_user;
     private String mysql_pass;
     private String mysql_host;
+    private long short_signal_ms;
+    private long long_signal_ms;
     private boolean debug;
     private boolean develop;
 
@@ -45,6 +47,18 @@ public final class Arguments {
             this.mysql_host = System.getenv("MYSQL_HOST");
             this.debug = Boolean.parseBoolean(System.getenv("DEBUG"));
             this.develop = Boolean.parseBoolean(System.getenv("DEVELOP"));
+            try {
+                this.short_signal_ms = Long.parseLong(System.getenv("SHORT_SIGNAL_MS"));
+            } catch (Exception e) {
+                System.out.println("No short signal defined, setting default: " + 1000);
+                this.short_signal_ms = 1000;
+            }
+            try {
+                this.long_signal_ms = Long.parseLong(System.getenv("LONG_SIGNAL_MS"));
+            } catch (Exception e) {
+                System.out.println("No long signal defined, setting default: " + 2000);
+                this.long_signal_ms = 2000;
+            }
             return this.validate();
         } catch (Exception e) {
             System.out.println("Error reading environment variables: " + e.getMessage());
@@ -72,6 +86,16 @@ public final class Arguments {
             throw new IllegalArgumentException("MYSQL_HOST is not set");
         }
         return this;
+    }
+
+    // Getter for short signal
+    public long getShortSignal() {
+        return short_signal_ms;
+    }
+
+    // Getter for long signal
+    public long getLongSignal() {
+        return long_signal_ms;
     }
 
     // Getter for mysql_db

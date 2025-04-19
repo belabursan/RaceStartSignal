@@ -13,13 +13,13 @@ public class FiveMinuteSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing FIVE MINUTE SIGNAL");
+        System.out.println("--> Executing FIVE MINUTE SIGNAL");
         Hw hw = HwFactory.getHw();
         if (countDown(config)) {
             hw.hwYellowFlagOff();
             hw.hwClassFlagOn();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_SHORT_MS);
+                hw.hornOn(config.shortSignal());
             }
         }
         

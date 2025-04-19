@@ -16,7 +16,7 @@ public class Signal implements Comparable<Signal> {
     private static final long serialVersionUID = 1971L;
     private Object EXEC = new Object();
     private boolean aborted;
-
+    private boolean debug;
     private int id;
     private int groupId;
     private LocalDateTime date;
@@ -36,6 +36,11 @@ public class Signal implements Comparable<Signal> {
         this.date = dateTime;
         this.type = type;
         this.aborted = false;
+        this.debug = false;
+    }
+
+    public void setDebug(boolean debug){
+        this.debug = debug;
     }
 
     /**
@@ -113,8 +118,10 @@ public class Signal implements Comparable<Signal> {
 
     boolean countDown(Config config) throws HwException, InterruptedException {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("-----signaltime:   " + this.getDate());
-        System.out.println("-----Now:          " + now);
+        if(debug) {
+            System.out.println("-----signaltime:   " + this.getDate());
+            System.out.println("-----Now:          " + now);
+        }
         Duration duration = Duration.between(now, this.getDate());
 
         if (duration.isNegative()) {
@@ -131,11 +138,14 @@ public class Signal implements Comparable<Signal> {
                     break;
                 }
                 long durationMillis = duration.toMillis();
-                if (durationMillis > 5000) {
+                if (durationMillis > 3600000) {
                     System.out.println("It seems that I have to wait for a while...");
                     System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
+                    EXEC.wait(duration.minusSeconds(3600-6).toMillis()); // wait until 5 seconds befor signal
+                } else if (durationMillis > 5000) {
+                    System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
                     EXEC.wait(duration.minusSeconds(5).toMillis()); // wait until 5 seconds befor signal
-                    System.out.println("Less then 5 seconds to signal");
+                    if(debug) System.out.println("Less then 6 seconds to signal");
                 } else if (durationMillis  > 1000) {
                     EXEC.wait(900);
                 } else {
@@ -148,10 +158,12 @@ public class Signal implements Comparable<Signal> {
     }
 
     public void abort() {
-        System.out.println("Aborting Signal!!");
-        aborted = true;
-        synchronized (EXEC) {
-            this.notify();
+        if(!aborted) {
+            System.out.println("Aborting Signal!!");
+            aborted = true;
+            synchronized (EXEC) {
+                this.notifyAll();
+            }
         }
     }
 

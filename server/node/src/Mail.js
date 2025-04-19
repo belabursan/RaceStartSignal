@@ -27,13 +27,15 @@ async function sendEmailToUser(email, password) {
         const mailOptions = {
             from: mailer_addr,
             to: email,
-            subject: 'Your SailRace password',
-            text: 'Hello Sailor!\n\nYour SailRace password is: ' + password + '\n\nBr:\nSailRace Team'
+            subject: 'Your SailRaceSigna info',
+            text: 'Hello Sailor!\n\nYour SailRaceSignal password is: ' + password + '\n\nBr:\nSailRaceSignal Team'
         };
 
         await transporter.sendMail(mailOptions)
             .then((x) => { if (debug) console.log("Sending mail is successful: " + x); })
             .catch(err => { throw new Error("Error when sending mail: " + err.message); });
+    } else {
+        console.log("->" + password);
     }
 
     return true;

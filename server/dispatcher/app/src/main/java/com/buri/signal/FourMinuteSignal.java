@@ -13,12 +13,12 @@ public class FourMinuteSignal extends Signal {
     }
 
     public void signal(Config config) throws HwException, InterruptedException {
-        System.out.println("Executing FOUR MINUTE SIGNAL");
+        System.out.println("--> Executing FOUR MINUTE SIGNAL");
         Hw hw = HwFactory.getHw();
         if (countDown(config)) {
             hw.hwPFlagOn();
             if(!config.isMute()) {
-                hw.hornOn(PiSettings.TOOT_LENGTH_SHORT_MS);
+                hw.hornOn(config.shortSignal());
             }
         }
     }

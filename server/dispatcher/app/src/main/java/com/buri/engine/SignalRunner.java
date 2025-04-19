@@ -26,6 +26,7 @@ public final class SignalRunner extends Thread {
     @Override
     public void run() {
         alive = true;
+        SignalGroup group = null;
         try {
             while (alive) {
                 if (signalGroupList.isEmpty()) {
@@ -34,12 +35,21 @@ public final class SignalRunner extends Thread {
                     alive = false;
                     return;
                 }
-                SignalGroup group = signalGroupList.removeNextGroup();
+                group = signalGroupList.removeNextGroup();
 
                 if (group != null) {
-                    DbFactory.getDb().removeSignalGroup(group.execute(config));
+                    int gid = group.getGroupId();
+                    try {
+                        group.execute(config);
+                    } catch (NullPointerException e) {
+                        System.out.println("Null pointer exception when executing group " + gid);
+                        System.out.println("Bad group?");
+                    }
+
+                    DbFactory.getDb().removeSignalGroup(gid);
                     HwFactory.getHw().resetState(); // just to be sure...
                 }
+                group = null;
 
                 Thread.sleep(1000);
             }
@@ -49,10 +59,15 @@ public final class SignalRunner extends Thread {
         } catch (InterruptedException ix) {
             System.out.println("Signal runner Interrupted");
         } catch (HwException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("HW exception in signal runner: " + e.getMessage());
         } finally {
             System.out.println("Signal runner ended");
+            // add abort?
+            try {
+                HwFactory.getHw().resetState();
+            } catch (HwException e) {
+                System.out.println("HW is strange");
+            } // just to be sure...
         }
     }
 

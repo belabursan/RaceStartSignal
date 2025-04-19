@@ -1,4 +1,8 @@
 <?php
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 include_once "node_intf.php";
 include_once "logger.php";
 
@@ -21,17 +25,12 @@ function redirectTohttps() {
  * @return bool true if user is logged in, false otherwise
  */
 function isLoggedIn(): bool {
-    try {
-        s_start();
-        if(isset($_SESSION["isloggedintosignal"]) === true
-            && $_SESSION["isloggedintosignal"] === true 
-            && isset($_SESSION["signal_auth_token"]) === true) {
-            return true;
-        }
-        return false;
-    }finally {
-        s_stop();
+    if(isset($_SESSION["isloggedintosignal"]) === true
+        && $_SESSION["isloggedintosignal"] === true 
+        && isset($_SESSION["signal_auth_token"]) === true) {
+        return true;
     }
+    return false;
 }
 
 /**
@@ -53,19 +52,10 @@ function setLogin(string $token):bool {
 function s_start() {
     $s = session_status();
     if ($s !== PHP_SESSION_ACTIVE) {
-        @session_start();
+        @session_start(); 
     }
 }
 
-
-/**
- * Stops the session if it was started
- */
-function s_stop() {
-    if (session_status() === PHP_SESSION_ACTIVE) {
-        @session_write_close ();
-    }
-}
 
 function logout(){
     unset($_POST['password']);
@@ -83,9 +73,8 @@ function logout(){
  * @brief Cleans (unsets) all session parameters used by the page
  */
 function cleanSession() {
-    s_start();
     logout();
-    s_stop();
+    session_unset();
     session_destroy();
     log_i("Session destroyed");
 }

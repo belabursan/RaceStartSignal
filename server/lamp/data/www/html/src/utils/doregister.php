@@ -1,9 +1,12 @@
 <?php
+if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 include_once "site.php";
 
 function handle_register() {
     try {
-        s_start();
         if (isset($_SESSION["register_error"])) {
             unset($_SESSION["register_error"]);
         }
@@ -25,7 +28,6 @@ function handle_register() {
     } finally {
         unset($_POST['register']);
         unset($_POST['reg_email']);
-        s_stop();
     }
 }
 handle_register();
