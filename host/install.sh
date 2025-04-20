@@ -55,7 +55,7 @@ sudo dtparam audio=off
 # Adding network time sync stuff
 echo -e "\n Enabling time/ntp stuff"
 # https://blog.pishop.co.za/time-sync-from-the-network-on-the-raspberry-pi/
-echo "export TZ=\"Europe/Stockholm\"" >> ~/.bashrc
+echo -e "\nexport TZ=\"Europe/Stockholm\"\ntimedatectl set-timezone Europe/Stockholm\n" >> ~/.bashrc
 sudo timedatectl set-timezone Europe/Stockholm
 sudo timedatectl set-ntp true
 timedatectl
