@@ -46,17 +46,6 @@ final class HwHandler implements Hw {
         console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
         console.println("Operating system: " + pi4j.boardInfo().getOperatingSystem());
         console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
-
-        if (debug) {
-            // This info is also available directly from the BoardInfoHelper,
-            // and with some additional realtime data.
-            console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
-            console.println("Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
-            console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
-            console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
-            console.println(
-                    "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
-        }
         System.out.println("Hw inited");
     }
 
