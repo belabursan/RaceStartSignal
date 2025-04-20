@@ -148,7 +148,7 @@ services:
       MYSQL_HOST: "database"
       DEBUG: ${DEBUG}
       DEVELOP: ${DEVELOP}
-    entrypoint: ["mvn", "clean", "-ntp", "package", "-DskipTests=true", "exec:java"]
+    entrypoint: ["mvn", "clean", "-ntp", "package", "-o", "-DskipTests=true", "exec:java"]
 networks:
   sailnetwork:
     name: "SailRaceSignalNetwork"
