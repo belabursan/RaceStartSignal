@@ -19,8 +19,8 @@ public final class Engine {
 
     public Engine(Arguments arguments) throws SQLException {
         this.arguments = arguments;
-        alive = false;
-        db = DbFactory.getDb();
+        this.alive = false;
+        this.db = DbFactory.getDb();
     }
 
     public void execute() throws SQLException, InterruptedException {
@@ -50,10 +50,10 @@ public final class Engine {
                         signalRunner = new SignalRunner(signalGroupList, config);
                         signalRunner.start();
                     } else {
-                        System.out.println("list is empty, not running signalRunner");
+                        System.out.println("Signal list is empty, not running signalRunner");
                     }
                 }
-                for (int i = 0; alive && i < DB_CHECK_FREQUENCY; i += 1000) {
+                for (long i = 0; alive && i < DB_CHECK_FREQUENCY; i += 1000) {
                     Thread.sleep(1000);
                 }
             }

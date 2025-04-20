@@ -6,15 +6,15 @@ package com.buri.hw;
 public final class PiSettings {
     // Class flag  - goes up at 5 min - short toot
     //              -goes down at start - short toot
-    protected static final int GPIO_CLASS_FLAG = 14;
+    protected static final int GPIO_CLASS_FLAG = 23;
 
     // P-flag (Blue Peter)  - goes up at 4 min - short toot
     //                      - goes down at 1 min - long toot
-    protected static final int GPIO_P_FLAG = 15;
+    protected static final int GPIO_P_FLAG = 14;
 
     // Yellow flag (optional)   - goes up 15 min before start - indicates that race is to be started soon
     //                          - goes down 5 min before start, when classflag goes up
-    protected static final int GPIO_YELLOW = 23;
+    protected static final int GPIO_YELLOW = 15;
 
     // Horn gpio - on starts the horn, off shuts it down
     protected static final int GPIO_HORN = 24;

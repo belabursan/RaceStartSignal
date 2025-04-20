@@ -10,7 +10,7 @@ public interface Hw {
     public void resetState() throws HwException;
 
     /**
-     * Closes the hardware
+     * Closes the hardware interface
      */
     public void close();
 

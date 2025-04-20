@@ -5,11 +5,14 @@
 USER="dispatcher"
 PASS="Dispatcher2025"
 GIT_TAG="v1.0.0"
+HOST_NAME="signalrunner"
+
 
 echo "Welcome to the install script for the server"
 echo "  Installing neccesary packages"
 sudo apt-get update && 
-sudo apt-get -y DEBIAN_FRONTEND=noninteractive upgrade && sudo apt-get install -y git nano apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools
+sudo apt-get -y DEBIAN_FRONTEND=noninteractive upgrade && sudo apt-get install -y git nano \
+        apt-transport-https ca-certificates curl ntp wget binutils curl pigpio spi-tools systemd-timesyncd
 sudo install -m 0755 -d /etc/apt/keyrings
 
 #Add user and add it to sudoers
@@ -25,6 +28,10 @@ EOF
 #sudo echo "${USER}:${PASS}" | chpasswd
 yes '' | ssh-keygen -b 4096 -N '' > /dev/null
 #ssh-keygen -t rsa -b 4096 -N '' <<<$'\n'
+
+# Hostname
+echo "Setting hostname -> ${HOST_NAME}"
+sudo hostnamectl set-hostname ${HOST_NAME}
 
 # Docker stuff
 echo -e "\n Adding docker stuff"
@@ -48,7 +55,7 @@ sudo dtparam audio=off
 # Adding network time sync stuff
 echo -e "\n Enabling time/ntp stuff"
 # https://blog.pishop.co.za/time-sync-from-the-network-on-the-raspberry-pi/
-sudo apt -y install systemd-timesyncd
+echo -e "\nexport TZ=\"Europe/Stockholm\"\ntimedatectl set-timezone Europe/Stockholm\n" >> ~/.bashrc
 sudo timedatectl set-timezone Europe/Stockholm
 sudo timedatectl set-ntp true
 timedatectl
@@ -65,13 +72,12 @@ echo "4. got to ~/RaceStartSignal/server"
 echo "5. copy template.env to .env"
 echo "6. edit .env, set needed parameters"
 echo "7. run the server with docker: docker compose up/down (--build) (--detach)"
-
+echo "8. Add autostart ->"
 # autostart
-echo -e "\nAdding autostart"
-echo -e "\ncd /home/${USER}/RaceStartSignal/server && git checkout ${GIT_TAG} && docker compose up -d\n" >> /home/${USER}/.bashrc
+# echo -e "\ncd /home/${USER}/RaceStartSignal/server && git checkout ${GIT_TAG} && docker compose up -d\n" >> /home/${USER}/.bashrc
 
 sleep 10
-echo "Rebooting in 10..."
+echo -e "\nRebooting in 10..."
 sleep 10
 #Reboot
 echo -e "\n Rebooting the system"

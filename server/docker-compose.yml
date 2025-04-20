@@ -1,5 +1,5 @@
 # Docker compose file for the SailRaceSignal server
-# v1.1.0 Bela Bursan <burszan@gmail.com>
+# v0.9.0 Bela Bursan <burszan@gmail.com>
 #
 services:
   webserver:
@@ -148,7 +148,7 @@ services:
       MYSQL_HOST: "database"
       DEBUG: ${DEBUG}
       DEVELOP: ${DEVELOP}
-    entrypoint: ["mvn", "clean", "-ntp", "package", "-DskipTests=true", "exec:java"]
+    entrypoint: ["mvn", "clean", "-ntp", "package", "-o", "-DskipTests=true", "exec:java"]
 networks:
   sailnetwork:
     name: "SailRaceSignalNetwork"

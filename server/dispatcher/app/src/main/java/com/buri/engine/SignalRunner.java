@@ -56,10 +56,12 @@ public final class SignalRunner extends Thread {
         } catch (SQLException sx) {
             System.out.println("Something is wrong with the DB, should we restart the app?");
             // System.exit(-9); ??
+            System.exit(-9);
         } catch (InterruptedException ix) {
             System.out.println("Signal runner Interrupted");
         } catch (HwException e) {
             System.out.println("HW exception in signal runner: " + e.getMessage());
+            // should we abort the app? 
         } finally {
             System.out.println("Signal runner ended");
             // add abort?
@@ -72,6 +74,7 @@ public final class SignalRunner extends Thread {
     }
 
     public void close() {
+        System.out.println("Closing SignalRunner");
         alive = false;
         if (!this.isInterrupted()) {
             this.interrupt();

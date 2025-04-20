@@ -30,7 +30,7 @@ public final class DbFactory {
             DbHandler dbHandler = new DbHandler(arguments);
             dbHandler.connect();
             DbFactory.db = (Db) dbHandler;
-            System.out.println("DbHandler initialized: " + dbHandler.toString());
+            System.out.println("DbHandler initialized");
         } else {
             throw new IllegalStateException("DbFactory already initialized. Call getDb() to get the instance.");
         }

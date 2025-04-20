@@ -220,7 +220,7 @@ function sortSignalGroup($signalGroup):array {
  * @brief Prints the footer on a page
  * Shall be printed after the closing tag of <main>
  */
-function printFooter($vers="v2.0.0") {
+function printFooter($vers="v0.9.0.RC1") {
     $YEAR = date('Y');
 
     echo "<div class=\"signal-footer\">
