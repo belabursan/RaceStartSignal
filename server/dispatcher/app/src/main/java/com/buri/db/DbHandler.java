@@ -73,6 +73,10 @@ class DbHandler implements Db {
         Statement stmt = null;
         ResultSet rs = null;
 
+        if (debug) {
+            System.out.println("Reading db for signals");
+        }
+
         try {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(query);
@@ -107,6 +111,11 @@ class DbHandler implements Db {
     public void removeSignalGroup(final int groupId) throws SQLException {
         final Statement stmt = conn.createStatement();
         final String query = "DELETE FROM signals WHERE group_id = " + groupId;
+
+        if (debug) {
+            System.out.println("Removing signal group " + groupId + " from db");
+        }
+
         try {
             int rowsAffected = stmt.executeUpdate(query);
             if (rowsAffected > 0) {

@@ -36,27 +36,27 @@ final class HwHandler implements Hw {
      */
     void init() throws HwException {
         System.out.println("Initing HW");
-            // init gpios
-            this.pinClassFlag = pi4j.digitalOutput().create(PiSettings.GPIO_CLASS_FLAG);
-            this.pinP_Flag = pi4j.digitalOutput().create(PiSettings.GPIO_P_FLAG);
-            this.pinYellowFlag = pi4j.digitalOutput().create(PiSettings.GPIO_YELLOW);
-            this.pinHorn = pi4j.digitalOutput().create(PiSettings.GPIO_HORN);
-            reset();
-            // print some info
-            console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
-            console.println("Operating system: " + pi4j.boardInfo().getOperatingSystem());
-            console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
+        // init gpios
+        this.pinClassFlag = pi4j.digitalOutput().create(PiSettings.GPIO_CLASS_FLAG);
+        this.pinP_Flag = pi4j.digitalOutput().create(PiSettings.GPIO_P_FLAG);
+        this.pinYellowFlag = pi4j.digitalOutput().create(PiSettings.GPIO_YELLOW);
+        this.pinHorn = pi4j.digitalOutput().create(PiSettings.GPIO_HORN);
+        reset();
+        // print some info
+        console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
+        console.println("Operating system: " + pi4j.boardInfo().getOperatingSystem());
+        console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
 
-            if (!debug) {
-                // This info is also available directly from the BoardInfoHelper,
-                // and with some additional realtime data.
-                console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
-                console.println("Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
-                console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
-                console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
-                console.println(
-                        "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
-            }
+        if (debug) {
+            // This info is also available directly from the BoardInfoHelper,
+            // and with some additional realtime data.
+            console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
+            console.println("Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
+            console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
+            console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
+            console.println(
+                    "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
+        }
         System.out.println("Hw inited");
     }
 
@@ -84,7 +84,7 @@ final class HwHandler implements Hw {
                     pinHorn.low();
                 }
             } catch (Exception e) {
-                System.out.println("Exception when reset hw: " + e.getMessage());
+                System.out.println("Exception when resetting hw: " + e.getMessage());
                 throw new HwException(e.getMessage());
             }
     }
@@ -100,7 +100,7 @@ final class HwHandler implements Hw {
     public void hornOn(long milliseconds) throws HwException, InterruptedException {
             synchronized (HornLock) {
                 if (milliseconds > 0) {
-                    System.out.println("horn on");
+                    System.out.println("horn on: " + milliseconds);
                     this.pinHorn.high();
                     HornLock.wait(milliseconds);
                 }
@@ -170,9 +170,10 @@ final class HwHandler implements Hw {
         if (console != null) {
             console.goodbye();
         }        
-            if (pi4j != null) {
-                pi4j.shutdown();
-            }        
+        if (pi4j != null) {
+            pi4j.shutdown();
+        }    
+        System.out.println("HW closed");    
     }
 
 }

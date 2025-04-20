@@ -4,7 +4,6 @@ FROM eclipse-temurin
 #
 #https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
 
-#ARG PI4J_VERSION=3.0.1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Stockholm"
 RUN date

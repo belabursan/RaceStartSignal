@@ -50,14 +50,14 @@ public final class Arguments {
             try {
                 this.short_signal_ms = Long.parseLong(System.getenv("SHORT_SIGNAL_MS"));
             } catch (Exception e) {
-                System.out.println("No short signal defined, setting default: " + 1000);
-                this.short_signal_ms = 1000;
+                System.out.println("No short signal defined, setting default: " + 1200);
+                this.short_signal_ms = 1200;
             }
             try {
                 this.long_signal_ms = Long.parseLong(System.getenv("LONG_SIGNAL_MS"));
             } catch (Exception e) {
-                System.out.println("No long signal defined, setting default: " + 2000);
-                this.long_signal_ms = 2000;
+                System.out.println("No long signal defined, setting default: " + 2600);
+                this.long_signal_ms = 2600;
             }
             return this.validate();
         } catch (Exception e) {
@@ -140,6 +140,8 @@ public final class Arguments {
                 ",\n mysql_host='" + mysql_host + '\'' +
                 ",\n debug=" + debug +
                 ",\n develop=" + develop +
+                ",\n short signal=" + short_signal_ms +
+                ",\n long signal=" + long_signal_ms +
                 "\n}\n";
     }
 }

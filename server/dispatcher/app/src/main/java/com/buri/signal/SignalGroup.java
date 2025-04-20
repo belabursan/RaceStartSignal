@@ -32,7 +32,7 @@ public final class SignalGroup {
         return groupId;
     }
 
-    public void setSignal(Signal signal) {
+    public void setSignal(Signal signal) throws IllegalArgumentException{
         if (signal.getGroupId() != this.groupId) {
             throw new IllegalArgumentException("Bad group id: " + signal.getGroupId());
         }
