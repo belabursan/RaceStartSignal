@@ -4,7 +4,6 @@ FROM eclipse-temurin
 #
 #https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
 
-#ARG PI4J_VERSION=3.0.1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Stockholm"
 RUN date
@@ -14,11 +13,9 @@ RUN apt-get update &&\
     apt-get -y upgrade &&\
     apt-get -y install nano maven 
 
-# Create user
-#RUN useradd -rm -d /home/dispatcher -s /bin/bash -g root -G sudo -u 1001 dispatcher
-#USER dispatcher
+# maven stuff
+COPY ./m2.tar.gz /tmp
+RUN mkdir -p /root/.m2 && tar xvzf /tmp/m2.tar.gz --strip-components=1 --directory /root/.m2 && ls -a /root
 
-#RUN mkdir -p /home/dispatcher/app
 WORKDIR /home/dispatcher/app
-
 SHELL ["/bin/bash", "-c"]

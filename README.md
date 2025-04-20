@@ -1,6 +1,6 @@
 # SailRaceSignal
 
-Software for running a signal "machine". 
+Software for running a signal "machine".
 Docker based, runs on a raspberry 4B, needs 4 relays
 
 ## Dockers

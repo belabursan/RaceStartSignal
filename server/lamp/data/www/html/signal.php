@@ -13,7 +13,7 @@ if(isLoggedIn() === false) {
 }
 
 if (isset($_POST['add_signal'])) {
-    $datetime = "".$_POST['date']." ".$_POST['time'].":00";
+    $datetime = "".$_POST['date']." ".$_POST['time'];
     $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
     $yellow_flag = isset($_POST['yellowflag']) ? true : false;
     addSignal($datetime, $five_min_serie, $yellow_flag);
@@ -48,20 +48,21 @@ if(isset($_POST['delete_pressed'])) {
         <form method="POST">
             <label for="date">Date:</label>
             <input id="date"
-                type="date-local"
+                type="date"
                 name="date"
-                min="2025-03-20"
+                min=<?php echo(date('Y-m-d')); ?>
                 max="2095-05-20"
-                value="2025-04-18"
+                value=<?php echo(date('Y-m-d')); ?>
                 required
             />
             <label for="time">Time:</label>
             <input id="time"
-                type="time-local"
+                type="time"
                 name="time"
-                min="08:00"
-                max="20:00"
-                value="19:00"
+                step="1"
+                min="08:00:00"
+                max="20:00:00"
+                value="19:00:00"
                 required
             />
             <label for="yellowflag">Yellow Flag:</label>

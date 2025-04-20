@@ -21,7 +21,6 @@ public class OneMinuteSignal extends Signal {
                 hw.hornOn(config.longSignal());
             }
         }
-
     }
 
 }

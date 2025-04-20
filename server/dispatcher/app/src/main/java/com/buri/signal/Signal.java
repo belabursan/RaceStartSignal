@@ -139,11 +139,15 @@ public class Signal implements Comparable<Signal> {
                 }
                 long durationMillis = duration.toMillis();
                 if (durationMillis > 3600000) {
-                    System.out.println("It seems that I have to wait for a while...");
-                    System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
-                    EXEC.wait(duration.minusSeconds(3600-6).toMillis()); // wait until 5 seconds befor signal
+                    if (debug) {
+                        System.out.println("It seems that I have to wait for a while...");
+                    }
+                    System.out.println("Seconds left to wait from now (" + now + 
+                    "): " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
+                    EXEC.wait(duration.minusSeconds(3600-6).toMillis()); // wait until 1h befor signal
                 } else if (durationMillis > 5000) {
-                    System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
+                    System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + 
+                    (durationMillis - ((durationMillis / 1000)) * 1000));
                     EXEC.wait(duration.minusSeconds(5).toMillis()); // wait until 5 seconds befor signal
                     if(debug) System.out.println("Less then 6 seconds to signal");
                 } else if (durationMillis  > 1000) {
