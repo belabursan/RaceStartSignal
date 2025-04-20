@@ -1,0 +1,20 @@
+# /etc/systemd/system/signalrunner.service
+# sudo systemctl enable signalrunner
+# sudo systemctl start signalrunner
+# sudo ln -s /home/buri/RaceStartSignal/host/signalrunner.service /lib/systemd/system/signalrunner.service
+
+[Unit]
+Description=Lagunen Race Signal Runner Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/buri/RaceStartSignal/server/
+ExecStart=docker compose up -d
+ExecStop=docker compose down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
