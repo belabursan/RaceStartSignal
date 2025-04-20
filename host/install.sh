@@ -55,7 +55,7 @@ sudo dtparam audio=off
 # Adding network time sync stuff
 echo -e "\n Enabling time/ntp stuff"
 # https://blog.pishop.co.za/time-sync-from-the-network-on-the-raspberry-pi/
-echo -e "\nexport TZ=\"Europe/Stockholm\"\ntimedatectl set-timezone Europe/Stockholm\n" >> ~/.bashrc
+echo -e "\nexport TZ=\"Europe/Stockholm\"\n" >> ~/.bashrc
 sudo timedatectl set-timezone Europe/Stockholm
 sudo timedatectl set-ntp true
 timedatectl
@@ -68,13 +68,18 @@ echo "git stuff.."
 echo "1. copy /home/${USER}/.ssh/id_rsa.pub to github first!!"
 echo "2. after reboot log in as ${USER}"
 echo "3. clone git to user home: git clone https://github.com/belabursan/RaceStartSignal.git"
+echo "3.1 checkout correct branch if needed"
 echo "4. got to ~/RaceStartSignal/server"
 echo "5. copy template.env to .env"
 echo "6. edit .env, set needed parameters"
-echo "7. run the server with docker: docker compose up/down (--build) (--detach)"
-echo "8. Add autostart ->"
+echo "7. enable autostart or run the server with docker: docker compose up/down (--build) (--detach)"
+
+
 # autostart
-sudo ln -s /home/buri/RaceStartSignal/host/signalrunner.service /etc/systemd/system/signalrunner.service
+echo "Add autostart, must run after the git stuff is installed"
+#sudo ln -s /home/buri/RaceStartSignal/host/signalrunner.service /lib/systemd/system/signalrunner.service
+#sudo systemctl enable signalrunner
+#sudo systemctl start signalrunner
 
 sleep 10
 echo -e "\nRebooting in 10..."
