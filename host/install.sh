@@ -74,7 +74,7 @@ echo "6. edit .env, set needed parameters"
 echo "7. run the server with docker: docker compose up/down (--build) (--detach)"
 echo "8. Add autostart ->"
 # autostart
-# echo -e "\ncd /home/${USER}/RaceStartSignal/server && git checkout ${GIT_TAG} && docker compose up -d\n" >> /home/${USER}/.bashrc
+sudo ln -s /home/buri/RaceStartSignal/host/signalrunner.service /etc/systemd/system/signalrunner.service
 
 sleep 10
 echo -e "\nRebooting in 10..."
