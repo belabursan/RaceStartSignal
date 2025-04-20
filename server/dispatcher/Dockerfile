@@ -1,6 +1,6 @@
 FROM eclipse-temurin
 # Docker file for SailRaceSignal-Dispatcher
-# v1.0.0 Bela Bursan <burszan@gmail.com>
+# v0.9.0 Bela Bursan <burszan@gmail.com>
 #
 #https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
 

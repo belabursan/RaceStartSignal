@@ -1,7 +1,7 @@
 FROM php:8.3-apache-bookworm
 # PHP and Apache for SailRaceSignal
 # 20204-02-05 Bela Bursan <burszan@gmail.com>
-# V1.1.0
+# V0.9.0
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG SSL_KEY_PASS
