@@ -13,7 +13,12 @@ if(isLoggedIn() === false) {
 }
 
 if (isset($_POST['add_signal'])) {
-    $datetime = "".$_POST['date']." ".$_POST['time'];
+    $startime = $_POST['time'];
+    if(strlen($startime) < 5) {
+        $startime = $startime.":00";
+        printf("WWWWROOOONGGG TIME");
+    }
+    $datetime = "".$_POST['date']." ".$startime;
     $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
     $yellow_flag = isset($_POST['yellowflag']) ? true : false;
     addSignal($datetime, $five_min_serie, $yellow_flag);
@@ -59,10 +64,10 @@ if(isset($_POST['delete_pressed'])) {
             <input id="time"
                 type="time"
                 name="time"
-                step="1"
                 min="08:00:00"
-                max="20:00:00"
+                max="19:59:00"
                 value="19:00:00"
+                step="1"
                 required
             />
             <label for="yellowflag">Yellow Flag:</label>

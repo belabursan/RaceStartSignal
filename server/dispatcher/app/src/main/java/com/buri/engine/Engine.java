@@ -1,6 +1,7 @@
 package com.buri.engine;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import com.buri.Arguments;
 import com.buri.config.Config;
@@ -8,6 +9,8 @@ import com.buri.config.DbStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
 import com.buri.signal.SignalGroupList;
+import com.buri.hw.HwFactory;
+import com.buri.hw.HwException;
 
 public final class Engine {
 
@@ -16,23 +19,23 @@ public final class Engine {
     private Db db;
     private SignalRunner signalRunner;
     private final Arguments arguments;
+    private DbStatus currentDbStatus;
 
     public Engine(Arguments arguments) throws SQLException {
         this.arguments = arguments;
         this.alive = false;
         this.db = DbFactory.getDb();
+        currentDbStatus = new DbStatus(LocalDateTime.now(), LocalDateTime.now(), arguments.isDebug());
     }
 
     public void execute() throws SQLException, InterruptedException {
         try {
             this.alive = true;
-            DbStatus currentDbStatus = null;
-
             while (alive) {
                 DbStatus newStatus = db.getDbStatus();
-                if (currentDbStatus == null || currentDbStatus.isDbChanged(newStatus)) {
+                if (currentDbStatus.isDbChanged(newStatus)) {
                     System.out.println("DB is changed");
-                    currentDbStatus = newStatus;
+                    currentDbStatus.update(newStatus);
 
                     // close runner and start new with the new list
                     if (signalRunner != null) {
@@ -40,6 +43,7 @@ public final class Engine {
                         signalRunner.close();
                         signalRunner.join();
                         signalRunner = null;
+                        HwFactory.getHw().resetState();
                     }
                     System.out.println("Reading new list from Db");
                     SignalGroupList signalGroupList = db.getSignalList();
@@ -57,6 +61,8 @@ public final class Engine {
                     Thread.sleep(1000);
                 }
             }
+        } catch (HwException h) {
+            System.out.println("Hw exception when resetiing state in engine: " + h.getMessage());
         } catch (InterruptedException i) {
             System.out.println("Engine interrupted");
             if (signalRunner != null) {

@@ -10,11 +10,11 @@ public final class PiSettings {
 
     // P-flag (Blue Peter)  - goes up at 4 min - short toot
     //                      - goes down at 1 min - long toot
-    protected static final int GPIO_P_FLAG = 14;
+    protected static final int GPIO_P_FLAG = 15;
 
     // Yellow flag (optional)   - goes up 15 min before start - indicates that race is to be started soon
     //                          - goes down 5 min before start, when classflag goes up
-    protected static final int GPIO_YELLOW = 15;
+    protected static final int GPIO_YELLOW = 14;
 
     // Horn gpio - on starts the horn, off shuts it down
     protected static final int GPIO_HORN = 24;

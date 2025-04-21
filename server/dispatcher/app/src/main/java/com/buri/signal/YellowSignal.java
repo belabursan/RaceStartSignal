@@ -10,10 +10,12 @@ public class YellowSignal extends Signal {
         super(signal.getId(), signal.getGroupId(), signal.getDate(), signal.getType());
     }
 
-    public synchronized void signal(Config config) throws HwException, InterruptedException {
+    public synchronized boolean signal(Config config) throws HwException, InterruptedException {
         if(countDown(config)) {
             HwFactory.getHw().hwYellowFlagOn();
+            return true;
         }
+        return false;
     }
 
 }
