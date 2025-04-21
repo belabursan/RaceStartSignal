@@ -15,7 +15,7 @@ RUN apt-get update &&\
 
 # maven stuff
 COPY ./m2.tar.gz /tmp
-RUN mkdir -p /root/.m2 && tar xvzf /tmp/m2.tar.gz --strip-components=1 --directory /root/.m2 && ls -a /root
+RUN mkdir -p /root/.m2 && tar xvzf /tmp/m2.tar.gz --strip-components=1 --directory /root/.m2 && ls -la /root
 
 WORKDIR /home/dispatcher/app
 SHELL ["/bin/bash", "-c"]
