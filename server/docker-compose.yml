@@ -137,7 +137,7 @@ services:
     depends_on:
       - database
     volumes:
-      - ./dispatcher/app:/home/dispatcher/app:rw
+      - ./dispatcher/app:/root/app:rw
       - /lib/libpigpio.so.1:/lib/libpigpio.so.1:ro
 #      - ./dispatcher/m2:/root/.m2:rw
     environment:

@@ -77,6 +77,9 @@ echo "7. enable autostart or run the server with docker: docker compose up/down 
 
 # autostart
 echo "Add autostart, must run after the git stuff is installed"
+if [ -f /lib/systemd/system/signalrunner.service ]; then
+    sudo rm /lib/systemd/system/signalrunner.service
+fi
 #sudo ln -s /home/buri/RaceStartSignal/host/signalrunner.service /lib/systemd/system/signalrunner.service
 #sudo systemctl enable signalrunner
 #sudo systemctl start signalrunner
