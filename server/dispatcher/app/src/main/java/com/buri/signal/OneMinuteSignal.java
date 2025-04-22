@@ -12,7 +12,7 @@ public class OneMinuteSignal extends Signal {
         super(signal.getId(), signal.getGroupId(), signal.getDate(), signal.getType());
     }
 
-    public void signal(Config config) throws HwException, InterruptedException {
+    public boolean signal(Config config) throws HwException, InterruptedException {
         System.out.println("--> Executing ONE MINUTE SIGNAL");
         Hw hw = HwFactory.getHw();
         if (countDown(config)) {
@@ -20,7 +20,9 @@ public class OneMinuteSignal extends Signal {
             if(!config.isMute()) {
                 hw.hornOn(config.longSignal());
             }
+            return true;
         }
+        return false;
     }
 
 }

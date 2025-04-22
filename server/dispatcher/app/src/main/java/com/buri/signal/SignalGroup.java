@@ -1,7 +1,10 @@
 package com.buri.signal;
 
+import java.sql.SQLException;
+
 import com.buri.config.Config;
 import com.buri.hw.HwException;
+import com.buri.db.DbFactory;
 
 /**
  * Represents a signal group including the start, one- four- five minute and
@@ -57,17 +60,39 @@ public final class SignalGroup {
         }
     }
 
-    public int execute(Config config) throws HwException, InterruptedException {
+    public int execute(Config config) throws HwException, SQLException, InterruptedException {
         System.out.println("Executing " + this.toString());
-        if (yellowSignal != null) {
-            yellowSignal.signal(config);
+        boolean groupStarted = false;
+        try {
+            if (yellowSignal != null) {
+                yellowSignal.signal(config);
+                groupStarted = true;
+            }
+            if (fiveMinuteSignal != null) {
+                if(!fiveMinuteSignal.signal(config)) {
+                    System.out.println("Old 5min signal? Abort group");
+                    DbFactory.getDb().removeSignalGroup(this.groupId);
+                    return groupId;
+                }
+                groupStarted = true;
+                if(!fourMinuteSignal.signal(config)) {
+                    System.out.println("Old 4min signal? Abort group");
+                    DbFactory.getDb().removeSignalGroup(this.groupId);
+                    return groupId;
+                }
+                if(!oneMinuteSignal.signal(config)) {
+                    System.out.println("Old 1min signal? Abort group");
+                    DbFactory.getDb().removeSignalGroup(this.groupId);
+                    return groupId;
+                }
+            }
+            startSignal.signal(config);
+        } catch (InterruptedException ix) {
+            if(groupStarted) {
+                DbFactory.getDb().removeSignalGroup(this.groupId);
+            }
+            throw ix;
         }
-        if (fiveMinuteSignal != null) {
-            fiveMinuteSignal.signal(config);
-            fourMinuteSignal.signal(config);
-            oneMinuteSignal.signal(config);
-        }
-        startSignal.signal(config);
         return groupId;
     }
 

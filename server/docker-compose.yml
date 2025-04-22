@@ -1,5 +1,5 @@
 # Docker compose file for the SailRaceSignal server
-# v0.9.0 Bela Bursan <burszan@gmail.com>
+# v0.9.RC3 Bela Bursan <burszan@gmail.com>
 #
 services:
   webserver:
@@ -137,8 +137,9 @@ services:
     depends_on:
       - database
     volumes:
-      - ./dispatcher/app:/home/dispatcher/app:rw
+      - ./dispatcher/app:/root/app:rw
       - /lib/libpigpio.so.1:/lib/libpigpio.so.1:ro
+#      - ./dispatcher/m2:/root/.m2:rw
     environment:
       LONG_SIGNAL_MS: ${LONG_SIGNAL_MS}
       SHORT_SIGNAL_MS: ${SHORT_SIGNAL_MS}
@@ -149,6 +150,7 @@ services:
       MYSQL_HOST: "database"
       DEBUG: ${DEBUG}
       DEVELOP: ${DEVELOP}
+#    entrypoint: ["mvn", "clean", "-ntp", "package", "-DskipTests=true", "exec:java"]
     entrypoint: ["mvn", "clean", "-ntp", "package", "-o", "-DskipTests=true", "exec:java"]
 networks:
   sailnetwork:

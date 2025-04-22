@@ -4,6 +4,7 @@ const { SIGNAL_TYPE } = require('./Enums.js');
 
 let pool = DB.getConn();
 const debug = process.env.DEBUG === "true";
+const develop = process.env.DEVELOP === "true";
 
 module.exports = class Signal {
 
@@ -13,15 +14,21 @@ module.exports = class Signal {
      * Debug log
      * @param {string} txt text to print
      */
-    static #dd(txt) {
+    static #debug(txt) {
         if (debug) console.log(txt);
+    }
+
+    static #develop(txt) {
+        if (develop) {
+            Signal.#debug(txt);
+        }
     }
 
     /**
      * Info log
      * @param {string} txt text to print
      */
-    static #ii(txt) {
+    static #info(txt) {
         console.log(txt);
     }
 
@@ -30,8 +37,9 @@ module.exports = class Signal {
      * @returns {Array} all signals as a list
      */
     static async getSignals() {
-        Signal.#dd("Getting all signals");
+        Signal.#debug("Getting all signals");
         const result = await pool.query("SELECT id, group_id, signal_type, DATE_FORMAT(date_time,'%Y-%m-%d %T') AS date_time FROM signals ORDER BY date_time ASC;");
+        Signal.#develop(result);
         return result;
     }
 
@@ -42,38 +50,39 @@ module.exports = class Signal {
      */
     static async addSignal(signal) {
         var gid = -1;
+        Signal.#develop("Adding signal: " + signal);
 
+        const times = Time.getFiveSeriesTime(signal.date_time, signal.five_min_serie, signal.yellow_flag);
         try {
-            const times = Time.getFiveSeriesTime(signal.date_time, signal.five_min_serie, signal.yellow_flag);
-            Signal.#ii("Adding signal at: " + times[Time.StartSignal] + " (" + signal.five_min_serie + "-" + signal.yellow_flag + ")");
+            Signal.#info("Adding signal at: " + times[Time.StartSignal] + " (" + signal.five_min_serie + "-" + signal.yellow_flag + ")");
 
             await pool.query('START TRANSACTION;');
             gid = await Signal.#insert(times[Time.StartSignal], 0, SIGNAL_TYPE.StartSignal);
             await Signal.#setGroup(gid);
 
             if (signal.five_min_serie === true) {
-                Signal.#dd("Adding five min signals");
+                Signal.#debug("Adding five min signals");
                 await Signal.#insert(times[Time.OneMinSignal], gid, SIGNAL_TYPE.OneMinSignal);
                 await Signal.#insert(times[Time.FourMinSignal], gid, SIGNAL_TYPE.FourMinSignal);
                 await Signal.#insert(times[Time.FiveMinSignal], gid, SIGNAL_TYPE.FiveMinSignal);
                 if (signal.yellow_flag === true) {
-                    Signal.#dd("Adding yellow flag signal");
+                    Signal.#debug("Adding yellow flag signal");
                     await Signal.#insert(times[Time.YellowSignal], gid, SIGNAL_TYPE.YellowFlag);
                 }
             }
             await Signal.#setListChanged();
             await pool.query('COMMIT;');
         } catch (error) {
-            Signal.#ii("Exception when adding signal!");
-            Signal.#ii(error);
-            Signal.#ii("Rolling back...");
+            Signal.#info("Exception when adding signal!");
+            Signal.#info(error);
+            Signal.#info("Rolling back...");
             await pool.query('ROLLBACK;');
             if (error.message.includes("Duplicate entry")) {
                 throw error;
             }
             throw new Error("ERROR 503: Error when adding signal");
         }
-        Signal.#ii("Signal(s) with gid: " + gid + " added successfully");
+        Signal.#info("Signal(s) with gid: " + gid + " added successfully");
         return gid;
     }
 
@@ -106,7 +115,7 @@ module.exports = class Signal {
      * @param {number} group_id 
      */
     static async deleteSignalByGroupId(group_id) {
-        Signal.#ii("Deleting signals with group id: " + group_id);
+        Signal.#info("Deleting signals with group id: " + group_id);
         const gid = await pool.query("DELETE FROM signals WHERE group_id=?;", [group_id]);
         await Signal.#setListChanged();
         return gid;
@@ -121,13 +130,13 @@ module.exports = class Signal {
      * @returns {number} row id of the inserted signal
      */
     static async #insert(datetime, group_id, signal_type) {
-        Signal.#dd("Inserting signal: " + datetime);
+        Signal.#debug("Inserting signal: " + datetime);
         const query = "INSERT INTO signals (date_time, group_id, signal_type) VALUES(?, ?, ?);";
         const result = await pool.query(query, [datetime, group_id, signal_type]);
         if (result.affectedRows == 1 && result.warningStatus == 0) {
             return result.insertId;
         } else {
-            Signal.#ii("Error: Failed to insert signal d:" + datetime + " gid:" + group_id + " t:" + signal_type);
+            Signal.#info("Error: Failed to insert signal d:" + datetime + " gid:" + group_id + " t:" + signal_type);
             throw new Error("Error when adding signal");
         }
     }
@@ -145,7 +154,7 @@ module.exports = class Signal {
         const data = [id, id];
         const result = await pool.query(query, data);
         if (result.affectedRows == 1 && result.warningStatus == 0) {
-            Signal.#dd("Set group id ok: " + id);
+            Signal.#debug("Set group id ok: " + id);
             return;
         } else {
             throw new Error("Error when setting group");

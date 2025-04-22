@@ -1,9 +1,11 @@
 FROM eclipse-temurin
 # Docker file for SailRaceSignal-Dispatcher
-# v0.9.0 Bela Bursan <burszan@gmail.com>
+# v0.9.RC3 Bela Bursan <burszan@gmail.com>
 #
 #https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
 
+
+ARG HOME=/root
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Stockholm"
 RUN date
@@ -13,9 +15,12 @@ RUN apt-get update &&\
     apt-get -y upgrade &&\
     apt-get -y install nano maven 
 
+#RUN useradd -m -d ${HOME} ${USER}
+#USER ${USER}
+
 # maven stuff
 COPY ./m2.tar.gz /tmp
-RUN mkdir -p /root/.m2 && tar xvzf /tmp/m2.tar.gz --strip-components=1 --directory /root/.m2 && ls -a /root
+RUN mkdir -p ${HOME}/.m2 && tar xvzf /tmp/m2.tar.gz --strip-components=1 --directory ${HOME}/.m2 && ls -la ${HOME}
 
-WORKDIR /home/dispatcher/app
+WORKDIR ${HOME}/app
 SHELL ["/bin/bash", "-c"]

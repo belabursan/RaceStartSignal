@@ -220,7 +220,7 @@ function sortSignalGroup($signalGroup):array {
  * @brief Prints the footer on a page
  * Shall be printed after the closing tag of <main>
  */
-function printFooter($vers="v0.9.0.RC1") {
+function printFooter($vers="v0.9.0.RC3") {
     $YEAR = date('Y');
 
     echo "<div class=\"signal-footer\">
@@ -242,6 +242,33 @@ function printError($error="") {
             $error
         </h3>
     </div>\n";
+}
+
+/**
+ * Validates if a time has format hh:mm:ss
+ * @param time - time to check
+ */
+function isValid_HH_MM_SS($time) {
+    return isValidTime($time, 'H:i:s');
+}
+
+/**
+ * Validates if a time has format hh:mm:ss
+ * @param time - time to check
+ */
+function isValid_HH_MM($time) {
+    return isValidTime($time, 'H:i');
+}
+
+/**
+ * Validates a time
+ * @param time - time to check
+ * @param format - format to use
+ */
+function isValidTime(string $time, string $format = 'H:i:s'): bool
+{
+    $dateObj = DateTime::createFromFormat($format, $time);
+    return $dateObj && $dateObj->format($format) == $time;
 }
 
 ?>

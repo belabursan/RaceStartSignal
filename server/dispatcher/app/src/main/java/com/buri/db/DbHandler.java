@@ -162,7 +162,7 @@ class DbHandler implements Db {
             if (rs.next()) {
                 LocalDateTime listChanged = rs.getObject("list_changed", LocalDateTime.class);
                 LocalDateTime confChanged = rs.getObject("conf_changed", LocalDateTime.class);
-                return new DbStatus(confChanged, listChanged);
+                return new DbStatus(confChanged, listChanged, debug);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
