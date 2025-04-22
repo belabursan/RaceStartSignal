@@ -82,7 +82,7 @@ module.exports = class User {
 
         
         if(develop) {
-            pass = '111111';
+            pass = '2025@Lagunen';
         } else {
             while (counter < length) {
                 pass += characters.charAt(Math.floor(Math.random() * charactersLength));

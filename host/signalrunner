@@ -67,13 +67,13 @@ sync() {
 # # # # # # # # #
 systemstart(){
     echo "Starting signalrunner via systemctl" 
-    sudo systemctl start signalrunner.sevice
+    sudo systemctl start signalrunner
 }
 
 # # # # # # # # #
 systemstop(){
     echo "Ending signalrunner via systemctl" 
-    sudo systemctl stop signalrunner.service
+    sudo systemctl stop signalrunner
 }
 
 # # # # # # # # #
@@ -86,7 +86,7 @@ autostart() {
 # # # # # # # # #
 stopautostart() {
     echo "Ending and disabling autostart"
-    sudo systemctl disable signalrunner.service --now
+    sudo systemctl disable signalrunner --now
 #    if [ -f /lib/systemd/system/signalrunner.service ]; then
 #        sudo rm /lib/systemd/system/signalrunner.service
 #    fi
