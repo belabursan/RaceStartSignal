@@ -1,5 +1,5 @@
 # Docker compose file for the SailRaceSignal server
-# v0.9.0 Bela Bursan <burszan@gmail.com>
+# v0.9.RC3 Bela Bursan <burszan@gmail.com>
 #
 services:
   webserver:
