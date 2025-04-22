@@ -1,7 +1,7 @@
 FROM mariadb:lts-noble
 # Maria DB for SailRace
 # 2024-02-05 Bela Bursan <burszan@gmail.com>
-# v0.9.RC3
+# v1.1.0
 
 ARG SAILRACE_DATABASE
 ENV SAILRACE_DATABASE=$SAILRACE_DATABASE

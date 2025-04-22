@@ -1,6 +1,6 @@
 #!/bin/bash
 # Start/Stop script for signalrunner
-# v0.9.RC3
+# v1.1.0
 
 SIGNAL_USER="buri"
 PROJECT_DIR="/home/${SIGNAL_USER}/RaceStartSignal"

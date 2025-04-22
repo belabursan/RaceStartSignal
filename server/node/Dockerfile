@@ -1,6 +1,6 @@
 FROM node:lts-alpine3.21
 # SailRace Node Server
-# v0.9.RC3 Bela Bursan <burszan@gmail.com>
+# v1.1.0 Bela Bursan <burszan@gmail.com>
 #
 
 ARG SSL_KEY_PASS
