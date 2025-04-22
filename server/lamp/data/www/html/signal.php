@@ -13,12 +13,17 @@ if(isLoggedIn() === false) {
 }
 
 if (isset($_POST['add_signal'])) {
-    $startime = $_POST['time'];
-    if(strlen($startime) < 5) {
-        $startime = $startime.":00";
-        printf("WWWWROOOONGGG TIME");
+    $start_time = trim($_POST['time']);
+    if(!isValid_HH_MM_SS($start_time)) {
+        //echo("Not valid time: $start_time<br>");
+        if(isValid_HH_MM($start_time)) {
+            //echo("Valid hh:mm, fixing it<br>");
+            $start_time = $start_time.":00";
+        } else {
+            echo("<br>Your browser doesn't support time input fields!<br>");
+        }
     }
-    $datetime = "".$_POST['date']." ".$startime;
+    $datetime = "".$_POST['date']." ".$start_time;
     $five_min_serie = isset($_POST['fiveminserie']) ? false : true;
     $yellow_flag = isset($_POST['yellowflag']) ? true : false;
     addSignal($datetime, $five_min_serie, $yellow_flag);

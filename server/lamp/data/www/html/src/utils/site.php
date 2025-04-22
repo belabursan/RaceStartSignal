@@ -244,4 +244,31 @@ function printError($error="") {
     </div>\n";
 }
 
+/**
+ * Validates if a time has format hh:mm:ss
+ * @param time - time to check
+ */
+function isValid_HH_MM_SS($time) {
+    return isValidTime($time, 'H:i:s');
+}
+
+/**
+ * Validates if a time has format hh:mm:ss
+ * @param time - time to check
+ */
+function isValid_HH_MM($time) {
+    return isValidTime($time, 'H:i');
+}
+
+/**
+ * Validates a time
+ * @param time - time to check
+ * @param format - format to use
+ */
+function isValidTime(string $time, string $format = 'H:i:s'): bool
+{
+    $dateObj = DateTime::createFromFormat($format, $time);
+    return $dateObj && $dateObj->format($format) == $time;
+}
+
 ?>
