@@ -1,6 +1,6 @@
 {
   "name": "SailRaceSignalNodeServer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Rest API for SailRaceSignalNodeServer",
   "author": "Bela Bursan <burszan@gmail.com>",
   "main": "server.js",
