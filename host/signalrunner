@@ -1,0 +1,127 @@
+#!/bin/bash
+# Start/Stop script for signalrunner
+# v0.9.RC3
+
+SIGNAL_USER="buri"
+PROJECT_DIR="/home/${SIGNAL_USER}/RaceStartSignal"
+
+printHelp() {
+    echo "[SignalRunner v1.1.0]"
+    echo "  Usage: signalrunner <FLAGS>"
+    echo "    Running without flags prints this help. Some of the commands needs sudo!"
+    echo
+    echo "  Flags are:"
+    echo "    - start           : starts the signalrunner with docker compose"
+    echo "    - stop            : stops the signalrunnner with docker compose"
+    echo "    - clean           : stops and remoceves the docker images, WARNINIG: runs docker system prune"
+    echo "    - sync            : synchronizes the time"
+    echo "    - systemstart     : starts signalrunner via systemctl"
+    echo "    - systemstop      : stops signalrunner via systemctl"
+    echo "    - autostart       : enables signalrunner for start at boot and starts it"
+    echo "    - stopautostart   : disables autorun at start up"
+    echo "    - startall        : enables/starts the signalrunner with systemctl and synchs the time"
+    echo
+    echo "  Examples:"
+    echo "    signalrunner start"
+    echo "    signalrunner stopautostart"
+}
+
+# private
+setautolink(){
+    if [ ! -f /lib/systemd/system/signalrunner.service ]; then
+        sudo ln -s ${PROJECT_DIR}/host/signalrunner.service /lib/systemd/system/signalrunner.service
+    fi
+}
+
+# # # # # # # # #
+start() {
+    echo "Starting signalrunner with docker compose"
+    cd ${PROJECT_DIR}/server
+    docker compose up
+}
+
+# # # # # # # # #
+stop() {
+    echo "Ending signalrunner with docker compose"
+    cd ${PROJECT_DIR}/server
+    docker compose up
+}
+
+# # # # # # # # #
+clean() {
+    echo "Cleaning system from docker containers"
+    cd ${PROJECT_DIR}/server
+    docker compose down
+    docker system prune --all -f
+}
+
+# # # # # # # # #
+sync() {
+    echo "Synchronizing system time"
+    timedatectl set-timezone Europe/Stockholm
+    echo "Enabling auto synch"
+    timedatectl set-ntp true
+    timedatectl timesync-status -a
+}
+
+# # # # # # # # #
+systemstart(){
+    echo "Starting signalrunner via systemctl" 
+    sudo systemctl start signalrunner.sevice
+}
+
+# # # # # # # # #
+systemstop(){
+    echo "Ending signalrunner via systemctl" 
+    sudo systemctl stop signalrunner.service
+}
+
+# # # # # # # # #
+autostart() {
+    echo "Enabling autostart at boot"
+    setautolink
+    sudo systemctl enable signalrunner
+}
+
+# # # # # # # # #
+stopautostart() {
+    echo "Ending and disabling autostart"
+    sudo systemctl disable signalrunner.service --now
+#    if [ -f /lib/systemd/system/signalrunner.service ]; then
+#        sudo rm /lib/systemd/system/signalrunner.service
+#    fi
+}
+
+# # # # # # # # #
+startall() {
+    echo "Enabling autostart at boot"
+    sync
+    setautolink
+    sudo systemctl enable signalrunner --now
+}
+
+# # # # # # # # #  S T A R T  # # # # # # # # #
+if [ "$1" == "start" ]; then
+    start
+elif [ "$1" == "stop" ]; then
+    stop
+elif [ "$1" == "clean" ]; then
+    clean
+elif [ "$1" == "sync" ]; then
+    sync
+elif [ "$1" == "systemstart" ]; then
+    systemstart
+elif [ "$1" == "systemstop" ]; then
+    systemstop
+elif [ "$1" == "autostart" ]; then
+    autostart
+elif [ "$1" == "stopautostart" ]; then
+    stopautostart
+elif [ "$1" == "startall" ]; then
+    startall
+else
+    printHelp
+fi
+echo
+echo "BYE"
+echo

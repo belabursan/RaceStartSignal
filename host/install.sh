@@ -84,6 +84,9 @@ fi
 #sudo systemctl enable signalrunner
 #sudo systemctl start signalrunner
 
+# Add script path
+export PATH="$PATH:/home/${USER}/RaceStartSignal/host"
+
 sleep 10
 echo -e "\nRebooting in 10..."
 sleep 10
