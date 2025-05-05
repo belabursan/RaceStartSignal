@@ -246,7 +246,7 @@ function printError($error="") {
 
 /**
  * Validates if a time has format hh:mm:ss
- * @param time - time to check
+ * @param string{time} - time to check
  */
 function isValid_HH_MM_SS($time) {
     return isValidTime($time, 'H:i:s');
@@ -254,7 +254,7 @@ function isValid_HH_MM_SS($time) {
 
 /**
  * Validates if a time has format hh:mm:ss
- * @param time - time to check
+ * @param string - time to check
  */
 function isValid_HH_MM($time) {
     return isValidTime($time, 'H:i');
@@ -262,8 +262,8 @@ function isValid_HH_MM($time) {
 
 /**
  * Validates a time
- * @param time - time to check
- * @param format - format to use
+ * @param string{time} - time to check
+ * @param string{format} - format to use
  */
 function isValidTime(string $time, string $format = 'H:i:s'): bool
 {
