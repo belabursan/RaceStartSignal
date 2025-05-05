@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import com.buri.Arguments;
 import com.buri.config.Config;
 import com.buri.config.DbStatus;
-import com.buri.signal.Signal;
 import com.buri.signal.SignalGroupList;
 import com.buri.signal.SignalList;
 import com.buri.signal.SignalType;
@@ -86,7 +85,7 @@ class DbHandler implements Db {
                 SignalType type = SignalType.fromInt(rs.getInt("signal_type"));
                 int groupId = rs.getInt("group_id");
                 int id = rs.getInt("id");
-                Signal s = new Signal(id, groupId, dateTime, type);
+                DbSignal s = new DbSignal(id, groupId, dateTime, type);
                 s.setDebug(debug);
                 list.addSignal(s);
             }

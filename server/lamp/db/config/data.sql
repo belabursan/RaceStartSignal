@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `app_config` (
     `conf_changed`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `paused`        INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `mute`          INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    `abort_running` INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `race_start`    TIME NOT NULL DEFAULT '06:59:00',
     `race_end`      TIME NOT NULL DEFAULT '20:16:00',
     PRIMARY KEY(`id`)
