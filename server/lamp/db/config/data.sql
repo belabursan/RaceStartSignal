@@ -1,4 +1,4 @@
--- VERSION 2.0.0 --
+-- VERSION 2.1.0 --
 -- Create database for SailRaceSignal --
 -- Credit: Bela Bursan<burszan@gmail.com>
 
@@ -6,6 +6,9 @@
 -- Create a database using `mysql_database` placeholder
 CREATE DATABASE IF NOT EXISTS `MYSQL_DATABASE`;
 USE `MYSQL_DATABASE`;
+-- SET GLOBAL wait_timeout = 600;
+-- SET GLOBAL interactive_timeout = 600;
+SET innodb_lock_wait_timeout=10;
 
 
 -- Table that holds information about the registered users --
@@ -21,10 +24,12 @@ CREATE TABLE IF NOT EXISTS `user_info` (
 CREATE TABLE IF NOT EXISTS `signals` (
     `id`            INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `date_time`     DATETIME UNIQUE NOT NULL,
-    `group_id`      INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `signal_type`   INTEGER NOT NULL DEFAULT 0,
+    `boat_id`       INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    `info`          VARCHAR(64) NOT NULL DEFAULT '',
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
 
 -- Table that holds the app configuration --
 CREATE TABLE IF NOT EXISTS `app_config` (
@@ -41,3 +46,4 @@ CREATE TABLE IF NOT EXISTS `app_config` (
 -- Insert default config row --
 -- Note: if id number is changed the CONFIG_ID constant value in DbHandler shall be changed too --
 INSERT INTO `app_config` (id) VALUES(1);
+-- https://stackoverflow.com/questions/2766785/fixing-lock-wait-timeout-exceeded-try-restarting-transaction-for-a-stuck-my
