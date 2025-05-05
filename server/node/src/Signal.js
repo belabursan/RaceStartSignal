@@ -70,7 +70,6 @@ module.exports = class Signal {
                     await Signal.#insert(times[Time.YellowSignal], gid, SIGNAL_TYPE.YellowFlag);
                 }
             }
-            await Signal.#setListChanged();
             await pool.query('COMMIT;');
         } catch (error) {
             Signal.#info("Exception when adding signal!");
@@ -83,6 +82,7 @@ module.exports = class Signal {
             throw new Error("ERROR 503: Error when adding signal");
         }
         Signal.#info("Signal(s) with gid: " + gid + " added successfully");
+        await Signal.#setListChanged();
         return gid;
     }
 

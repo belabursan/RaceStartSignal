@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `user_info` (
 CREATE TABLE IF NOT EXISTS `signals` (
     `id`            INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `date_time`     DATETIME UNIQUE NOT NULL,
-    `signal_type`   INTEGER NOT NULL DEFAULT 0,
+    `signal_type`   ENUM('START', 'RACE_5', 'RACE_5Y') NOT NULL DEFAULT 'START',
     `boat_id`       INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `info`          VARCHAR(64) NOT NULL DEFAULT '',
     PRIMARY KEY(`id`)
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS `app_config` (
     `conf_changed`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `paused`        INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `mute`          INTEGER UNSIGNED NOT NULL DEFAULT 0,
-    `race_start`    TIME NOT NULL DEFAULT '07:59:00',
-    `race_end`      TIME NOT NULL DEFAULT '19:59:00',
+    `race_start`    TIME NOT NULL DEFAULT '06:59:00',
+    `race_end`      TIME NOT NULL DEFAULT '20:16:00',
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
@@ -47,3 +47,4 @@ CREATE TABLE IF NOT EXISTS `app_config` (
 -- Note: if id number is changed the CONFIG_ID constant value in DbHandler shall be changed too --
 INSERT INTO `app_config` (id) VALUES(1);
 -- https://stackoverflow.com/questions/2766785/fixing-lock-wait-timeout-exceeded-try-restarting-transaction-for-a-stuck-my
+-- https://dev.mysql.com/doc/refman/8.4/en/enum.html#enum-using
