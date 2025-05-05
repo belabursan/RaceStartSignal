@@ -1,7 +1,6 @@
 package com.buri.hw;
 
 import com.pi4j.Pi4J;
-import com.pi4j.boardinfo.util.BoardInfoHelper;
 import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.util.Console;
@@ -50,7 +49,6 @@ final class HwHandler implements Hw {
     }
 
     /****************** */
-
     private void reset() throws HwException {
         if (debug) {
             System.out.println("resetting hw");

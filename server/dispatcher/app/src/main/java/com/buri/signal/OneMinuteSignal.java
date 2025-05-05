@@ -4,7 +4,6 @@ import com.buri.config.Config;
 import com.buri.hw.Hw;
 import com.buri.hw.HwException;
 import com.buri.hw.HwFactory;
-import com.buri.hw.PiSettings;
 
 public class OneMinuteSignal extends Signal {
 
