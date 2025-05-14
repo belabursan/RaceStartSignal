@@ -2,6 +2,7 @@ package com.buri.signal;
 
 import com.buri.Arguments;
 import com.buri.db.DbSignal;
+import com.buri.hw.HwException;
 
 public class SignalR5Y extends Signal {
 
@@ -15,7 +16,7 @@ public class SignalR5Y extends Signal {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws InterruptedException, HwException {
         // Implementation for executing the R5Y signal
         // This could involve sending a message to the system or updating a database
         System.out.println("Executing R5Y signal...");
