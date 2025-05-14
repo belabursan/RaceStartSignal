@@ -4,18 +4,20 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import com.buri.Arguments;
-import com.buri.config.Config;
 import com.buri.config.DbStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
+import com.buri.db.DbSignal;
 import com.buri.hw.HwException;
-import com.buri.hw.HwFactory;
+import com.buri.signal.SignalR5;
+import com.buri.signal.SignalR5Y;
+import com.buri.signal.SignalS;
 
 public final class Engine {
 
-    private static final int DB_CHECK_FREQUENCY = 5000; // milliseconds
+    private static final int DB_CHECK_FREQUENCY = 500; // milliseconds
     private boolean alive;
-    private Db db;
+
     private SignalRunner signalRunner;
     private final Arguments arguments;
     private DbStatus currentDbStatus;
@@ -23,7 +25,6 @@ public final class Engine {
     public Engine(Arguments arguments) throws SQLException {
         this.arguments = arguments;
         this.alive = false;
-        this.db = DbFactory.getDb();
         currentDbStatus = new DbStatus(LocalDateTime.now(), LocalDateTime.now(), arguments.isDebug());
     }
 
@@ -31,34 +32,40 @@ public final class Engine {
         try {
             this.alive = true;
             while (alive) {
+                Db db = DbFactory.getDb();
                 DbStatus newStatus = db.getDbStatus();
                 if (currentDbStatus.isDbChanged(newStatus)) {
                     System.out.println("DB is changed");
                     currentDbStatus.update(newStatus);
-
-                    // close runner and start new with the new list
-                    if (signalRunner != null) {
-                        System.out.println("Finishing old signalRunner");
-                        signalRunner.close();
-                        signalRunner.join();
-                        signalRunner = null;
-                        HwFactory.getHw().resetState();
-                    }
-                    System.out.println("Reading new list from Db");
-                    SignalGroupList signalGroupList = db.getSignalList();
-                    System.out.println("Got new list with size " + signalGroupList.size());
-                    if (!signalGroupList.isEmpty()) {
-                        Config config = db.getConfig();
-                        config.setSignalTime(arguments.getShortSignal(), arguments.getLongSignal());
-                        signalRunner = new SignalRunner(signalGroupList, config);
-                        signalRunner.start();
+                }
+                DbSignal dbs = db.getSignal();
+                LocalDateTime now = LocalDateTime.now();
+                if (dbs.isValid(now)) {
+                    if(dbs.isTimeToExecute(now)) {
+                        switch (dbs.getType()) {
+                            case START:
+                                new SignalS(dbs, arguments).execute();
+                                break;
+                            case RACE_5:
+                                new SignalR5(dbs, arguments).execute();
+                                break;
+                            case RACE_5Y:
+                                new SignalR5Y(dbs, arguments).execute();
+                                break;
+                            default:
+                                System.out.println("WARNING: Unknown signal type: " + dbs.getType());
+                        }
+                        db.removeSignal(dbs.getId());
+                        System.out.println("Signal(" + dbs.getDate().toString() + "), handled");
                     } else {
-                        System.out.println("Signal list is empty, not running signalRunner");
+                        System.out.println("Signal(" + dbs.getDate().toString() + "), not yet time to execute");
+                        Thread.sleep(DB_CHECK_FREQUENCY);
                     }
+                } else {
+                    System.out.println("Old signal(" + dbs.getDate().toString() + "), removing it");
+                    db.removeSignal(dbs.getId());
                 }
-                for (long i = 0; alive && i < DB_CHECK_FREQUENCY; i += 1000) {
-                    Thread.sleep(1000);
-                }
+
             }
         } catch (HwException h) {
             System.out.println("Hw exception when resetiing state in engine: " + h.getMessage());
@@ -69,6 +76,11 @@ public final class Engine {
             }
         }
         System.out.println("Engine run out");
+    }
+
+    private boolean validateDbSignalTime(DbSignal dbs) {
+
+        return false;
     }
 
     /**

@@ -9,7 +9,7 @@ import com.buri.signal.SignalType;
  * Type is an enum
  * The date is formatted as "yyyy-MM-dd HH:mm:ss".
  */
-public class DbSignal {
+public final class DbSignal {
     private int id;
     private LocalDateTime date;
     private SignalType type;
@@ -92,16 +92,27 @@ public class DbSignal {
     }
 
     /**
+     * Checks if the date of the signal is valid.
+     * A signal is considered valid if its date is before the current date and time.
+     * @return true if the signal is valid, false otherwise
+     */
+    public boolean isValid(LocalDateTime now) {
+        return this.date.isBefore(now);
+    }
+
+    public boolean isTimeToExecute(LocalDateTime now) {
+        return this.date.isBefore(now);
+    }
+
+    /**
      * returns a string representation of the Signal object.
      */
     public String toString() {
-        return "Signal{ " +
-                "id=" + id +
+        return "id=" + id +
                 ", date=" + date.toString() +
                 ", type=" + type +
                 ", boatId=" + boatId +
-                ", info='" + info + '\'' +
-                " }";
+                ", info='" + info + "'";
     }
 
 }
