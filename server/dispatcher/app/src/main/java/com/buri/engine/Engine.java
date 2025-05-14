@@ -38,9 +38,9 @@ public final class Engine {
                     currentDbStatus.update(newStatus);
                 }
                 DbSignal dbs = db.getSignal();
-                LocalDateTime now = LocalDateTime.now();
-                if (dbs.isValid(now)) {
-                    if (dbs.isTimeToExecute(now)) {
+                long duration = dbs.getDurationMs();
+                if (duration >= 0) { // should we use -100 so a slightly negative value is also ok?
+                    if (duration < 1000) {
                         switch (dbs.getType()) {
                             case START:
                                 new SignalS(dbs, arguments).execute();
@@ -64,7 +64,6 @@ public final class Engine {
                     System.out.println("Old signal(" + dbs.getDate().toString() + "), removing it");
                     db.removeSignal(dbs.getId());
                 }
-
             }
         } catch (HwException h) {
             System.out.println("Hw exception when resetiing state in engine: " + h.getMessage());

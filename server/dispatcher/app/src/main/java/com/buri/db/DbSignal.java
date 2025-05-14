@@ -1,5 +1,6 @@
 package com.buri.db;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import com.buri.signal.SignalType;
@@ -92,16 +93,13 @@ public final class DbSignal {
     }
 
     /**
-     * Checks if the date of the signal is valid.
-     * A signal is considered valid if its date is before the current date and time.
-     * @return true if the signal is valid, false otherwise
+     * Get the duration time between now and the signal time
+     * @return return positive if the signal is in the future, negative if the signal is in the past
+     *         and 0 if the signal is now
+     *         The duration is in milliseconds
      */
-    public boolean isValid(LocalDateTime now) {
-        return this.date.isBefore(now);
-    }
-
-    public boolean isTimeToExecute(LocalDateTime now) {
-        return this.date.isBefore(now);
+    public long getDurationMs() {
+        return Duration.between(LocalDateTime.now(), this.date).toMillis();
     }
 
     /**
