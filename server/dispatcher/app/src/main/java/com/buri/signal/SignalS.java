@@ -1,6 +1,7 @@
 package com.buri.signal;
 
 import com.buri.Arguments;
+import com.buri.config.Config;
 import com.buri.db.DbSignal;
 import com.buri.hw.HwException;
 
@@ -14,8 +15,8 @@ public class SignalS extends Signal {
      * 
      * @param dbs the DbSignal object representing the signal
      */
-    public SignalS(DbSignal dbs, Arguments args) {
-        super(dbs, args);
+    public SignalS(DbSignal dbs, Arguments args, Config config) {
+        super(dbs, args, config);
     }
 
     @Override

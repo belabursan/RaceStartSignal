@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import com.buri.Arguments;
+import com.buri.config.Config;
 import com.buri.config.DbStatus;
 import com.buri.db.Db;
 import com.buri.db.DbFactory;
@@ -20,22 +21,28 @@ public final class Engine {
     private final Arguments arguments;
     private DbStatus currentDbStatus;
     private boolean alive;
+    private Config config;
 
     public Engine(Arguments arguments) throws SQLException {
         this.arguments = arguments;
         this.alive = false;
+        this.config = null;
         currentDbStatus = new DbStatus(LocalDateTime.now(), LocalDateTime.now(), arguments.isDebug());
     }
 
     public void execute() throws SQLException, InterruptedException {
         try {
+            Db db = DbFactory.getDb();
+            config = db.getConfig();
             this.alive = true;
+            System.out.println("Engine started");
+
             while (alive) {
-                Db db = DbFactory.getDb();
                 DbStatus newStatus = db.getDbStatus();
                 if (currentDbStatus.isDbChanged(newStatus)) {
                     System.out.println("DB is changed");
                     currentDbStatus.update(newStatus);
+                    config = db.getConfig();
                 }
                 DbSignal dbs = db.getSignal();
                 long duration = dbs.getDurationMs();
@@ -43,13 +50,13 @@ public final class Engine {
                     if (duration < 1000) {
                         switch (dbs.getType()) {
                             case START:
-                                new SignalS(dbs, arguments).execute();
+                                new SignalS(dbs, arguments, config).execute();
                                 break;
                             case RACE_5:
-                                new SignalR5(dbs, arguments).execute();
+                                new SignalR5(dbs, arguments, config).execute();
                                 break;
                             case RACE_5Y:
-                                new SignalR5Y(dbs, arguments).execute();
+                                new SignalR5Y(dbs, arguments, config).execute();
                                 break;
                             default:
                                 System.out.println("WARNING: Unknown signal type: " + dbs.getType());
