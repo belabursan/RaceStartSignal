@@ -61,6 +61,7 @@ public final class Engine {
                             default:
                                 System.out.println("WARNING: Unknown signal type: " + dbs.getType());
                         }
+                        HwFactory.getHw().resetState();
                         db.removeSignal(dbs.getId());
                         System.out.println("Signal(" + dbs.getDate().toString() + "), handled");
                     } else {
