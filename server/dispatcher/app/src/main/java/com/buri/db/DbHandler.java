@@ -11,10 +11,6 @@ import java.time.LocalTime;
 import com.buri.Arguments;
 import com.buri.config.Config;
 import com.buri.config.DbStatus;
-import com.buri.signal.Signal;
-import com.buri.signal.SignalGroupList;
-import com.buri.signal.SignalList;
-import com.buri.signal.SignalType;
 
 /**
  * DbHandler is a class that implements the Db interface.
@@ -67,9 +63,8 @@ class DbHandler implements Db {
     }
 
     @Override
-    public SignalGroupList getSignalList() throws SQLException, IllegalArgumentException {
-        final String query = "SELECT * FROM signals ORDER BY date_time ASC";
-        SignalList list = new SignalList();
+    public DbSignal getSignal() throws SQLException, IllegalArgumentException {
+        final String query = "SELECT  * FROM signals WHERE oldest_date(SELECT MIN(date_time) FROM signals);";
         Statement stmt = null;
         ResultSet rs = null;
 
@@ -81,15 +76,16 @@ class DbHandler implements Db {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(query);
 
-            while (rs.next()) {
-                LocalDateTime dateTime = rs.getObject("date_time", LocalDateTime.class);
-                SignalType type = SignalType.fromInt(rs.getInt("signal_type"));
-                int groupId = rs.getInt("group_id");
+            if (rs.next()) {
                 int id = rs.getInt("id");
-                Signal s = new Signal(id, groupId, dateTime, type);
-                s.setDebug(debug);
-                list.addSignal(s);
+                LocalDateTime dateTime = rs.getObject("date_time", LocalDateTime.class);
+                String type = rs.getString("signal_type");
+                int boatId = rs.getInt("boat_id");
+                String info  = rs.getString("info");
+
+                return new DbSignal(id, dateTime, type, boatId, info);
             }
+            return null; // No signals found
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
             throw e;
@@ -104,24 +100,23 @@ class DbHandler implements Db {
                 stmt.close();
             }
         }
-        return new SignalGroupList(list.sort());
     }
 
     @Override
-    public void removeSignalGroup(final int groupId) throws SQLException {
+    public void removeSignal(final int id) throws SQLException {
+        final String query = "DELETE FROM signals WHERE id = " + id;
         final Statement stmt = conn.createStatement();
-        final String query = "DELETE FROM signals WHERE group_id = " + groupId;
 
         if (debug) {
-            System.out.println("Removing signal group " + groupId + " from db");
+            System.out.println("Removing signal " + id + " from db");
         }
 
         try {
             int rowsAffected = stmt.executeUpdate(query);
             if (rowsAffected > 0) {
-                System.out.println("Signal group with groupID " + groupId + " removed successfully.");
+                System.out.println("Signal with ID " + id + " removed successfully.");
             } else {
-                System.out.println("No signals found with groupID " + groupId);
+                System.out.println("No signals found with ID " + id);
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

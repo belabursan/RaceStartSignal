@@ -32,6 +32,7 @@ public final class Arguments {
     private long long_signal_ms;
     private boolean debug;
     private boolean develop;
+    private int yellow_signal_time_m;
 
     /**
      * Reads the environment variables.
@@ -58,6 +59,12 @@ public final class Arguments {
             } catch (Exception e) {
                 System.out.println("No long signal defined, setting default: " + 2600);
                 this.long_signal_ms = 2600;
+            }
+            try {
+                this.yellow_signal_time_m = Integer.parseInt(System.getenv("YELLOW_SIGNAL_M"));
+            } catch (Exception e) {
+                System.out.println("No yellow signal defined, setting default: " + 15);
+                this.short_signal_ms = 15;
             }
             return this.validate();
         } catch (Exception e) {
@@ -128,6 +135,10 @@ public final class Arguments {
         return develop;
     }
 
+    public int getYellowSignalTimeM() {
+        return yellow_signal_time_m;
+    }
+
     /**
      * Returns a string representation of the Arguments object.
      */
@@ -142,6 +153,7 @@ public final class Arguments {
                 ",\n develop=" + develop +
                 ",\n short signal=" + short_signal_ms +
                 ",\n long signal=" + long_signal_ms +
+                ",\n yellow signal=" + yellow_signal_time_m +
                 "\n}\n";
     }
 }

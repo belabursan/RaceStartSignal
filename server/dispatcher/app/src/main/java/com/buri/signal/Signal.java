@@ -4,171 +4,138 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.buri.Arguments;
 import com.buri.config.Config;
+import com.buri.db.DbSignal;
 import com.buri.hw.HwException;
+import com.buri.hw.HwFactory;
 
-/**
- * Class representing a signal with a date and type.
- * The date is formatted as "yyyy-MM-dd HH:mm:ss".
- */
-public class Signal implements Comparable<Signal> {
-    @SuppressWarnings("unused")
-    private static final long serialVersionUID = 1971L;
-    private Object EXEC = new Object();
-    private boolean aborted;
-    private boolean debug;
-    private int id;
-    private int groupId;
-    private LocalDateTime date;
-    private SignalType type;
+public abstract class Signal {
+
+    final DbSignal dbSignal;
+    final Arguments args;
+    final Config config;
+    boolean aborted;
 
     /**
      * Constructor for Signal class.
      * 
-     * @param id       the id of the signal
-     * @param groupId  the group id of the signal
-     * @param dateTime the date of the signal
-     * @param type     the type of the signal
+     * @param dbs the DbSignal object representing the signal
      */
-    public Signal(int id, int groupId, LocalDateTime dateTime, SignalType type) {
-        this.id = id;
-        this.groupId = groupId;
-        this.date = dateTime;
-        this.type = type;
+    public Signal(DbSignal dbs, Arguments args, Config config) {
+        this.dbSignal = dbs;
+        this.args = args;
+        this.config = config;
         this.aborted = false;
-        this.debug = false;
-    }
-
-    public void setDebug(boolean debug){
-        this.debug = debug;
     }
 
     /**
-     * Compare this signal with another signal based on the date.
+     * Checks wether the signal is allowed to be executed
      * 
-     * @param other the other signal to compare with
-     * @return true if the objects are equal, false otherwise
-     * @throws NullPointerException if the other signal is null
+     * @return true if the signal is allowed, false otherwise
      */
-    @Override
-    public boolean equals(Object obj) {
-        return (obj instanceof Signal) && (this.date.equals(((Signal) obj).getDate()));
-    }
-
-    @Override
-    public int compareTo(Signal other) {
-        return this.date.compareTo(other.date);
-    }
-
-    /**
-     * Get the date and time of the signal.
-     * 
-     * @return the date of the signal
-     */
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    /**
-     * Get the type of the signal.
-     * 
-     * @return the type of the signal
-     */
-    public SignalType getType() {
-        return type;
-    }
-
-    /**
-     * Get the id of the signal.
-     * 
-     * @return the id of the signal
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Get the group id of the signal.
-     * 
-     * @return the group id of the signal
-     */
-    public int getGroupId() {
-        return groupId;
-    }
-
-    /**
-     * returns a string representation of the Signal object.
-     */
-    public String toString() {
-        return "Signal{ " +
-                "id=" + id +
-                ", groupId=" + groupId +
-                ", date=" + date.toString() +
-                ", type=" + type +
-                " }";
-    }
-
-    protected boolean allowed(Config config) {
-        LocalTime signalTime = LocalTime.of(date.getHour(), date.getMinute(), date.getSecond());
+    private boolean timeAllowed() {
+        LocalTime signalTime = LocalTime.of(dbSignal.getDate().getHour(), dbSignal.getDate().getMinute(),
+                dbSignal.getDate().getSecond());
         if (signalTime.isAfter(config.getRaceStart()) && signalTime.isBefore(config.getRaceEnd())) {
             return true;
         }
+        System.out.println("Signal not allowed: " + signalTime + " is not between " + config.getRaceStart() + " and "
+                + config.getRaceEnd());
         return false;
     }
 
-    boolean countDown(Config config) throws HwException, InterruptedException {
-        LocalDateTime now = LocalDateTime.now();
-        if(debug) {
-            System.out.println("-----signaltime:   " + this.getDate());
-            System.out.println("-----Now:          " + now);
-        }
-        Duration duration = Duration.between(now, this.getDate());
-
-        if (duration.isNegative()) {
-            System.out.println("Old signal, skipping this");
-            return false;
-        }
-        while (!aborted) {
-            synchronized (EXEC) {
-                if (duration.isZero() || duration.isNegative()) {
-                    if (allowed(config)) {
-                        return true;
-                    }
-                    System.out.println("Not allowed, time is out of range");
-                    break;
-                }
-                long durationMillis = duration.toMillis();
-                if (durationMillis > 3600000) {
-                    if (debug) {
-                        System.out.println("It seems that I have to wait for a while...");
-                    }
-                    System.out.println("Seconds left to wait from now (" + now + 
-                    "): " + durationMillis / 1000 + "," + (durationMillis - ((durationMillis / 1000)) * 1000));
-                    EXEC.wait(duration.minusSeconds(3600-6).toMillis()); // wait until 1h befor signal
-                } else if (durationMillis > 5000) {
-                    System.out.println("Seconds left to wait: " + durationMillis / 1000 + "," + 
-                    (durationMillis - ((durationMillis / 1000)) * 1000));
-                    EXEC.wait(duration.minusSeconds(5).toMillis()); // wait until 5 seconds befor signal
-                    if(debug) System.out.println("Less then 6 seconds to signal");
-                } else if (durationMillis  > 1000) {
-                    EXEC.wait(900);
-                } else {
-                    EXEC.wait(100);
-                }
-                duration = Duration.between(LocalDateTime.now(), this.getDate());
+    /**
+     * Checks if the signal is allowed to be executed
+     * 
+     * @return true if the signal is allowed, false otherwise
+     */
+    protected boolean isAllowed() {
+        if (timeAllowed()) {
+            if (!config.isPaused()) {
+                return true;
+            } else {
+                System.out.println("Signaling is paused");
             }
         }
-        return false;
+        return true;
     }
 
-    public void abort() {
-        if(!aborted) {
-            System.out.println("Aborting Signal!!");
-            aborted = true;
-            synchronized (EXEC) {
-                this.notifyAll();
-            }
+    /**
+     * Sets the horn on for a given duration.
+     * 
+     * @param duration time in milliseconds
+     * @throws HwException          in case of hardware error
+     * @throws InterruptedException if execution is interrupted
+     */
+    protected void hornOn(long duration) throws HwException, InterruptedException {
+        if (!config.isMute()) {
+            HwFactory.getHw().hornOn(duration);
+        } else {
+            System.out.println("Signal: Mute is on");
         }
     }
+
+    /**
+     * Returns a string representing the signal.
+     */
+    @Override
+    public String toString() {
+        return "Signal->{" + dbSignal.toString() + "}";
+    }
+
+    /**
+     * Waits until it is time to execute the signal.
+     * NOTE: The call to this method is blocing until it is time to execute the
+     * signal.
+     * 
+     * @return true if the signal is not aborted, false otherwise
+     * 
+     * @throws InterruptedException
+     */
+    protected synchronized boolean countDown(LocalDateTime time) throws InterruptedException {
+        long duration = Duration.between(LocalDateTime.now(), time).toMillis();
+        while (duration > 0 && !aborted) {
+            System.out.println("Waiting for " + duration + " ms");
+            wait(duration);
+        }
+        return !aborted;
+    }
+
+    /**
+     * Resets the hardware flags.
+     * This method should be called when the signal is aborted or when the
+     * execution is finished by an exception
+     * 
+     * @throws HwException
+     */
+    protected void resetHw() {
+        try {
+            HwFactory.getHw().hwClassFlagOff();
+            HwFactory.getHw().hwYellowFlagOff();
+            HwFactory.getHw().hwPFlagOff();
+        } catch (HwException e) {
+            System.out.println("Error resetting hardware flags: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Aborts the countDown method.
+     * This method should be called when the signal is no longer needed.
+     */
+    public synchronized void abort() {
+        aborted = true;
+        notifyAll();
+    }
+
+    /**
+     * Executes the signal.
+     * This method should be implemented by subclasses to define the specific
+     * behavior of the signal.
+     * 
+     * @throws InterruptedException
+     * @throws HwException
+     */
+    public abstract void execute() throws InterruptedException, HwException;
 
 }
